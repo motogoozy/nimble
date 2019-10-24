@@ -1,0 +1,34 @@
+.header {
+    width: 100%;
+    height: 3.25rem;
+    background-color: #BFC0C0;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .header-left-container {
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        .header-select-container {
+            width: 10rem;
+            margin: 0 1rem;
+            z-index: 2;
+        }
+    }
+
+    .header-right-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .header-avatar-container {
+            margin: 0 1rem;
+        }
+    }
+}
