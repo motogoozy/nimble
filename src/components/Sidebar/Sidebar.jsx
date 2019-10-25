@@ -46,7 +46,7 @@ class Sidebar extends Component {
                            <p>MY TASKS</p>
                      </div>
                   </Tooltip>
-                  <Tooltip title={'Uncompleted Tasks'} enterDelay={300}>
+                  <Tooltip title={'All Uncompleted Tasks'} enterDelay={300}>
                      <div
                         onClick={() => this.handleButtonClick('todo')}
                         className={selectedButton === 'todo' ? 'sidebar-button active-button' : 'sidebar-button'}
@@ -55,7 +55,7 @@ class Sidebar extends Component {
                            <p>TO DO</p>
                      </div>
                   </Tooltip>
-                  <Tooltip title={'Tasks In Progress'} enterDelay={300}>
+                  <Tooltip title={'All Tasks In Progress'} enterDelay={300}>
                      <div
                         onClick={() => this.handleButtonClick('in-progress')}
                         className={selectedButton === 'in-progress' ? 'sidebar-button active-button' : 'sidebar-button'}
@@ -64,7 +64,7 @@ class Sidebar extends Component {
                            <p>IN PROGRESS</p>
                      </div>
                   </Tooltip>
-                  <Tooltip title={'Completed Tasks'} enterDelay={300}>
+                  <Tooltip title={'All Completed Tasks'} enterDelay={300}>
                      <div
                         onClick={() => this.handleButtonClick('completed')}
                         className={selectedButton === 'completed' ? 'sidebar-button active-button' : 'sidebar-button'}
