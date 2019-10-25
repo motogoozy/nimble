@@ -1,5 +1,19 @@
+// Global Variables
+$primary-dk-gray: #2D3142;
+$primary-blue: #4F5D75;
+$primary-lt-gray: #BFC0C0;
+$accent-purple: #995D81;
+$accent-orange: #EB8258;
+$accent-purple-hover: #663f56;
+
+// Global Classes
 .cursor-pointer {
-    &:hover {
-        cursor: pointer;
-    }
+   &:hover {
+      cursor: pointer;
+   }
+}
+
+.page-content {
+   height: 100%;
+   width: 100%;
 }

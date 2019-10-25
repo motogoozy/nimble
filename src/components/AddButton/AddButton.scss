@@ -1,12 +1,14 @@
+@import '../../styles.scss';
+
 .add-button {
-    i {
-        transition: .1s ease-in-out;
-        -webkit-transition: .1s ease-in-out;
-        color: #995D81;
-        &:hover {
-            transition: .1s ease-in-out;
-            -webkit-transition: .1s ease-in-out;
-            color: #663f56;
-        }
-    }
+   i {
+      transition: .1s ease-in-out;
+      -webkit-transition: .1s ease-in-out;
+      color: $accent-purple;
+      &:hover {
+         transition: .1s ease-in-out;
+         -webkit-transition: .1s ease-in-out;
+         color: #663f56;
+      }
+   }
 }
