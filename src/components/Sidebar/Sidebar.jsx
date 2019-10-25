@@ -12,19 +12,19 @@ export default class Sidebar extends Component {
                 </div>
                 <div className='sidebar-buttons-container'>
                     <div className='sidebar-button'>
-                        <i class="fas fa-th-large"></i>
+                        <i className="fas fa-th-large"></i>
                         <p>OVERVIEW</p>
                     </div>
                     <div className='sidebar-button'>
-                        <i class="fas fa-tasks"></i>
+                        <i className="fas fa-tasks"></i>
                         <p>MY TASKS</p>
                     </div>
                     <div className='sidebar-button'>
-                        <i class="fas fa-spinner"></i>
+                        <i className="fas fa-spinner"></i>
                         <p>IN PROGRESS</p>
                     </div>
                     <div className='sidebar-button'>
-                        <i class="far fa-check-square"></i>
+                        <i className="far fa-check-square"></i>
                         <p>COMPLETED</p>
                     </div>
                 </div>

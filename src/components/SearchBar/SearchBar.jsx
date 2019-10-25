@@ -11,8 +11,10 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
         width: '12rem',
+        backgroundColor: 'white',
+        borderRadius: '5px',
         '& label.Mui-focused': {
-            color: '#995D81',
+            color: 'black',
         },
         '& .MuiInput-underline:after': {
             borderBottomColor: '#995D81',

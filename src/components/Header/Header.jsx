@@ -37,7 +37,7 @@ export default class Header extends Component {
                     </div>
                 </div>
                 <div className='header-right-container'>
-                    <div classname='header-searchbar-container'>
+                    <div className='header-searchbar-container'>
                         <SearchBar />
                     </div>
                     <div className='header-avatar-container cursor-pointer'>
