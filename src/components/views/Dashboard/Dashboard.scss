@@ -1,3 +1,5 @@
+@import '../../../styles.scss';
+
 .dashboard {
    width: 100vw;
    height: 100vh;
@@ -7,19 +9,30 @@
    flex-direction: row;
    flex-wrap: nowrap;
    justify-content: flex-start;
-   align-items: stretch;
+   align-items: center;
 }
 
 .main-content-container {
-   width: 100%;
+   width: calc(100vw - #{$sidebar-width});
    height: 100%;
    display: flex;
    flex-direction: column;
    justify-content: flex-start;
-   align-items: stretch;
+   align-items: center;
 
    .main-content {
       width: 100%;
       height: 100%;
    }
+}
+
+.column-container {
+   width: 100%;
+   height: 100%;
+   overflow-y: hidden;
+   overflow-x: auto;
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-start;
+   align-items: center;
 }

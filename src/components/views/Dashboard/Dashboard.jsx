@@ -2,27 +2,37 @@ import React, { Component } from 'react';
 import './Dashboard.scss';
 import Sidebar from '../../Sidebar/Sidebar';
 import Header from '../../Header/Header';
-import Profile from '../Profile/Profile';
-import SettingsPage from '../SettingsPage/SettingsPage';
+import Column from '../../Column/Column';
+import AddButton from '../../AddButton/AddButton';
 
-import { Switch, Route } from 'react-router-dom';
 
 export default class Dashboard extends Component {
-	state = {};
+   state = {};
+   
+   displayColumns = () => {
+      return (
+         <div className='column-container'>
+            <Column />
+            <Column />
+            <Column />
+            <Column />
+            {/* <Column />
+            <Column /> */}
+            <AddButton />
+         </div>
+      )
+   }
 	
 	render() {
 		return (
-			<div className='dashboard page-content'>
+			<div className='dashboard'>
 				<Sidebar />
-               <div className='main-content-container'>
-                  <Header />
-                  <div className='main-content'>
-                     <Switch>
-                        <Route component={Profile} path='/profile' />
-                        <Route component={SettingsPage} path='/settings' />
-                     </Switch>
-                  </div>
+            <div className='main-content-container'>
+               <Header />
+               <div className='main-content'>
+                  { this.displayColumns() }
                </div>
+            </div>
 			</div>
 		)
 	}
