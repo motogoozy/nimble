@@ -5,6 +5,7 @@ import Header from '../../Header/Header';
 import Column from '../../Column/Column';
 import AddButton from '../../AddButton/AddButton';
 
+import Tooltip from '@material-ui/core/Tooltip';
 
 export default class Dashboard extends Component {
    state = {};
@@ -18,7 +19,11 @@ export default class Dashboard extends Component {
             <Column />
             {/* <Column />
             <Column /> */}
-            <AddButton />
+            <Tooltip title={'Add Column'}>
+               <div>
+                  <AddButton />
+               </div>
+            </Tooltip>
          </div>
       )
    }
