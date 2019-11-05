@@ -17,11 +17,14 @@
 		padding: .5rem 1rem;
 		font-size: 1.22rem;
 		color: white;
+	}
 
-		column-header-more-icon {
-			height: 1rem;
-			width: 2rem;
-			color: green;
-		}
+	.column-content {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		flex-wrap: nowrap;
+		padding: 1rem;
 	}
 }
