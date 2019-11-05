@@ -8,7 +8,7 @@ export default function SmallAddButton(props) {
    return (
       <Tooltip title={props.title}>
          <div className='add-button cursor-pointer'>
-               <i className="fas fa-plus"></i>
+            <i className="fas fa-plus"></i>
          </div>
       </Tooltip>
    )
