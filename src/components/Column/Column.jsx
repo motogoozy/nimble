@@ -30,7 +30,7 @@ export default class Column extends Component {
 					<p>Column Header</p>
 					<i className="fas fa-ellipsis-v cursor-pointer"></i>
 				</div>
-				<div className='column-content' style={{ overflow: 'scroll' }}>
+				<div className='column-content'>
 					{ this.displayTasks(tasks) }
 				</div>
 				<div className='column-footer'>
