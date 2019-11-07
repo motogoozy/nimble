@@ -22,10 +22,10 @@ const useStyles = makeStyles(theme => ({
       },
       '& .MuiOutlinedInput-root': {
          '& fieldset': {
-               borderColor: '#995D81',
+               borderColor: 'none',
       },
          '&:hover fieldset': {
-               borderColor: '#663f56',
+               borderColor: '#995D81',
          },
          '&.Mui-focused fieldset': {
                borderColor: '#995D81',
@@ -42,12 +42,13 @@ export default function OutlinedTextFields(props) {
    return (
       <form className={classes.container} noValidate autoComplete="off">
          <TextField
-               id="outlined-dense"
-               label="Search name or task"
-               placeholder="ex: 'John Doe'"
-               className={classes.dense}
-               margin="dense"
-               variant="outlined"
+            id="outlined-dense"
+            label="Search name or task"
+            placeholder="ex: 'John Doe'"
+            className={classes.dense}
+            margin="dense"
+            variant="outlined"
+            onChange={props.onChangeFunc}
          />
       </form>
    );

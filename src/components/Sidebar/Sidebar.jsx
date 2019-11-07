@@ -48,7 +48,7 @@ class Sidebar extends Component {
                      onClick={() => this.handleButtonClick('my-tasks')}
                      className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
                   >
-                     <i class="far fa-user"></i>
+                     <i className="far fa-user"></i>
                      <p>MY TASKS</p>
                   </div>
                </Tooltip>
@@ -77,6 +77,16 @@ class Sidebar extends Component {
                   >
                      <i className="far fa-check-square"></i>
                      <p>COMPLETED</p>
+                  </div>
+               </Tooltip>
+               <Tooltip title={'Project Settings'} enterDelay={300}>
+                  <div
+                     onClick={() => this.handleButtonClick('settings')}
+                     className={selectedButton === 'settings' ? 'sidebar-button active-button' : 'sidebar-button'}
+                  >
+                     {/* <i class="fas fa-cog"></i> */}
+                     <i class="fas fa-sliders-h"></i>
+                     <p>SETTINGS</p>
                   </div>
                </Tooltip>
             </div>

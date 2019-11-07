@@ -19,13 +19,24 @@ export default class Dashboard extends Component {
          const column = testData.columns[columnId];
          const tasks = column.taskIds.map(taskId => testData.tasks[taskId]);
          return (
-            <div className='column-container'>
+            <>
                <Column key={column.id} column={column} tasks={tasks} />
-            </div>
-         )
+               <Column key={column.id} column={column} tasks={tasks} />
+               <Column key={column.id} column={column} tasks={tasks} />
+            </>
+         );
       })
 
-      return columns;
+      return (
+         <div className='column-container'>
+            { columns }
+            <Tooltip title={'Add New List'}>
+               <div>
+                  <AddButton />
+               </div>
+            </Tooltip>
+         </div>
+      )
       // return (
       //    <div className='column-container'>
       //       <Column />

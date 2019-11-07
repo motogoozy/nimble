@@ -15,6 +15,7 @@ class Header extends Component {
    state = {
       currentPage: '',
       anchorEl: null,
+      search: '',
    };
 
    componentDidMount = () => {
@@ -72,7 +73,9 @@ class Header extends Component {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
                   <div className='header-searchbar-container'>
-                        <SearchBar />
+                        <SearchBar
+                           onChangeFunc={e => console.log(e.target.value)}
+                        />
                   </div>
                }
                <div className='header-avatar-container cursor-pointer'>

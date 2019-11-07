@@ -13,6 +13,7 @@ export default class Column extends Component {
 		return tasks.map(task => {
 			return (
 				<Task
+					key={task.id}
 					id={task.id}
 					title={task.title}
 					content={task.content}
