@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Column.scss';
 import Task from '../Task/Task';
-import SmallAddButton from '../SmallAddButton/SmallAddButton';
 
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -35,10 +34,10 @@ export default class Column extends Component {
 				</div>
 				<div className='column-footer'>
 					<div className='column-add-button-container cursor-pointer'>
-						<SmallAddButton title={''}/>
+						<i className="fas fa-plus"></i>
 						<p>ADD NEW TASK</p>
 					</div>
-					<Tooltip title={'Delete Column'}>
+					<Tooltip title={'Delete List'}>
 						<div className='column-delete-button cursor-pointer'>
 							<i className="far fa-trash-alt"></i>
 						</div>

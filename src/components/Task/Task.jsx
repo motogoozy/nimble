@@ -7,7 +7,7 @@ export default class Task extends Component {
 	render() {
 		return (
 			<div className='task'>
-				<h5>{this.props.title}</h5>
+				<h4>{this.props.title}</h4>
 				<p>{this.props.content}</p>
 			</div>
 		)

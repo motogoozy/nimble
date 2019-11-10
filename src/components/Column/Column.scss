@@ -63,15 +63,21 @@
 				margin-left: .5rem;
 			}
 
+			i {
+				color: $accent-purple;
+			}
+
 			&:hover {
 				transition: .25s;
-				color: $accent-purple-hover;
+				p, i {
+					color: $accent-purple-hover;
+				}
 			}
 		}
 
 		.column-delete-button:hover {
-			color: darkred;
-			// color: $accent-orange;
+			// color: darkred;
+			color: $accent-orange;
 		}
 	}
 }
