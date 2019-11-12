@@ -1,11 +1,11 @@
 -- Initialize db tables
 
-CREATE TABLE user (
+CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
 	first_name character varying(50) NOT NULL,
 	last_name character varying(50) NOT NULL,
 	email character varying(50) NOT NULL,
-	password character varying(256) NOT NULL
+	hash character varying(256) NOT NULL
 );
 
 CREATE TABLE project (
@@ -13,9 +13,9 @@ CREATE TABLE project (
 	name character varying(50) NOT NULL,
 	created_at timestamp without time zone NOT NULL,
 	archived boolean NOT NULL
-);
+);e
 
-CREATE TABLE lists (
+CREATE TABLE list (
 	id SERIAL PRIMARY KEY,
 	name character varying(50) NOT NULL,
 	color_code character varying(10) NOT NULL,
