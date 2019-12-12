@@ -8,6 +8,7 @@ const useStyles = makeStyles(theme => ({
 		margin: theme.spacing(1),
 		backgroundColor: '#995D81',
 		marginLeft: '2rem',
+		marginRight: '2rem',
 		'&:hover': {
 			backgroundColor: '#663f56'
 		}

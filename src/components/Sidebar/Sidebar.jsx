@@ -85,7 +85,7 @@ class Sidebar extends Component {
                      className={selectedButton === 'settings' ? 'sidebar-button active-button' : 'sidebar-button'}
                   >
                      {/* <i class="fas fa-cog"></i> */}
-                     <i class="fas fa-sliders-h"></i>
+                     <i className="fas fa-sliders-h"></i>
                      <p>SETTINGS</p>
                   </div>
                </Tooltip>
