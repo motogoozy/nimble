@@ -16,38 +16,41 @@ export default class Dashboard extends Component {
             id: 'column-1',
             title: 'To Dos',
             taskIds: ['task-1', 'task-2', 'task-3'],
-            colorCode: [0, 160, 10, 1],
+            colorCode: [136, 14, 79, 1],
          },
          'column-2': {
             id: 'column-2',
             title: 'In Progress',
             taskIds: ['task-4', 'task-5', 'task-6'],
-            colorCode: [242, 173, 0, 1],
+            colorCode: [76, 175, 80, 1],
          },
          'column-3': {
             id: 'column-3',
             title: 'Completed',
             taskIds: ['task-7', 'task-8', 'task-9'],
-            colorCode: [0, 88, 242, 1],
+            colorCode: [2, 136, 209, 1],
          },
       },
       tasks: {
          'task-1': { id: 'task-1', title: 'Task 1', content: 'Wash Dishes'},
          'task-2': { id: 'task-2', title: 'Task 2', content: 'Take out trash'},
          'task-3': { id: 'task-3', title: 'Task 3', content: 'Clean Car'},
-         'task-4': { id: 'task-4', title: 'Task 4', content: 'Wash Dishes'},
-         'task-5': { id: 'task-5', title: 'Task 5', content: 'Take out trash'},
-         'task-6': { id: 'task-6', title: 'Task 6', content: 'Clean Car'},
-         'task-7': { id: 'task-7', title: 'Task 7', content: 'Wash Dishes'},
-         'task-8': { id: 'task-8', title: 'Task 8', content: 'Take out trash'},
-         'task-9': { id: 'task-9', title: 'Task 9', content: 'Clean Car'},
+         'task-4': { id: 'task-4', title: 'Task 4', content: 'Walk the Dog'},
+         'task-5': { id: 'task-5', title: 'Task 5', content: 'Get Groceries'},
+         'task-6': { id: 'task-6', title: 'Task 6', content: 'Mow the Lawn'},
+         'task-7': { id: 'task-7', title: 'Task 7', content: 'Do Laundry'},
+         'task-8': { id: 'task-8', title: 'Task 8', content: 'Vacuum'},
+         'task-9': { id: 'task-9', title: 'Task 9', content: 'Go to the gym'},
       },
       columnOrder: ['column-1', 'column-2', 'column-3'],
       displayAddButton: true,
    };
 
-   onDragStart = () => {
-      this.setState({ displayAddButton: false })
+   onDragStart = (result ) => {
+      const { type } = result;
+      if (type === 'column') {
+         this.setState({ displayAddButton: false });
+      }
    };
 
    onDragUpdate = update => {
@@ -58,12 +61,14 @@ export default class Dashboard extends Component {
       const { source, destination, draggableId, type } = result;
 
       if (!destination) {
+         this.setState({ displayAddButton: true });
          return;
       }
       if (
          destination.droppableId === source.droppableId &&
          destination.index === source.index
       ) {
+         this.setState({ displayAddButton: true });
          return;
       }
 
@@ -102,7 +107,6 @@ export default class Dashboard extends Component {
                ...this.state.columns,
                [newColumn.id]: newColumn
             },
-            displayAddButton: true,
          };
    
          this.setState(newState);
@@ -129,7 +133,6 @@ export default class Dashboard extends Component {
                [newStart.id]: newStart,
                [newFinish.id]: newFinish
             },
-            displayAddButton: true,
          };
    
          this.setState(newState);
@@ -164,7 +167,7 @@ export default class Dashboard extends Component {
             </div>
          </div>
       )
-   }
+   };
 	
 	render() {
 		return (
