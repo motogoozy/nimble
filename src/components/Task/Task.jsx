@@ -9,12 +9,13 @@ export default class Task extends Component {
 	
 	
 	render() {
-		const { title, content, id, index } = this.props;
+		const { title, content, id, index, colorCode } = this.props;
 		return (
 			<Draggable draggableId={id} index={index}>
 				{(provided, snapshot) => {
+					const borderColor = `rgba(${[...colorCode]})`
 					const style = {
-						border: snapshot.isDragging ? '2px solid darkOrange' : '1px solid black',
+						border: snapshot.isDragging ? `2px solid ${borderColor}` : '1px solid black',
 						...provided.draggableProps.style
 					};
 

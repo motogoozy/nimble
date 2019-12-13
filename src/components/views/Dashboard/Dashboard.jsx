@@ -7,6 +7,7 @@ import AddButton from '../../AddButton/AddButton';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
@@ -14,17 +15,20 @@ export default class Dashboard extends Component {
          'column-1': {
             id: 'column-1',
             title: 'To Dos',
-            taskIds: ['task-1', 'task-2', 'task-3']
+            taskIds: ['task-1', 'task-2', 'task-3'],
+            colorCode: [0, 160, 10, 1],
          },
          'column-2': {
             id: 'column-2',
-            title: 'To Dos',
-            taskIds: ['task-4', 'task-5', 'task-6']
+            title: 'In Progress',
+            taskIds: ['task-4', 'task-5', 'task-6'],
+            colorCode: [242, 173, 0, 1],
          },
          'column-3': {
             id: 'column-3',
-            title: 'To Dos',
-            taskIds: ['task-7', 'task-8', 'task-9']
+            title: 'Completed',
+            taskIds: ['task-7', 'task-8', 'task-9'],
+            colorCode: [0, 88, 242, 1],
          },
       },
       tasks: {
@@ -39,10 +43,11 @@ export default class Dashboard extends Component {
          'task-9': { id: 'task-9', title: 'Task 9', content: 'Clean Car'},
       },
       columnOrder: ['column-1', 'column-2', 'column-3'],
+      displayAddButton: true,
    };
 
    onDragStart = () => {
-
+      this.setState({ displayAddButton: false })
    };
 
    onDragUpdate = update => {
@@ -50,7 +55,7 @@ export default class Dashboard extends Component {
    };
 
    onDragEnd = result => {
-      const { source, destination, draggableId } = result;
+      const { source, destination, draggableId, type } = result;
 
       if (!destination) {
          return;
@@ -59,6 +64,21 @@ export default class Dashboard extends Component {
          destination.droppableId === source.droppableId &&
          destination.index === source.index
       ) {
+         return;
+      }
+
+      // If dragged item is a column
+      if (type === 'column') {
+         const newColumnOrder = Array.from(this.state.columnOrder);
+         newColumnOrder.splice(source.index, 1); // removing column out of original position
+         newColumnOrder.splice(destination.index, 0, draggableId); // putting column in new position
+
+         const newState = {
+            ...this.state,
+            columnOrder: newColumnOrder,
+            displayAddButton: true,
+         };
+         this.setState(newState);
          return;
       }
 
@@ -81,7 +101,8 @@ export default class Dashboard extends Component {
             columns: {
                ...this.state.columns,
                [newColumn.id]: newColumn
-            }
+            },
+            displayAddButton: true,
          };
    
          this.setState(newState);
@@ -107,32 +128,40 @@ export default class Dashboard extends Component {
                ...this.state.columns,
                [newStart.id]: newStart,
                [newFinish.id]: newFinish
-            }
+            },
+            displayAddButton: true,
          };
    
          this.setState(newState);
       }
-
    };
    
    displayColumns = () => {
       const { tasks, columns, columnOrder } = this.state;
-      let columnArr = columnOrder.map(columnId => {
+      let columnArr = columnOrder.map((columnId, index) => {
          const column = columns[columnId];
          const taskArr = column.taskIds.map(taskId => tasks[taskId]);
          return (
-            <Column key={column.id} column={column} tasks={taskArr} />
+            <Column
+               key={column.id}
+               column={column}
+               tasks={taskArr}
+               index={index}
+               colorCode={column.colorCode}
+            />
          );
       })
 
       return (
          <div className='column-container'>
             { columnArr }
-            <Tooltip title={'Add New List'}>
-               <div className='add-list-button-container'>
-                  <AddButton />
-               </div>
-            </Tooltip>
+            <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
+               <Tooltip title={'Add New List'}>
+                  <div className='add-list-button-container' >
+                     <AddButton />
+                  </div>
+               </Tooltip>
+            </div>
          </div>
       )
    }
@@ -143,15 +172,22 @@ export default class Dashboard extends Component {
 				<Sidebar />
             <div className='main-content-container'>
                <Header />
-               <div className='main-content'>
-                  <DragDropContext
-                     onDragStart={this.onDragStart}
-                     onDragUpdate={this.onDragUpdate}
-                     onDragEnd={this.onDragEnd}
-                  >
-                     { this.displayColumns() }
-                  </DragDropContext>
-               </div>
+               <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
+                  <Droppable droppableId='all-columns' direction='horizontal' type='column' >
+                     {(provided) => {
+                        return (
+                           <div
+                              className='main-content'
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                           >
+                              { this.displayColumns() }
+                              { provided.placeholder }
+                           </div>
+                        )
+                     }}
+                  </Droppable>
+               </DragDropContext>
             </div>
 			</div>
 		)
