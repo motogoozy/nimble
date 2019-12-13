@@ -72,7 +72,7 @@ export default class Column extends Component {
 	};
 
 	render() {
-		const { column, index, colorCode } = this.props;
+		const { column, index } = this.props;
 
 		return (
 			<Draggable draggableId={column.id} index={index}>
