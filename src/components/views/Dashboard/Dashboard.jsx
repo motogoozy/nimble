@@ -39,20 +39,15 @@ export default class Dashboard extends Component {
          'task-9': { id: 'task-9', title: 'Task 9', content: 'Clean Car'},
       },
       columnOrder: ['column-1', 'column-2', 'column-3'],
-      
    };
 
    onDragStart = () => {
-      // document.body.style.color = 'orange';
-      // document.body.style.transition = 'background-color 0.2s ease';
+
    };
 
    onDragUpdate = update => {
-      // const { destination } = update;
-      // const { tasks } = this.state;
-      // const opacity = destination ? destination.index / Object.keys(tasks).length : 0;
-      // document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity}`
-   }
+
+   };
 
    onDragEnd = result => {
       const { source, destination, draggableId } = result;
@@ -60,7 +55,6 @@ export default class Dashboard extends Component {
       if (!destination) {
          return;
       }
-
       if (
          destination.droppableId === source.droppableId &&
          destination.index === source.index
@@ -68,25 +62,57 @@ export default class Dashboard extends Component {
          return;
       }
 
-      const column = this.state.columns[source.droppableId];
-      const newTaskIds = Array.from(column.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      const start = this.state.columns[source.droppableId];
+      const finish = this.state.columns[destination.droppableId];
 
-      const newColumn = {
-         ...column,
-         taskIds: newTaskIds
-      };
+      // If task is moved within the same column
+      if (start === finish) {
+         const newTaskIds = Array.from(start.taskIds);
+         newTaskIds.splice(source.index, 1);
+         newTaskIds.splice(destination.index, 0, draggableId);
+   
+         const newColumn = {
+            ...start,
+            taskIds: newTaskIds
+         };
+   
+         const newState = {
+            ...this.state,
+            columns: {
+               ...this.state.columns,
+               [newColumn.id]: newColumn
+            }
+         };
+   
+         this.setState(newState);
+      } else {
+         // Moving task from one column to another
+         const startTaskIds = Array.from(start.taskIds);
+         startTaskIds.splice(source.index, 1);
+         const newStart = {
+            ...start,
+            taskIds: startTaskIds,
+         };
+   
+         const finishTaskIds = Array.from(finish.taskIds);
+         finishTaskIds.splice(destination.index, 0, draggableId);
+         const newFinish = {
+            ...finish,
+            taskIds: finishTaskIds
+         };
+   
+         const newState = {
+            ...this.state,
+            columns: {
+               ...this.state.columns,
+               [newStart.id]: newStart,
+               [newFinish.id]: newFinish
+            }
+         };
+   
+         this.setState(newState);
+      }
 
-      const newState = {
-         ...this.state,
-         columns: {
-            ...this.state.columns,
-            [newColumn.id]: newColumn
-         }
-      };
-
-      this.setState(newState);
    };
    
    displayColumns = () => {

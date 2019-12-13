@@ -42,15 +42,15 @@ export default class Column extends Component {
 
 						return (
 							<div
-							className='column-content'
-							ref={provided.innerRef}
-							style={style}
-							{...provided.droppableProps}
-							isDraggingOver={snapshot.isDraggingOver}
-						>
-							{ this.displayTasks() }
-							{ provided.placeholder }
-						</div>
+								className='column-content'
+								ref={provided.innerRef}
+								style={style}
+								{...provided.droppableProps}
+								isDraggingOver={snapshot.isDraggingOver}
+							>
+								{ this.displayTasks() }
+								{ provided.placeholder }
+							</div>
 						)
 					}}
 				</Droppable>
