@@ -172,7 +172,7 @@ export default class Column extends Component {
 							<Droppable droppableId={column.id} type='task'>
 								{(provided, snapshot) => {
 									const style = {
-										backgroundColor: snapshot.isDraggingOver ? dragColor : 'rgb(235, 236, 240)',
+										backgroundColor: snapshot.isDraggingOver ? dragColor : '',
 										...provided.droppableProps.style
 									};
 
