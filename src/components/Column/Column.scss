@@ -110,6 +110,22 @@
 		height: 100%;
 		width: 100%;
 		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-items: center;
+
+		.edit-modal-body-item {
+			width: 100%;
+			height: auto;
+			margin-bottom: 1rem;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			align-items: flex-start;
+		}
 		
 		.edit-modal-buttons {
 			position: absolute;

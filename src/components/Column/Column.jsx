@@ -33,6 +33,7 @@ let lightColors = [
 	[255, 241, 118, 1],
 	[220, 231, 117, 1],
 	[255, 235, 59, 1],
+	[255, 213, 79, 1],
 ];
 
 export default class Column extends Component {
@@ -53,28 +54,12 @@ export default class Column extends Component {
 		});
 	};
 
-	displayTasks = () => {
-		const { tasks } = this.props;
-		const { columnColorCode } = this.state;
-		return tasks.map((task, index) => {
-			return (
-				<Task
-					key={task.id}
-					id={task.id}
-					index={index}
-					title={task.title}
-					content={task.content}
-					colorCode={columnColorCode}
-				/>
-			)
-		});
-	};
-
 	formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
 
 	handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
+		console.log(codeArr)
 		this.setState({ newColumnColorCode: codeArr });
 	};
 
@@ -113,11 +98,28 @@ export default class Column extends Component {
 		});
 	};
 
-	displayEditModal = () => {
+	displayTasks = () => {
+		const { tasks } = this.props;
+		const { columnColorCode } = this.state;
+		return tasks.map((task, index) => {
+			return (
+				<Task
+					key={task.id}
+					id={task.id}
+					index={index}
+					title={task.title}
+					content={task.content}
+					colorCode={columnColorCode}
+				/>
+			)
+		});
+	};
+
+	editModal = () => {
 		const { column } = this.props;
 		const { newColumnColorCode } = this.state;
 		const currentColor = this.formatColor(newColumnColorCode);
-		const headerTextColor = this.checkIsLight(this.state.columnColorCode) === true ? 'black' : 'white';
+		const headerTextColor = this.checkIsLight(this.state.newColumnColorCode) === true ? 'black' : 'white';
 
 		return (
 			<div className='modal-wrapper' onClick={this.cancelChanges}>
@@ -126,17 +128,24 @@ export default class Column extends Component {
 						<h4>{column.title}</h4>
 					</div>
 					<div className='edit-modal-body'>
-						<h4>Edit Column Color:</h4>
-						<div onClick={() => this.setState({ displayColorPicker: true })} className='current-color-box' style={{ backgroundColor: currentColor }}></div>
-						{
-							this.state.displayColorPicker
-							&&
-							<ColorPicker
-								formatColor={this.formatColor}
-								handleColorChange={this.handleColorChange}
-								closeColorPicker={this.closeColorPicker}
-							/>
-						}
+						<div className='edit-modal-body-item'>
+							<h4>Title</h4>
+							<input type="text"/>
+						</div>
+						<div className='edit-modal-body-item'>
+							<h4>Column Color:</h4>
+							<div onClick={() => this.setState({ displayColorPicker: true })} className='current-color-box cursor-pointer' style={{ backgroundColor: currentColor, margin: '.5rem .5rem .5rem 0' }}></div>
+							{
+								this.state.displayColorPicker
+								&&
+								<ColorPicker
+									formatColor={this.formatColor}
+									handleColorChange={this.handleColorChange}
+									closeColorPicker={this.closeColorPicker}
+								/>
+							}
+						</div>
+
 						<div className='edit-modal-buttons'>
 							<div>
 								<Button variant="outlined" onClick={this.cancelChanges}>Cancel</Button>
@@ -182,7 +191,7 @@ export default class Column extends Component {
 							{
 								this.state.displayEditModal
 								&&
-								this.displayEditModal()
+								this.editModal()
 							}
 							<Droppable droppableId={column.id} type='task'>
 								{(provided, snapshot) => {

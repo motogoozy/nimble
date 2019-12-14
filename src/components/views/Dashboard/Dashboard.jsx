@@ -16,19 +16,19 @@ export default class Dashboard extends Component {
             id: 'column-1',
             title: 'To Dos',
             taskIds: ['task-1', 'task-2', 'task-3'],
-            colorCode: [136, 14, 79, 1],
+            colorCode: [255, 160, 0, 1],
          },
          'column-2': {
             id: 'column-2',
             title: 'In Progress',
             taskIds: ['task-4', 'task-5', 'task-6'],
-            colorCode: [76, 175, 80, 1],
+            colorCode: [194, 24, 91, 1],
          },
          'column-3': {
             id: 'column-3',
             title: 'Completed',
             taskIds: ['task-7', 'task-8', 'task-9'],
-            colorCode: [2, 136, 209, 1],
+            colorCode: [0, 151, 167, 1],
          },
       },
       tasks: {
