@@ -52,16 +52,25 @@ class Sidebar extends Component {
                      <p>MY TASKS</p>
                   </div>
                </Tooltip>
-               <Tooltip title={'All Uncompleted Tasks'} enterDelay={300}>
+               <Tooltip title={'Unassigned Tasks'} enterDelay={300}>
                   <div
-                     onClick={() => this.handleButtonClick('todo')}
-                     className={selectedButton === 'todo' ? 'sidebar-button active-button' : 'sidebar-button'}
+                     onClick={() => this.handleButtonClick('unassigned')}
+                     className={selectedButton === 'unassigned' ? 'sidebar-button active-button' : 'sidebar-button'}
                   >
-                     <i className="fas fa-tasks"></i>
-                     <p>TO DO</p>
+                     <i className="far fa-question-circle"></i>
+                     <p>UNASSIGNED</p>
                   </div>
                </Tooltip>
-               <Tooltip title={'All Tasks In Progress'} enterDelay={300}>
+               <Tooltip title={'Project Collaborators'} enterDelay={300}>
+                  <div
+                     onClick={() => this.handleButtonClick('people')}
+                     className={selectedButton === 'people' ? 'sidebar-button active-button' : 'sidebar-button'}
+                  >
+                     <i className="fas fa-users"></i>
+                     <p>PEOPLE</p>
+                  </div>
+               </Tooltip>
+               {/* <Tooltip title={'All Tasks In Progress'} enterDelay={300}>
                   <div
                      onClick={() => this.handleButtonClick('in-progress')}
                      className={selectedButton === 'in-progress' ? 'sidebar-button active-button' : 'sidebar-button'}
@@ -78,7 +87,7 @@ class Sidebar extends Component {
                      <i className="far fa-check-square"></i>
                      <p>COMPLETED</p>
                   </div>
-               </Tooltip>
+               </Tooltip> */}
                <Tooltip title={'Project Settings'} enterDelay={300}>
                   <div
                      onClick={() => this.handleButtonClick('settings')}
