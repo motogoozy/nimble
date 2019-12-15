@@ -7,6 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import TextField from '@material-ui/core/TextField';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 let lightColors = [
@@ -130,7 +131,11 @@ export default class Column extends Component {
 					<div className='edit-modal-body'>
 						<div className='edit-modal-body-item'>
 							<h4>Title</h4>
-							<input type="text"/>
+							<TextField
+								required
+								id="standard-required"
+								defaultValue={column.title}
+							/>
 						</div>
 						<div className='edit-modal-body-item'>
 							<h4>Column Color:</h4>
@@ -148,7 +153,7 @@ export default class Column extends Component {
 
 						<div className='edit-modal-buttons'>
 							<div>
-								<Button variant="outlined" onClick={this.cancelChanges}>Cancel</Button>
+								<Button variant="outlined" color='secondary' onClick={this.cancelChanges}>Cancel</Button>
 							</div>
 							<div>
 								<Button variant="outlined" color='primary' onClick={this.saveChanges}>Save</Button>
