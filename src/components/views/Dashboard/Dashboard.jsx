@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
             id: 'column-1',
             title: 'To Dos',
             taskIds: ['task-1', 'task-2', 'task-3'],
-            colorCode: [255, 160, 0, 1],
+            colorCode: [255, 183, 77, 1],
          },
          'column-2': {
             id: 'column-2',
