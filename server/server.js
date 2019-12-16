@@ -1,4 +1,5 @@
 const userController = require('./controllers/userController');
+const listController = require('./controllers/listController');
 
 require('dotenv').config();
 const express = require('express');
@@ -28,5 +29,9 @@ massive(CONNECTION_STRING).then(db => {
 })
 
 // ENDPOINTS
-// Create User
-app.post(`/user`, userController.createUser);
+// User
+app.post(`/user`, userController.createUser); // Add user
+
+// List
+app.get('/project/:project_id/lists', listController.getLists) // Get all project lists
+app.post('/project/:project_id/list', listController.createList); // Add list
