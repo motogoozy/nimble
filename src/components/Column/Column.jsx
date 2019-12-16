@@ -44,6 +44,7 @@ export default class Column extends Component {
 		newColumnColorCode: [],
 		displayEditModal: false,
 		displayColorPicker: false,
+		archived: false,
 	};
 
 	componentDidMount = () => {
@@ -52,10 +53,15 @@ export default class Column extends Component {
 			title: column.title,
 			columnColorCode: column.colorCode,
 			newColumnColorCode: column.colorCode,
+			archived: column.archived,
 		});
 	};
 
 	formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
+
+	handleInput = (key, value) => {
+      this.setState({ [key]: value });
+   };
 
 	handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
@@ -91,12 +97,25 @@ export default class Column extends Component {
 		});
 	};
 
-	saveChanges = () => {
-		this.setState({
-			columnColorCode: this.state.newColumnColorCode,
-			displayEditModal: false,
-			displayColorPicker: false,
-		});
+	saveChanges = async () => {
+		const { title, newColumnColorCode, archived } = this.state;
+		const { column } = this.props;
+		const body = {
+			title: title,
+			color_code: newColumnColorCode,
+			archived: archived,
+		};
+		try {
+			let updated = await this.props.updateList(column.databaseId, body);
+			this.setState({
+				columnColorCode: updated.color_code,
+				displayEditModal: false,
+				displayColorPicker: false,
+			});
+		}
+		catch (err) {
+			console.log(err);
+		}
 	};
 
 	displayTasks = () => {
@@ -135,6 +154,7 @@ export default class Column extends Component {
 								required
 								id="standard-required"
 								defaultValue={column.title}
+								onChange={e => this.handleInput('title', e.target.value)}
 							/>
 						</div>
 						<div className='edit-modal-body-item'>
@@ -154,7 +174,7 @@ export default class Column extends Component {
 						<div className='edit-modal-buttons'>
 							<div className='edit-modal-delete-container'>
 								<Tooltip title={'Delete List'}>
-									<IconButton aria-label="delete">
+									<IconButton aria-label="delete" onClick={() => this.props.deleteList(column.databaseId, column.id)}>
 										<DeleteIcon fontSize='small'/>
 									</IconButton>
 								</Tooltip>
