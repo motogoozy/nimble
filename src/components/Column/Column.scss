@@ -128,14 +128,32 @@
 		}
 		
 		.edit-modal-buttons {
+			width: 100%;
 			position: absolute;
 			bottom: 0;
 			right: 0;
 			display: flex;
 			flex-direction: row;
+			justify-content: space-between;
 
-			div {
-				margin: 1rem 1rem 1rem 0;
+			.edit-modal-delete-container {
+				width: 50%;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: flex-end;
+			}
+
+			.edit-save-cancel-container {
+				width: 50%;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				align-items: flex-end;
+
+				div {
+					margin: 0 12px 12px 0;
+				}
 			}
 		}
 	}
@@ -143,5 +161,4 @@
 		width: 2rem;
 		height: 2rem;
 	}
-
 }

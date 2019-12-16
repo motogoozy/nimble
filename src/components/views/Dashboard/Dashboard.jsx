@@ -5,6 +5,7 @@ import Header from '../../Header/Header';
 import Column from '../../Column/Column';
 import AddButton from '../../AddButton/AddButton';
 
+import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Droppable } from 'react-beautiful-dnd';
@@ -44,6 +45,18 @@ export default class Dashboard extends Component {
       },
       columnOrder: ['column-1', 'column-2', 'column-3'],
       displayAddButton: true,
+      projectId: 1,
+      title: 'Test List',
+   };
+
+   componentDidMount = async () => {
+      // await this.getLists();
+   };
+
+   getLists = async () => {
+      // const { projectId } = this.state;
+      // let res = await axios.get(`/project/${projectId}/lists`);
+      // console.log(res.data)
    };
 
    onDragStart = (result ) => {
@@ -138,6 +151,22 @@ export default class Dashboard extends Component {
          this.setState(newState);
       }
    };
+
+   handleInput = (key, value) => {
+      this.props.handleClick();
+      this.setState({ key: value });
+   }
+
+   addList = async () => {
+      // const { projectId, title } = this.state;
+      // const body = {
+      //    title: title,
+      //    color_code: [96, 125, 139, 1],
+      //    archived: false,
+      // };
+      // let res = await axios.post(`/project/${projectId}/list`, body);
+      // console.log(res.data);
+   }
    
    displayColumns = () => {
       const { tasks, columns, columnOrder } = this.state;
@@ -160,7 +189,7 @@ export default class Dashboard extends Component {
             { columnArr }
             <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
                <Tooltip title={'Add New List'}>
-                  <div className='add-list-button-container' >
+                  <div style={{ width: '0px' }} onClick={this.addList}>
                      <AddButton />
                   </div>
                </Tooltip>

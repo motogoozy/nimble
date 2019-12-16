@@ -152,11 +152,20 @@ export default class Column extends Component {
 						</div>
 
 						<div className='edit-modal-buttons'>
-							<div>
-								<Button variant="outlined" color='secondary' onClick={this.cancelChanges}>Cancel</Button>
+							<div className='edit-modal-delete-container'>
+								<Tooltip title={'Delete List'}>
+									<IconButton aria-label="delete">
+										<DeleteIcon fontSize='small'/>
+									</IconButton>
+								</Tooltip>
 							</div>
-							<div>
-								<Button variant="outlined" color='primary' onClick={this.saveChanges}>Save</Button>
+							<div className='edit-save-cancel-container'>
+								<div>
+									<Button variant="outlined" color='secondary' onClick={this.cancelChanges}>Cancel</Button>
+								</div>
+								<div>
+									<Button variant="outlined" color='primary' onClick={this.saveChanges}>Save</Button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -223,11 +232,6 @@ export default class Column extends Component {
 									<i className="fas fa-plus"></i>
 									<p>ADD NEW TASK</p>
 								</div>
-								<Tooltip title={'Delete List'}>
-									<IconButton aria-label="delete">
-										<DeleteIcon fontSize='small'/>
-									</IconButton>
-								</Tooltip>
 							</div>
 						</div>
 					)
