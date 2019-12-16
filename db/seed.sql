@@ -13,7 +13,7 @@ CREATE TABLE project (
 	name character varying(50) NOT NULL,
 	created_at timestamp without time zone NOT NULL,
 	archived boolean NOT NULL
-);e
+);
 
 CREATE TABLE list (
 	id SERIAL PRIMARY KEY,
@@ -33,7 +33,7 @@ CREATE TABLE task (
 CREATE TABLE project_users (
 	id SERIAL PRIMARY KEY,
 	project_id integer NOT NULL REFERENCES project(id),
-	user_id integer NOT NULL REFERENCES user(id)
+	user_id integer NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE project_lists (
@@ -45,7 +45,7 @@ CREATE TABLE project_lists (
 CREATE TABLE task_users (
 	id SERIAL PRIMARY KEY,
 	task_id integer NOT NULL REFERENCES task(id),
-	user_id integer NOT NULL REFERENCES user(id)
+	user_id integer NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE checklist_item (
