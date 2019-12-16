@@ -26,7 +26,8 @@ CREATE TABLE list (
 CREATE TABLE task (
 	id SERIAL PRIMARY KEY,
 	name character varying(50) NOT NULL,
-	status character varying(50) NOT NULL
+	status character varying(50) NOT NULL,
+	list_id integer NOT NULL REFERENCES list(id)
 );
 
 CREATE TABLE project_users (
@@ -39,12 +40,6 @@ CREATE TABLE project_lists (
 	id SERIAL PRIMARY KEY,
 	project_id integer NOT NULL REFERENCES project(id),
 	list_id integer NOT NULL REFERENCES list(id)
-);
-
-CREATE TABLE list_tasks (
-	id SERIAL PRIMARY KEY,
-	list_id integer NOT NULL REFERENCES list(id),
-	task_id integer NOT NULL REFERENCES task(id)
 );
 
 CREATE TABLE task_users (
