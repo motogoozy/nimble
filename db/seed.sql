@@ -18,7 +18,7 @@ CREATE TABLE project (
 CREATE TABLE list (
 	id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
-	color_code character varying(10) NOT NULL,
+	color_code integer[] NOT NULL,
 	archived boolean NOT NULL,
 	project_id integer NOT NULL
 );
