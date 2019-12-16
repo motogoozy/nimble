@@ -10,7 +10,7 @@ CREATE TABLE users (
 
 CREATE TABLE project (
 	id SERIAL PRIMARY KEY,
-	name character varying(50) NOT NULL,
+	title character varying(50) NOT NULL,
 	created_at timestamp without time zone NOT NULL,
 	archived boolean NOT NULL
 );
@@ -25,7 +25,7 @@ CREATE TABLE list (
 
 CREATE TABLE task (
 	id SERIAL PRIMARY KEY,
-	name character varying(50) NOT NULL,
+	title character varying(50) NOT NULL,
 	status character varying(50) NOT NULL,
 	list_id integer NOT NULL REFERENCES list(id)
 );
@@ -50,7 +50,7 @@ CREATE TABLE task_users (
 
 CREATE TABLE checklist_item (
 	id SERIAL PRIMARY KEY,
-	name character varying(50) NOT NULL,
+	title character varying(50) NOT NULL,
 	completed boolean NOT NULL,
 	list_id integer NOT NULL REFERENCES list(id)
 );
