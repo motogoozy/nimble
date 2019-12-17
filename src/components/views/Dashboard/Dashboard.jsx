@@ -58,14 +58,16 @@ export default class Dashboard extends Component {
          await this.getProjectDetails();
       }
       catch(err) {
-
+         console.log(err);
       }
    };
 
    getProjectDetails = async () => {
       const { projectId } = this.state;
       let res = await axios.get(`/project/${projectId}`);
-      let columnOrder = res.data[0].column_order.map(item => item.toString());
+      const project = res.data[0];
+      document.title = `Nimble - ${project.title}`
+      let columnOrder = project.column_order.map(item => item.toString());
       this.setState({
          columnOrder: columnOrder
       });
