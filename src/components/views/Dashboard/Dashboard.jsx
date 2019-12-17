@@ -50,6 +50,7 @@ export default class Dashboard extends Component {
       },
       columnOrder: [], // must be strings
       projectId: null,
+      project: {},
       title: '',
       displayAddButton: false,
       displayAddListModal: false,
@@ -66,7 +67,8 @@ export default class Dashboard extends Component {
       document.title = `Nimble - ${project.title}`
       let columnOrder = project.column_order.map(item => item.toString());
       this.setState({
-         columnOrder: columnOrder
+         columnOrder: columnOrder,
+         project: project,
       });
    };
 
@@ -143,6 +145,7 @@ export default class Dashboard extends Component {
             columns: newColumns,
             columnOrder: newOrder,
             displayAddListModal: false,
+            title: '',
          }, () => {
             this.updateProject()
          });
@@ -189,9 +192,9 @@ export default class Dashboard extends Component {
    };
 
    updateProject = async () => {
-      const { projectId, title, columnOrder } = this.state;
+      const { projectId, project, columnOrder } = this.state;
       const body = {
-         title: title,
+         title: project.title,
          column_order: columnOrder
       };
       try {

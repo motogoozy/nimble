@@ -110,6 +110,7 @@ export default class Column extends Component {
 		try {
 			let updated = await this.props.updateList(column.databaseId, body);
 			this.setState({
+				title: updated.title,
 				columnColorCode: updated.color_code,
 				displayEditModal: false,
 				displayColorPicker: false,
@@ -156,7 +157,7 @@ export default class Column extends Component {
 								required
 								id="standard-required"
 								defaultValue={column.title}
-								onChange={e => this.handleInput('title', e.target.value)}
+								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
 						</div>
 						<div className='edit-modal-body-item'>
