@@ -374,7 +374,7 @@ export default class Dashboard extends Component {
                                  <div className='no-project-prompt-container'>
                                     <div className='bounce'>
                                        <i className="fas fa-chevron-up"></i> 
-                                       <p>Select Project to Begin</p>
+                                       <p>Select or Add a Project to Begin</p>
                                     </div>
                                  </div>
                               }
