@@ -40,6 +40,7 @@ let lightColors = [
 export default class Column extends Component {
 	state = {
 		title: '',
+		newTitle: '',
 		columnColorCode: [],
 		newColumnColorCode: [],
 		displayEditModal: false,
@@ -51,6 +52,7 @@ export default class Column extends Component {
 		const { column } = this.props;
 		this.setState({ 
 			title: column.title,
+			newTitle: column.title,
 			columnColorCode: column.colorCode,
 			newColumnColorCode: column.colorCode,
 			archived: column.archived,
@@ -98,10 +100,10 @@ export default class Column extends Component {
 	};
 
 	saveChanges = async () => {
-		const { title, newColumnColorCode, archived } = this.state;
+		const { newTitle, newColumnColorCode, archived } = this.state;
 		const { column } = this.props;
 		const body = {
-			title: title,
+			title: newTitle,
 			color_code: newColumnColorCode,
 			archived: archived,
 		};
@@ -139,7 +141,7 @@ export default class Column extends Component {
 		const { column } = this.props;
 		const { newColumnColorCode } = this.state;
 		const currentColor = this.formatColor(newColumnColorCode);
-		const headerTextColor = this.checkIsLight(this.state.newColumnColorCode) === true ? 'black' : 'white';
+		const headerTextColor = this.checkIsLight(newColumnColorCode) === true ? 'black' : 'white';
 
 		return (
 			<div className='modal-wrapper' onClick={this.cancelChanges}>
@@ -197,13 +199,14 @@ export default class Column extends Component {
 
 	render() {
 		const { column, index } = this.props;
+		const { title, columnColorCode } = this.state;
 
 		return (
 			<Draggable draggableId={column.id} index={index}>
 				{(provided, snapshot) => {
-					const headerBackgroundColor = this.formatColor(this.state.columnColorCode);
-					const headerTextColor = this.checkIsLight(this.state.columnColorCode) === true ? 'black' : 'white';
-					const dragColor = `rgba(${this.state.columnColorCode[0]}, ${this.state.columnColorCode[1]}, ${this.state.columnColorCode[2]}, .25)`;
+					const headerBackgroundColor = this.formatColor(columnColorCode);
+					const headerTextColor = this.checkIsLight(columnColorCode) === true ? 'black' : 'white';
+					const dragColor = `rgba(${columnColorCode[0]}, ${columnColorCode[1]}, ${columnColorCode[2]}, .25)`;
 					const columnStyle = {
 						boxShadow: snapshot.isDragging ? '0px 0px 10px 1px rgba(107,107,107,1)' : '',
 						...provided.draggableProps.style
@@ -217,7 +220,7 @@ export default class Column extends Component {
 							style={columnStyle}
 							>
 							<div className='column-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
-								<p>{this.state.title}</p>
+								<p>{title}</p>
 								<Tooltip title='Edit List'>
 									<i style={{ padding: '.25rem .5rem' }} onClick={() => this.setState({ displayEditModal: true })} className="fas fa-ellipsis-v cursor-pointer"></i>
 								</Tooltip>
