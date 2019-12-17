@@ -6,26 +6,45 @@ import SearchBar from '../SearchBar/SearchBar';
 
 import { Link, withRouter } from 'react-router-dom';
 import Select from 'react-select';
+import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import axios from 'axios';
 
 
 class Header extends Component {
    state = {
-      currentPage: '',
       anchorEl: null,
+      currentPage: '',
       search: '',
+      newProjectName: '',
+      displayAddProjectModal: false,
+      loggedInUser: 1,
+      projects: [],
+      selectedProject: '',
    };
 
    componentDidMount = () => {
       this.setState({ currentPage: window.location.hash });
-   }
+      this.getUserProjects();
+   };
 
    componentDidUpdate = () => {
       if (this.state.currentPage !== window.location.hash) {
          this.setState({ currentPage: window.location.hash });
       }
+   };
+
+   getUserProjects = async () => {
+      const { loggedInUser } = this.state;
+      let res = await axios.get(`/projects/${loggedInUser}`);
+      let projectsArr = res.data.map(project => {
+         project.label = project.title;
+         project.value = project.id;
+         return project;
+      });
+      this.setState({ projects: projectsArr });
    };
 
    openMenu = (e) => {
@@ -36,8 +55,79 @@ class Header extends Component {
       this.setState({ anchorEl: null });
    };
 
+   handleInput = (key, value) => {
+      this.setState({ [key]: value });
+   };
+
+   handleSelection = (project) => {
+      this.props.handleProjectSelection(project.id);
+      this.setState({
+         selectedProject: project
+      });
+   }
+
+   addProject = async () => {
+      const { loggedInUser, newProjectName } = this.state;
+      const body = {
+         title: newProjectName,
+         created_by: loggedInUser,
+      };
+      try {
+         let res = await axios.post('/project', body);
+         await this.getUserProjects();
+         this.props.handleProjectSelection(res.data.id);
+         res.data.value = res.data.id;
+         res.data.label = res.data.title;
+         this.setState({
+            selectedProject: res.data,
+            displayAddProjectModal: false,
+         });
+      }
+      catch (err) {
+         console.log(err);
+      }
+   };
+
+   cancelAddProject = () => {
+      this.setState({
+         newProjectName: '',
+         displayAddProjectModal: false,
+      });
+   };
+
+   addProjectModal = () => {
+      return (
+         <div className='modal-wrapper'>
+            <div className='add-project-modal' style={{ padding: '1rem' }}>
+               <h3>New Project:</h3>
+               <TextField
+                  id="standard-search"
+                  label="Project Name"
+                  onChange={e => this.handleInput('newProjectName', e.target.value)}
+                  autoFocus
+               />
+               <div>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddProject}>Cancel</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addProject}>Save</Button>
+               </div>
+            </div>
+         </div>
+      )
+   };
+
+   projectOptions = () => {
+      const { projects } = this.state;
+      let projectsArr = projects.map(project => {
+         project.label = project.title;
+         project.value = project.id;
+         return project;
+      });
+      return projectsArr;
+   }
+
    render() {
-      const { currentPage } = this.state;
+      const { currentPage, projects } = this.state;
+
       return (
          <div className='header'>
             <div className='header-left-container'>
@@ -48,10 +138,14 @@ class Header extends Component {
                         <div className='header-select-container'>
                            <Select
                               placeholder='Select Project'
+                              options={projects}
+                              value={this.state.selectedProject}
+                              styles={{ backgroundColor: 'green' }}
+                              onChange={project => this.handleSelection(project)}
                            />
                         </div>
-                        <div>
-                           <SmallAddButton title='New Project' />
+                        <div onClick={() => this.setState({ displayAddProjectModal: true })}>
+                           <SmallAddButton title='New Project'/>
                         </div>
                   </>
                }
@@ -107,6 +201,11 @@ class Header extends Component {
                   </Menu>
                </div>
             </div>
+            {
+               this.state.displayAddProjectModal
+               &&
+               this.addProjectModal()
+            }
          </div>
       )
    }

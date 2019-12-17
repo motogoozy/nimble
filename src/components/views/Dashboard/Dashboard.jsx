@@ -7,6 +7,8 @@ import AddButton from '../../AddButton/AddButton';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Droppable } from 'react-beautiful-dnd';
 
@@ -47,19 +49,14 @@ export default class Dashboard extends Component {
          // 'task-9': { id: 'task-9', databaseId: 9, title: 'Task 9', content: 'Go to the gym'},
       },
       columnOrder: [], // must be strings
-      projectId: 1,
-      title: 'Test List',
-      displayAddButton: true,
+      projectId: null,
+      title: '',
+      displayAddButton: false,
+      displayAddListModal: false,
    };
 
    componentDidMount = async () => {
-      try {
-         await this.getLists();
-         await this.getProjectDetails();
-      }
-      catch(err) {
-         console.log(err);
-      }
+
    };
 
    getProjectDetails = async () => {
@@ -90,11 +87,30 @@ export default class Dashboard extends Component {
       });
       this.setState({
          columns: columns,
+         displayAddButton: true,
       });
    };
 
    handleInput = (key, value) => {
       this.setState({ [key]: value });
+   };
+
+   handleProjectSelection = async (id) => {
+      this.setState({
+         projectId: id,
+         columns: {},
+         tasks: {},
+         columnOrder: [],
+         displayAddButton: false,
+      }, async () => {
+         try {
+            await this.getLists();
+            await this.getProjectDetails();
+         }
+         catch(err) {
+            console.log(err);
+         }
+      })
    };
 
    addList = async () => {
@@ -125,13 +141,21 @@ export default class Dashboard extends Component {
          ];
          this.setState({
             columns: newColumns,
-            columnOrder: newOrder
+            columnOrder: newOrder,
+            displayAddListModal: false,
          }, () => {
             this.updateProject()
          });
       } catch(err) {
          console.log(err);
       }
+   };
+
+   cancelAddList = () => {
+      this.setState({
+         title: '',
+         displayAddListModal: false
+      });
    };
 
    updateList = async (id, body) => {
@@ -170,7 +194,15 @@ export default class Dashboard extends Component {
          title: title,
          column_order: columnOrder
       };
-      await axios.put(`/project/${projectId}`, body);
+      try {
+         await axios.put(`/project/${projectId}`, body);
+         this.setState({
+            title: ''
+         });
+      }
+      catch (err) {
+         console.log(err);
+      }
    };
 
    onDragStart = (result ) => {
@@ -285,17 +317,38 @@ export default class Dashboard extends Component {
                deleteList={this.deleteList}
             />
          );
-      })
-
+      });
       return columnArr;
    };
+
+   addListModal = () => {
+      return (
+         <div className='modal-wrapper'>
+            <div className='add-list-modal' style={{ padding: '1rem' }}>
+               <h3>New List:</h3>
+               <TextField
+                  id="standard-search"
+                  label="List Name"
+                  onChange={e => this.handleInput('title', e.target.value)}
+                  autoFocus
+               />
+               <div>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddList}>Cancel</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addList}>Save</Button>
+               </div>
+            </div>
+         </div>
+      )
+   }
 	
 	render() {
 		return (
 			<div className='dashboard'>
 				<Sidebar />
             <div className='main-content-container'>
-               <Header />
+               <Header
+                  handleProjectSelection={this.handleProjectSelection}
+               />
                <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
                   <Droppable droppableId='all-columns' direction='horizontal' type='column' >
                      {(provided) => {
@@ -307,16 +360,31 @@ export default class Dashboard extends Component {
                               </div>
                               <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
                                  <Tooltip title={'Add New List'}>
-                                    <div style={{ width: '0px' }} onClick={this.addList}>
+                                    <div style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true })}>
                                        <AddButton />
                                     </div>
                                  </Tooltip>
                               </div>
+                              {
+                                 !this.state.projectId
+                                 &&
+                                 <div className='no-project-prompt-container'>
+                                    <div className='bounce'>
+                                       <i className="fas fa-chevron-up"></i> 
+                                       <p>Select Project to Begin</p>
+                                    </div>
+                                 </div>
+                              }
                            </div>
                         )
                      }}
                   </Droppable>
                </DragDropContext>
+               {
+                  this.state.displayAddListModal
+                  &&
+                  this.addListModal()
+               }
             </div>
 			</div>
 		)

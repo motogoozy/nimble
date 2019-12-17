@@ -58,3 +58,15 @@
       color: $accent-purple;
    }
 }
+
+.add-project-modal {
+   width: auto;
+   height: 12rem;
+   background-color: white;
+   color: black;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   align-items: center;
+   border-radius: 5px;
+}

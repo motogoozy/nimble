@@ -31,8 +31,10 @@ massive(CONNECTION_STRING).then(db => {
 
 // ENDPOINTS
 // Project
-app.get('/project/:id', projectController.getProject); // Get project
-app.put('/project/:id', projectController.updateProject)
+app.get('/projects/:user_id', projectController.getProjectsByUserId) // Get all user's projects
+app.get('/project/:id', projectController.getProjectById); // Get project by Id
+app.post('/project', projectController.addProject);
+app.put('/project/:id', projectController.updateProject) // Update Project
 
 // User
 app.post(`/user`, userController.createUser); // Add user
