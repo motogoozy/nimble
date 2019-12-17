@@ -287,18 +287,7 @@ export default class Dashboard extends Component {
          );
       })
 
-      return (
-         <div className='column-container'>
-            { columnArr }
-            <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
-               <Tooltip title={'Add New List'}>
-                  <div style={{ width: '0px' }} onClick={this.addList}>
-                     <AddButton />
-                  </div>
-               </Tooltip>
-            </div>
-         </div>
-      )
+      return columnArr;
    };
 	
 	render() {
@@ -311,13 +300,18 @@ export default class Dashboard extends Component {
                   <Droppable droppableId='all-columns' direction='horizontal' type='column' >
                      {(provided) => {
                         return (
-                           <div
-                              className='main-content'
-                              {...provided.droppableProps}
-                              ref={provided.innerRef}
-                           >
-                              { this.displayColumns() }
-                              { provided.placeholder }
+                           <div className='main-content' {...provided.droppableProps} ref={provided.innerRef} >
+                              <div className='column-container'>
+                                 { this.displayColumns() }
+                                 { provided.placeholder }
+                              </div>
+                              <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
+                              <Tooltip title={'Add New List'}>
+                                 <div style={{ width: '0px' }} onClick={this.addList}>
+                                    <AddButton />
+                                 </div>
+                              </Tooltip>
+                           </div>
                            </div>
                         )
                      }}
