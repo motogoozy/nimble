@@ -11,7 +11,9 @@ CREATE TABLE users (
 CREATE TABLE project (
 	id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
+	column_order text[] NOT NULL,
 	created_at timestamp without time zone NOT NULL,
+	created_by integer NOT NULL REFERENCES users(id),
 	archived boolean NOT NULL
 );
 
@@ -27,7 +29,9 @@ CREATE TABLE task (
 	id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
 	status character varying(50) NOT NULL,
-	list_id integer NOT NULL REFERENCES list(id)
+	list_id integer NOT NULL REFERENCES list(id),
+	created_at timestamp without time zone,
+	created_by integer NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE project_users (
