@@ -19,7 +19,7 @@
    flex-direction: column;
    justify-content: flex-start;
    align-items: center;
-
+   
    .main-content {
       width: 100%;
       height: 100%;
@@ -27,14 +27,14 @@
       flex-direction: row;
       justify-content: flex-start;
       align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
    }
 }
 
 .column-container {
    width: auto;
    height: calc(100vh - #{$header-height});
-   overflow-y: hidden;
-   overflow-x: auto;
    display: flex;
    flex-direction: row;
    justify-content: flex-start;
