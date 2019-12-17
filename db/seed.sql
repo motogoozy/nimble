@@ -30,6 +30,7 @@ CREATE TABLE task (
 	title character varying(50) NOT NULL,
 	status character varying(50) NOT NULL,
 	list_id integer NOT NULL REFERENCES list(id),
+	project_id integer NOT NULL REFERENCES project(id),
 	created_at timestamp without time zone,
 	created_by integer NOT NULL REFERENCES users(id)
 );
