@@ -40,10 +40,11 @@ class Header extends Component {
       const { loggedInUser } = this.state;
       let res = await axios.get(`/projects/${loggedInUser}`);
       let projectsArr = res.data.map(project => {
-         project.label = project.title;
          project.value = project.id;
+         project.label = project.title;
          return project;
       });
+      projectsArr.sort((a, b) => (a.label > b.label) ? 1 : -1); // sorting alphabetically descending
       this.setState({ projects: projectsArr });
    };
 
