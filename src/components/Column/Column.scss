@@ -12,7 +12,7 @@
 	justify-content: space-between;
 	flex-wrap: nowrap;
 	overflow: hidden;
-	border-radius: .25rem;
+	border-radius: 5px;
 
 	.column-header {
 		width: 100%;
@@ -89,7 +89,7 @@
 	width: 35rem;
 	height: 42rem;
 	background-color: white;
-	border-radius: .25rem;
+	border-radius: 6px 6px 5px 5px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -104,6 +104,7 @@
 		justify-content: flex-start;
 		align-items: center;
 		padding: 1rem;
+		border-radius: 5px 5px 0px 0px;
 	}
 	
 	.edit-modal-body {

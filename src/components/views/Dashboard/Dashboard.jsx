@@ -4,6 +4,7 @@ import Sidebar from '../../Sidebar/Sidebar';
 import Header from '../../Header/Header';
 import Column from '../../Column/Column';
 import AddButton from '../../AddButton/AddButton';
+import ColorPicker from '../../ColorPicker/ColorPicker';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -20,6 +21,7 @@ export default class Dashboard extends Component {
       projectId: null,
       project: {},
       title: '',
+      newColorCode: [96, 125, 139, 1],
       displayAddButton: false,
       displayAddListModal: false,
    };
@@ -64,6 +66,19 @@ export default class Dashboard extends Component {
    handleInput = (key, value) => {
       this.setState({ [key]: value });
    };
+
+   handleColorChange = (event) => {
+		const { r, g, b, a } = event.rgb;
+		let codeArr = [r, g, b, a];
+		console.log(codeArr)
+		this.setState({ newColorCode: codeArr });
+   };
+   
+   closeColorPicker = () => {
+		this.setState({ 
+			displayColorPicker: false,
+		});
+	};
 
    getTasks = async () => {
       const { projectId } = this.state;
@@ -119,10 +134,10 @@ export default class Dashboard extends Component {
    };
 
    addList = async () => {
-      const { projectId, title, columns, columnOrder } = this.state;
+      const { projectId, newColorCode, title, columns, columnOrder } = this.state;
       const body = {
          title: title,
-         color_code: [96, 125, 139, 1],
+         color_code: newColorCode,
          archived: false,
       };
       try {
@@ -160,7 +175,9 @@ export default class Dashboard extends Component {
    cancelAddList = () => {
       this.setState({
          title: '',
-         displayAddListModal: false
+         newColorCode: [96, 125, 139, 1],
+         displayAddListModal: false,
+         displayColorPicker: false,
       });
    };
 
@@ -327,18 +344,47 @@ export default class Dashboard extends Component {
       return columnArr;
    };
 
+   formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
+
    addListModal = () => {
+      const { newColorCode } = this.state;
+      let defaultColor = this.formatColor(newColorCode);
+      
       return (
          <div className='modal-wrapper' onClick={this.cancelAddList}>
             <div className='add-list-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}
             >
                <h3>New List:</h3>
-               <TextField
-                  id="standard-search"
-                  label="List Name"
-                  onChange={e => this.handleInput('title', e.target.value)}
-                  autoFocus
-               />
+               <div className='add-list-modal-body'>
+                  <div className='add-modal-body-item'>
+                     <h4>Title</h4>
+                     <TextField
+                     required
+                     id="standard-required"
+                     onChange={e => this.handleInput('title', e.target.value)}
+                     autoFocus
+                     />
+                  </div>
+                  <div>
+                     <div className='add-modal-body-item'>
+                        <h4>List Color:</h4>
+                        <div onClick={()=> this.setState({ displayColorPicker: !this.state.displayColorPicker })} className='current-color-box cursor-pointer' style={{ backgroundColor: defaultColor, margin: '.5rem .5rem .5rem 0' }}></div>
+                        <div className='color-picker-container'>
+                           {
+                              this.state.displayColorPicker
+                              &&
+                              <div className='color-picker-container'>   
+                                 <ColorPicker
+                                    formatColor={this.formatColor}
+                                    handleColorChange={this.handleColorChange}
+                                    closeColorPicker={this.closeColorPicker}
+                                 />
+                              </div>
+                           }
+                        </div>
+                     </div>
+                  </div>
+               </div>
                <div>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddList}>Cancel</Button>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addList}>Save</Button>
@@ -367,7 +413,7 @@ export default class Dashboard extends Component {
                               </div>
                               <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
                                  <Tooltip title={'Add New List'}>
-                                    <div style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true })}>
+                                    <div style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true, displayColorPicker: true })}>
                                        <AddButton />
                                     </div>
                                  </Tooltip>

@@ -48,6 +48,12 @@ export default class Column extends Component {
 		this.setState({ newColumnColorCode: codeArr });
 	};
 
+	closeColorPicker = () => {
+		this.setState({ 
+			displayColorPicker: false,
+		});
+	};
+	
 	checkIsLight = (currentColor) => {
 		let isLight = false;
 		lightColors.forEach(colorArr => {
@@ -56,12 +62,6 @@ export default class Column extends Component {
 			}
 		});
 		return isLight;
-	};
-	
-	closeColorPicker = () => {
-		this.setState({ 
-			displayColorPicker: false,
-		});
 	};
 
 	cancelChanges = () => {
@@ -139,15 +139,15 @@ export default class Column extends Component {
 							/>
 						</div>
 						<div className='edit-modal-body-item'>
-							<h4>Column Color:</h4>
-							<div onClick={() => this.setState({ displayColorPicker: true })} className='current-color-box cursor-pointer' style={{ backgroundColor: currentColor, margin: '.5rem .5rem .5rem 0' }}></div>
+							<h4>List Color:</h4>
+							<div onClick={() => this.setState({ displayColorPicker: !this.state.displayColorPicker })} className='current-color-box cursor-pointer' style={{ backgroundColor: currentColor, margin: '.5rem .5rem .5rem 0' }}></div>
 							{
 								this.state.displayColorPicker
 								&&
 								<div className='color-picker-container'>   
 									<ColorPicker
 										formatColor={this.formatColor}
-										handleColorChange={this.handleColorChange}
+										handleColorChange={e => this.handleColorChange(e)}
 										closeColorPicker={this.closeColorPicker}
 									/>
 								</div>
