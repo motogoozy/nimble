@@ -14,40 +14,8 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      columns: {
-         // 'column-1': {
-         //    id: 'column-1',
-         //    databaseId: 1,
-         //    title: 'To Dos',
-         //    taskIds: ['task-1', 'task-2', 'task-3'],
-         //    colorCode: [255, 183, 77, 1],
-         // },
-         // 'column-2': {
-         //    id: 'column-2',
-         //    databaseId: 2,
-         //    title: 'In Progress',
-         //    taskIds: ['task-4', 'task-5', 'task-6'],
-         //    colorCode: [194, 24, 91, 1],
-         // },
-         // 'column-3': {
-         //    id: 'column-3',
-         //    databaseId: 3,
-         //    title: 'Completed',
-         //    taskIds: ['task-7', 'task-8', 'task-9'],
-         //    colorCode: [0, 151, 167, 1],
-         // },
-      },
-      tasks: {
-         // 'task-1': { id: 'task-1', databaseId: 1, title: 'Task 1', content: 'Wash Dishes'},
-         // 'task-2': { id: 'task-2', databaseId: 2, title: 'Task 2', content: 'Take out trash'},
-         // 'task-3': { id: 'task-3', databaseId: 3, title: 'Task 3', content: 'Clean Car'},
-         // 'task-4': { id: 'task-4', databaseId: 4, title: 'Task 4', content: 'Walk the Dog'},
-         // 'task-5': { id: 'task-5', databaseId: 5, title: 'Task 5', content: 'Get Groceries'},
-         // 'task-6': { id: 'task-6', databaseId: 6, title: 'Task 6', content: 'Mow the Lawn'},
-         // 'task-7': { id: 'task-7', databaseId: 7, title: 'Task 7', content: 'Do Laundry'},
-         // 'task-8': { id: 'task-8', databaseId: 8, title: 'Task 8', content: 'Vacuum'},
-         // 'task-9': { id: 'task-9', databaseId: 9, title: 'Task 9', content: 'Go to the gym'},
-      },
+      columns: {},
+      tasks: {},
       columnOrder: [], // must be strings
       projectId: null,
       project: {},
@@ -79,8 +47,8 @@ export default class Dashboard extends Component {
       res.data.forEach(column => {
          let newColumn = {
             id: column.id.toString(),
-            title: column.title,
             databaseId: column.id,
+            title: column.title,
             colorCode: column.color_code,
             taskIds: [],
             archived: column.archived,
@@ -97,6 +65,39 @@ export default class Dashboard extends Component {
       this.setState({ [key]: value });
    };
 
+   getTasks = async () => {
+      const { projectId } = this.state;
+      let res = await axios.get(`/project/${projectId}/tasks`)
+      let tasks = {};
+      res.data.forEach(task => {
+         let newTask = {
+            id: task.id.toString(),
+            databaseId: task.id,
+            title: task.title,
+            content: '',
+            list_id: task.list_id
+         };
+         tasks[newTask.id] = newTask;
+      });
+      this.setState({
+         tasks: tasks,
+      });
+   };
+
+   assignTasksToColumns = () => {
+      const { columns, tasks } = this.state;
+      let updatedColumns = columns;
+      for (let id in tasks) {
+         let task = tasks[id];
+         let column = columns[task.list_id];
+         if (column.taskIds.indexOf(task.id) === -1) {
+            column.taskIds.push(task.id);
+         }
+         updatedColumns[column.id] = column;
+      };
+      this.setState({ columns: updatedColumns });
+   };
+
    handleProjectSelection = async (id) => {
       this.setState({
          projectId: id,
@@ -108,6 +109,8 @@ export default class Dashboard extends Component {
          try {
             await this.getLists();
             await this.getProjectDetails();
+            await this.getTasks();
+            await this.assignTasksToColumns();
          }
          catch(err) {
             console.log(err);
@@ -326,8 +329,9 @@ export default class Dashboard extends Component {
 
    addListModal = () => {
       return (
-         <div className='modal-wrapper'>
-            <div className='add-list-modal' style={{ padding: '1rem' }}>
+         <div className='modal-wrapper' onClick={this.cancelAddList}>
+            <div className='add-list-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}
+            >
                <h3>New List:</h3>
                <TextField
                   id="standard-search"

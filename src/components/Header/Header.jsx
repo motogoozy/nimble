@@ -25,13 +25,26 @@ class Header extends Component {
       selectedProject: '',
    };
 
-   componentDidMount = () => {
+   componentDidMount = async () => {
+      await this.getUserProjects();
+      if (this.props.match.params.project_id) {
+         const project = this.state.projects.filter(project => project.id === parseInt(this.props.match.params.project_id))[0];
+         if (project) {
+            this.handleSelection(project)
+         }
+      }
       this.setState({ currentPage: window.location.hash });
-      this.getUserProjects();
    };
 
-   componentDidUpdate = () => {
+   componentDidUpdate = (prevProps) => {
       if (this.state.currentPage !== window.location.hash) {
+         this.setState({ currentPage: window.location.hash });
+      };
+      if (this.props.match.params.project_id !== prevProps.match.params.project_id) {
+         const project = this.state.projects.filter(project => project.id === parseInt(this.props.match.params.project_id))[0];
+         if (project) {
+            this.handleSelection(project)
+         }
          this.setState({ currentPage: window.location.hash });
       }
    };
@@ -61,6 +74,7 @@ class Header extends Component {
    };
 
    handleSelection = (project) => {
+      this.props.history.push(`/dashboard/project/${project.id}`)
       this.props.handleProjectSelection(project.id);
       this.setState({
          selectedProject: project
@@ -98,8 +112,8 @@ class Header extends Component {
 
    addProjectModal = () => {
       return (
-         <div className='modal-wrapper'>
-            <div className='add-project-modal' style={{ padding: '1rem' }}>
+         <div className='modal-wrapper' onClick={this.cancelAddProject}>
+            <div className='add-project-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
                <h3>New Project:</h3>
                <TextField
                   id="standard-search"
@@ -115,16 +129,6 @@ class Header extends Component {
          </div>
       )
    };
-
-   projectOptions = () => {
-      const { projects } = this.state;
-      let projectsArr = projects.map(project => {
-         project.label = project.title;
-         project.value = project.id;
-         return project;
-      });
-      return projectsArr;
-   }
 
    render() {
       const { currentPage, projects } = this.state;

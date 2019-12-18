@@ -89,11 +89,11 @@ export default class Column extends Component {
 	};
 
 	cancelChanges = () => {
-		const { column } = this.props;
+		const { columnColorCode, title } = this.state;
 		this.setState({ 
-			title: column.title,
-			columnColorCode: column.colorCode,
-			newColumnColorCode: column.colorCode,
+			title: title,
+			columnColorCode: columnColorCode,
+			newColumnColorCode: columnColorCode,
 			displayEditModal: false,
 			displayColorPicker: false,
 		});
@@ -168,11 +168,13 @@ export default class Column extends Component {
 							{
 								this.state.displayColorPicker
 								&&
-								<ColorPicker
-									formatColor={this.formatColor}
-									handleColorChange={this.handleColorChange}
-									closeColorPicker={this.closeColorPicker}
-								/>
+								<div className='color-picker-container'>   
+									<ColorPicker
+										formatColor={this.formatColor}
+										handleColorChange={this.handleColorChange}
+										closeColorPicker={this.closeColorPicker}
+									/>
+								</div>
 							}
 						</div>
 
@@ -180,7 +182,7 @@ export default class Column extends Component {
 							<div className='edit-modal-delete-container'>
 								<Tooltip title={'Delete List'}>
 									<IconButton aria-label="delete" onClick={() => this.props.deleteList(column.databaseId, column.id)}>
-										<DeleteIcon fontSize='small'/>
+										<DeleteIcon />
 									</IconButton>
 								</Tooltip>
 							</div>
