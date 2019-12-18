@@ -111,7 +111,9 @@ export default class Column extends Component {
 			let updated = await this.props.updateList(column.databaseId, body);
 			this.setState({
 				title: updated.title,
+				newTitle: updated.title,
 				columnColorCode: updated.color_code,
+				newColumnColorCode: updated.color_code,
 				displayEditModal: false,
 				displayColorPicker: false,
 			});
@@ -140,7 +142,7 @@ export default class Column extends Component {
 
 	editModal = () => {
 		const { column } = this.props;
-		const { newColumnColorCode } = this.state;
+		const { title, newColumnColorCode } = this.state;
 		const currentColor = this.formatColor(newColumnColorCode);
 		const headerTextColor = this.checkIsLight(newColumnColorCode) === true ? 'black' : 'white';
 
@@ -148,7 +150,7 @@ export default class Column extends Component {
 			<div className='modal-wrapper' onClick={this.cancelChanges}>
 				<div className='edit-column-modal' onClick={e => e.stopPropagation()}>
 					<div className='edit-modal-header' style={{ backgroundColor: currentColor, color: headerTextColor }}>
-						<h4>{column.title}</h4>
+						<h4>{title}</h4>
 					</div>
 					<div className='edit-modal-body'>
 						<div className='edit-modal-body-item'>
@@ -156,7 +158,7 @@ export default class Column extends Component {
 							<TextField
 								required
 								id="standard-required"
-								defaultValue={column.title}
+								defaultValue={title}
 								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
 						</div>
