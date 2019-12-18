@@ -140,29 +140,29 @@ class Header extends Component {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
                   <>
-                        <div className='header-select-container'>
-                           <Select
-                              placeholder='Select Project'
-                              options={projects}
-                              value={this.state.selectedProject}
-                              styles={{ backgroundColor: 'green' }}
-                              onChange={project => this.handleSelection(project)}
-                           />
-                        </div>
-                        <div onClick={() => this.setState({ displayAddProjectModal: true })}>
-                           <SmallAddButton title='New Project'/>
-                        </div>
+                     <div className='header-select-container'>
+                        <Select
+                           placeholder='Select Project'
+                           options={projects}
+                           value={this.state.selectedProject}
+                           styles={{ backgroundColor: 'green' }}
+                           onChange={project => this.handleSelection(project)}
+                        />
+                     </div>
+                     <div onClick={() => this.setState({ displayAddProjectModal: true })}>
+                        <SmallAddButton title='New Project'/>
+                     </div>
                   </>
                }
                {
                   currentPage === '#/profile' || currentPage === '#/settings'
                   ?
-                        <Link to='/dashboard' className='header-link'>
-                           <div className='header-back-container'>
-                              <i class="fas fa-undo" style={{ marginRight: '.5rem'}}></i>
-                              <span>Back To Dashboard</span>
-                           </div>
-                        </Link>
+                  <Link to='/dashboard' className='header-link'>
+                     <div className='header-back-container'>
+                        <i class="fas fa-undo" style={{ marginRight: '.5rem'}}></i>
+                        <span>Back To Dashboard</span>
+                     </div>
+                  </Link>
                   :
                   null
                }
@@ -179,30 +179,30 @@ class Header extends Component {
                }
                <div className='header-avatar-container cursor-pointer'>
                   <Button
-                        aria-controls='simple-menu'
-                        aria-haspopup='true'
-                        onClick={this.openMenu}
-                        style={{ backgroundColor: 'transparent' }}
+                     aria-controls='simple-menu'
+                     aria-haspopup='true'
+                     onClick={this.openMenu}
+                     style={{ backgroundColor: 'transparent' }}
                   >
-                        <Avatar
-                           letter={'kp'}
-                           color={'crimson'}
-                        />
+                     <Avatar
+                        letter={'kp'}
+                        color={'crimson'}
+                     />
                   </Button>
                   <Menu
-                        id='simple-menu'
-                        anchorEl={this.state.anchorEl}
-                        keepMounted
-                        open={Boolean(this.state.anchorEl)}
-                        onClose={this.closeMenu}
+                     id='simple-menu'
+                     anchorEl={this.state.anchorEl}
+                     keepMounted
+                     open={Boolean(this.state.anchorEl)}
+                     onClose={this.closeMenu}
                   >
-                        <Link to='/profile' className='header-link' onClick={this.closeMenu}>
-                           <MenuItem>Profile</MenuItem>
-                        </Link>
-                        <Link to='/settings' className='header-link' onClick={this.closeMenu}>
-                           <MenuItem>Settings</MenuItem>
-                        </Link>
-                        <MenuItem className='header-link'>Logout</MenuItem>
+                     <Link to='/profile' className='header-link' onClick={this.closeMenu}>
+                        <MenuItem>Profile</MenuItem>
+                     </Link>
+                     <Link to='/settings' className='header-link' onClick={this.closeMenu}>
+                        <MenuItem>Settings</MenuItem>
+                     </Link>
+                     <MenuItem className='header-link'>Logout</MenuItem>
                   </Menu>
                </div>
             </div>
