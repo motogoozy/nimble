@@ -8,7 +8,8 @@ import SettingsPage from './components/views/SettingsPage/SettingsPage';
 export default (
    <Switch>
       <Route component={LandingPage} exact path='/' />
-      <Route component={Dashboard} path='/dashboard' />
+      <Route component={Dashboard} exact path='/dashboard' />
+      <Route component={Dashboard} path='/dashboard/project/:project_id' />
       <Route component={Profile} path='/profile' />
       <Route component={SettingsPage} path='/settings' />
    </Switch>
