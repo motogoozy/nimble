@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 		'&:hover': {
 			backgroundColor: '#663f56'
 		}
-	},
+	}
 }));
 
 export default function FloatingActionButtons() {
