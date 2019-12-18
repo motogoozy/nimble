@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function FloatingActionButtons() {
 	const classes = useStyles();
-
 	return (
 		<div>
 			<Fab color="primary" aria-label="add" className={classes.fab}>
@@ -25,4 +24,4 @@ export default function FloatingActionButtons() {
 			</Fab>
 		</div>
 	);
-}
+};
