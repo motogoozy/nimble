@@ -17,7 +17,7 @@ export default class Dashboard extends Component {
    state = {
       columns: {},
       tasks: {},
-      columnOrder: [], // must be strings
+      columnOrder: [], // array of strings
       projectId: null,
       project: {},
       title: '',
@@ -26,9 +26,7 @@ export default class Dashboard extends Component {
       displayAddListModal: false,
    };
 
-   componentDidMount = async () => {
-
-   };
+   componentDidMount = async () => {};
 
    getProjectDetails = async () => {
       const { projectId } = this.state;
@@ -352,8 +350,7 @@ export default class Dashboard extends Component {
       
       return (
          <div className='modal-wrapper' onClick={this.cancelAddList}>
-            <div className='add-list-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}
-            >
+            <div className='add-list-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
                <h3>New List:</h3>
                <div className='add-list-modal-body'>
                   <div className='add-modal-body-item'>
@@ -399,9 +396,7 @@ export default class Dashboard extends Component {
 			<div className='dashboard'>
 				<Sidebar />
             <div className='main-content-container'>
-               <Header
-                  handleProjectSelection={this.handleProjectSelection}
-               />
+               <Header handleProjectSelection={this.handleProjectSelection}/>
                <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
                   <Droppable droppableId='all-columns' direction='horizontal' type='column' >
                      {(provided) => {
