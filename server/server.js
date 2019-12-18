@@ -1,6 +1,7 @@
 const userController = require('./controllers/userController');
-const listController = require('./controllers/listController');
 const projectController = require('./controllers/projectController');
+const listController = require('./controllers/listController');
+const taskController = require('./controllers/taskController');
 
 require('dotenv').config();
 const express = require('express');
@@ -44,3 +45,6 @@ app.get('/project/:project_id/lists', listController.getLists) // Get all projec
 app.post('/project/:project_id/list', listController.createList); // Add list
 app.put('/project/:project_id/list/:list_id', listController.updateList); // Edit List
 app.delete('/project/:project_id/list/:list_id', listController.deleteList); // Delete list
+
+// Task
+app.get('/project/:project_id/tasks', taskController.getTasks); // Get all project tasks
