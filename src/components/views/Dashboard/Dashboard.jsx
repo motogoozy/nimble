@@ -24,6 +24,7 @@ export default class Dashboard extends Component {
       newColorCode: [96, 125, 139, 1],
       displayAddButton: false,
       displayAddListModal: false,
+      loggedInUser: 1,
    };
 
    componentDidMount = async () => {};
@@ -45,12 +46,13 @@ export default class Dashboard extends Component {
       let res = await axios.get(`/project/${projectId}/lists`);
       let columns = {};
       res.data.forEach(column => {
+         let taskOrderStrings = this.convertTaskIdsToStrings(column.task_order);
          let newColumn = {
             id: column.id.toString(),
             databaseId: column.id,
             title: column.title,
             colorCode: column.color_code,
-            taskIds: [],
+            taskIds: taskOrderStrings,
             archived: column.archived,
          };
          columns[newColumn.id] = newColumn;
@@ -58,6 +60,21 @@ export default class Dashboard extends Component {
       this.setState({
          columns: columns,
          displayAddButton: true,
+      });
+   };
+
+   getTasks = async () => {
+      const { projectId } = this.state;
+      let res = await axios.get(`/project/${projectId}/tasks`)
+      let tasks = {};
+      res.data.forEach(task => {
+         task.databaseId = task.id;
+         task.id = task.id.toString();
+         task.content = '';
+         tasks[task.id] = task;
+      });
+      this.setState({
+         tasks: tasks,
       });
    };
 
@@ -78,39 +95,6 @@ export default class Dashboard extends Component {
 		});
 	};
 
-   getTasks = async () => {
-      const { projectId } = this.state;
-      let res = await axios.get(`/project/${projectId}/tasks`)
-      let tasks = {};
-      res.data.forEach(task => {
-         let newTask = {
-            id: task.id.toString(),
-            databaseId: task.id,
-            title: task.title,
-            content: '',
-            list_id: task.list_id
-         };
-         tasks[newTask.id] = newTask;
-      });
-      this.setState({
-         tasks: tasks,
-      });
-   };
-
-   assignTasksToColumns = () => {
-      const { columns, tasks } = this.state;
-      let updatedColumns = columns;
-      for (let id in tasks) {
-         let task = tasks[id];
-         let column = columns[task.list_id];
-         if (column.taskIds.indexOf(task.id) === -1) {
-            column.taskIds.push(task.id);
-         }
-         updatedColumns[column.id] = column;
-      };
-      this.setState({ columns: updatedColumns });
-   };
-
    handleProjectSelection = async (id) => {
       this.setState({
          projectId: id,
@@ -120,10 +104,10 @@ export default class Dashboard extends Component {
          displayAddButton: false,
       }, async () => {
          try {
+            await this.getTasks();
             await this.getLists();
             await this.getProjectDetails();
-            await this.getTasks();
-            await this.assignTasksToColumns();
+            // await this.assignTasksToColumns();
          }
          catch(err) {
             console.log(err);
@@ -209,6 +193,26 @@ export default class Dashboard extends Component {
       }
    };
 
+   updateTask = async (taskId, listId) => {
+      const { tasks } = this.state;
+      const task = tasks[taskId];
+      const body = {
+         title: task.title,
+         status: task.status,
+         list_id: listId,
+         created_at: task.created_at,
+         created_by: task.created_by,
+         project_id: task.project_id
+      };
+
+      let res = await axios.put(`/task/${taskId}`, body);
+      let updated = res.data[0];
+
+      return new Promise((resolve, reject) => {
+         resolve(updated);
+      });
+   };
+
    updateProject = async () => {
       const { projectId, project, columnOrder } = this.state;
       const body = {
@@ -252,8 +256,7 @@ export default class Dashboard extends Component {
          return;
       }
 
-      // If dragged item is a column
-      if (type === 'column') {
+      if (type === 'column') { // If dragged item is a column
          const newColumnOrder = Array.from(this.state.columnOrder);
          newColumnOrder.splice(source.index, 1); // removing column out of original position
          newColumnOrder.splice(destination.index, 0, draggableId); // putting column in new position
@@ -267,62 +270,104 @@ export default class Dashboard extends Component {
             this.updateProject();
          });
          return;
-      }
+      } else if (type === 'task') { // If dragged item is a task
+         const start = this.state.columns[source.droppableId];
+         const finish = this.state.columns[destination.droppableId];
+   
+         if (start === finish) { // If task is moved within the same column
+            const newTaskIds = Array.from(start.taskIds);
+            newTaskIds.splice(source.index, 1);
+            newTaskIds.splice(destination.index, 0, draggableId);
+      
+            const newColumn = {
+               ...start,
+               taskIds: newTaskIds
+            };
+      
+            const newState = {
+               ...this.state,
+               columns: {
+                  ...this.state.columns,
+                  [newColumn.id]: newColumn
+               },
+            };
 
-      const start = this.state.columns[source.droppableId];
-      const finish = this.state.columns[destination.droppableId];
+            let taskIdIntegers = newColumn.taskIds.map(id => parseInt(id));
 
-      // If task is moved within the same column
-      if (start === finish) {
-         const newTaskIds = Array.from(start.taskIds);
-         newTaskIds.splice(source.index, 1);
-         newTaskIds.splice(destination.index, 0, draggableId);
-   
-         const newColumn = {
-            ...start,
-            taskIds: newTaskIds
-         };
-   
-         const newState = {
-            ...this.state,
-            columns: {
-               ...this.state.columns,
-               [newColumn.id]: newColumn
-            },
-         };
-   
-         this.setState(newState);
-      } else {
-         // Moving task from one column to another
-         const startTaskIds = Array.from(start.taskIds);
-         startTaskIds.splice(source.index, 1);
-         const newStart = {
-            ...start,
-            taskIds: startTaskIds,
-         };
-   
-         const finishTaskIds = Array.from(finish.taskIds);
-         finishTaskIds.splice(destination.index, 0, draggableId);
-         const newFinish = {
-            ...finish,
-            taskIds: finishTaskIds
-         };
-   
-         const newState = {
-            ...this.state,
-            columns: {
-               ...this.state.columns,
-               [newStart.id]: newStart,
-               [newFinish.id]: newFinish
-            },
-         };
-   
-         this.setState(newState);
+            const newColumnBody = {
+               title: newColumn.title,
+               color_code: newColumn.colorCode,
+               archived: newColumn.archived,
+               task_order: taskIdIntegers,
+            };
+
+            this.setState(newState, () => {
+               const listId = newColumn.id;
+               try {
+                  this.updateList(listId, newColumnBody);
+               } catch (err) {
+                  console.log(err);
+               }
+            });
+         } else { // If task is moved to another column
+            const startTaskIds = Array.from(start.taskIds);
+            startTaskIds.splice(source.index, 1);
+            const newStart = {
+               ...start,
+               taskIds: startTaskIds,
+            };
+      
+            const finishTaskIds = Array.from(finish.taskIds);
+            finishTaskIds.splice(destination.index, 0, draggableId);
+            const newFinish = {
+               ...finish,
+               taskIds: finishTaskIds
+            };
+      
+            const newState = {
+               ...this.state,
+               columns: {
+                  ...this.state.columns,
+                  [newStart.id]: newStart,
+                  [newFinish.id]: newFinish
+               },
+            };
+      
+            const taskId = parseInt(draggableId);
+            const startListId = parseInt(source.droppableId);
+            const finishListId = parseInt(destination.droppableId);
+            const startOrder = this.convertTaskIdsToIntegers(newStart.taskIds);
+            const finishOrder = this.convertTaskIdsToIntegers(newFinish.taskIds);
+            
+            const newStartBody = {
+               title: newStart.title,
+               color_code: newStart.colorCode,
+               archived: newStart.archived,
+               task_order: startOrder,
+            };
+
+            const newFinishBody = {
+               title: newFinish.title,
+               color_code: newFinish.colorCode,
+               archived: newFinish.archived,
+               task_order: finishOrder,
+            }
+
+            this.setState(newState, () => {
+               this.updateTask(taskId, finishListId);
+               this.updateList(startListId, newStartBody);
+               this.updateList(finishListId, newFinishBody);
+            });
+         }
       }
    };
+
+   convertTaskIdsToIntegers = strArr => strArr.map(str => parseInt(str));
+
+   convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
    displayColumns = () => {
-      const { tasks, columns, columnOrder, projectId } = this.state;
+      const { tasks, columns, columnOrder, projectId, loggedInUser } = this.state;
       let columnArr = columnOrder.map((columnId, index) => {
          const column = columns[columnId];
          const taskArr = column.taskIds.map(taskId => tasks[taskId]);
@@ -336,6 +381,9 @@ export default class Dashboard extends Component {
                projectId={projectId}
                updateList={this.updateList}
                deleteList={this.deleteList}
+               loggedInUser={loggedInUser}
+               getTasks={this.getTasks}
+               getLists={this.getLists}
             />
          );
       });

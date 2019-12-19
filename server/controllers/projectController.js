@@ -21,7 +21,7 @@ module.exports = {
          console.log(err);
       }
    },
-   addProject: async (req, res) => {
+   createProject: async (req, res) => {
       const { title, created_by } = req.body;
       const created_at = new Date();
       const archived = false;

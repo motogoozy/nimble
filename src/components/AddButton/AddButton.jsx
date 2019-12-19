@@ -19,7 +19,7 @@ export default function FloatingActionButtons() {
 	const classes = useStyles();
 	return (
 		<div>
-			<Fab color="primary" aria-label="add" className={classes.fab}>
+			<Fab color="primary" aria-label="add" size='medium' className={classes.fab}>
 				<AddIcon />
 			</Fab>
 		</div>

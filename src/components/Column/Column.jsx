@@ -4,6 +4,7 @@ import Task from '../Task/Task';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import { lightColors } from './colors.js';
 
+import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,8 +18,10 @@ export default class Column extends Component {
 	state = {
 		title: '',
 		newTitle: '',
+		newTaskTitle: '',
 		columnColorCode: [],
 		newColumnColorCode: [],
+		displayAddTaskModal: false,
 		displayEditModal: false,
 		displayColorPicker: false,
 		archived: false,
@@ -82,6 +85,7 @@ export default class Column extends Component {
 			title: newTitle,
 			color_code: newColumnColorCode,
 			archived: archived,
+			task_order: column.taskIds,
 		};
 		try {
 			let updated = await this.props.updateList(column.databaseId, body);
@@ -99,9 +103,46 @@ export default class Column extends Component {
 		}
 	};
 
+	addTask = async () => {
+		const { newTaskTitle } = this.state;
+		const { loggedInUser, column, projectId, updateList, getLists } = this.props;
+		const taskBody = {
+			title: newTaskTitle,
+			created_by: loggedInUser,
+			list_id: column.databaseId,
+		};
+		try {
+			let res = await axios.post(`/project/${projectId}/task`, taskBody);
+			let added = res.data;
+			let newTaskOrder = column.taskIds.map(id => parseInt(id));
+			let newTaskId = added.id;
+			newTaskOrder.push(newTaskId)
+			const listBody = {
+				title: column.title,
+				color_code: column.colorCode,
+				archived: column.archived,
+				task_order: newTaskOrder,
+			};
+			await this.props.getTasks();
+			await updateList(added.list_id, listBody);
+			await getLists();
+			this.setState({
+				newTaskTitle: '',
+				displayAddTaskModal: false,
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	cancelAddTask = () => {
+
+	};
+
 	displayTasks = () => {
 		const { tasks } = this.props;
 		const { columnColorCode } = this.state;
+		// console.log(tasks)
 		return tasks.map((task, index) => {
 			return (
 				<Task
@@ -114,6 +155,31 @@ export default class Column extends Component {
 				/>
 			)
 		});
+	};
+
+	addTaskModal = () => {
+		return (
+			<div className='modal-wrapper' onClick={this.cancelAddTask}>
+            <div className='add-task-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
+               <h3>New Task:</h3>
+               <div className='add-task-modal-body'>
+                  <div className='add-modal-body-item'>
+                     <h4>Title</h4>
+                     <TextField
+                     required
+                     id="standard-required"
+                     onChange={e => this.handleInput('newTaskTitle', e.target.value)}
+                     autoFocus
+                     />
+                  </div>
+               </div>
+               <div>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddTask}>Cancel</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addTask}>Save</Button>
+               </div>
+            </div>
+         </div>
+		)
 	};
 
 	editModal = () => {
@@ -211,6 +277,11 @@ export default class Column extends Component {
 								&&
 								this.editModal()
 							}
+							{
+								this.state.displayAddTaskModal
+								&&
+								this.addTaskModal()
+							}
 							<Droppable droppableId={column.id} type='task'>
 								{(provided, snapshot) => {
 									const style = {
@@ -232,7 +303,7 @@ export default class Column extends Component {
 								}}
 							</Droppable>
 							<div className='column-footer'>
-								<div className='column-add-button-container cursor-pointer'>
+								<div className='column-add-button-container cursor-pointer' onClick={() => this.setState({ displayAddTaskModal: true })}>
 									<i className="fas fa-plus"></i>
 									<p>ADD NEW TASK</p>
 								</div>
