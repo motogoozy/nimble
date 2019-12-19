@@ -22,7 +22,8 @@ CREATE TABLE list (
 	title character varying(50) NOT NULL,
 	color_code integer[] NOT NULL,
 	archived boolean NOT NULL,
-	project_id integer NOT NULL
+	project_id integer NOT NULL,
+	task_order text[]
 );
 
 CREATE TABLE task (
