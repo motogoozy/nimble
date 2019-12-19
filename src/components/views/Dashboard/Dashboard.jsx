@@ -384,6 +384,7 @@ export default class Dashboard extends Component {
                loggedInUser={loggedInUser}
                getTasks={this.getTasks}
                getLists={this.getLists}
+               convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}
             />
          );
       });

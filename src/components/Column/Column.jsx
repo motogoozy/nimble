@@ -81,11 +81,12 @@ export default class Column extends Component {
 	saveChanges = async () => {
 		const { newTitle, newColumnColorCode, archived } = this.state;
 		const { column } = this.props;
+		let taskIdIntegers = this.props.convertTaskIdsToIntegers(column.taskIds);
 		const body = {
 			title: newTitle,
 			color_code: newColumnColorCode,
 			archived: archived,
-			task_order: column.taskIds,
+			task_order: taskIdIntegers,
 		};
 		try {
 			let updated = await this.props.updateList(column.databaseId, body);
