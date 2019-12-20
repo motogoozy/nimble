@@ -121,6 +121,7 @@ export default class Dashboard extends Component {
          title: title,
          color_code: newColorCode,
          archived: false,
+         task_order: [],
       };
       try {
          let res = await axios.post(`/project/${projectId}/list`, body);
