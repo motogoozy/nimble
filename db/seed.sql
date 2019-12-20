@@ -11,7 +11,7 @@ CREATE TABLE users (
 CREATE TABLE project (
 	id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
-	column_order text[] NOT NULL,
+	list_order text[] NOT NULL,
 	created_at timestamp without time zone NOT NULL,
 	created_by integer NOT NULL REFERENCES users(id),
 	archived boolean NOT NULL

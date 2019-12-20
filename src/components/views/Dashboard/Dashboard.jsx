@@ -17,7 +17,7 @@ export default class Dashboard extends Component {
    state = {
       columns: {},
       tasks: {},
-      columnOrder: [], // array of strings
+      listOrder: [], // array of strings
       projectId: null,
       project: {},
       title: '',
@@ -34,9 +34,9 @@ export default class Dashboard extends Component {
       let res = await axios.get(`/project/${projectId}`);
       const project = res.data[0];
       document.title = `Nimble - ${project.title}`
-      let columnOrder = project.column_order.map(item => item.toString());
+      let listOrder = project.list_order.map(item => item.toString());
       this.setState({
-         columnOrder: columnOrder,
+         listOrder: listOrder,
          project: project,
       });
    };
@@ -100,7 +100,7 @@ export default class Dashboard extends Component {
          projectId: id,
          columns: {},
          tasks: {},
-         columnOrder: [],
+         listOrder: [],
          displayAddButton: false,
       }, async () => {
          try {
@@ -116,7 +116,7 @@ export default class Dashboard extends Component {
    };
 
    addList = async () => {
-      const { projectId, newColorCode, title, columns, columnOrder } = this.state;
+      const { projectId, newColorCode, title, columns, listOrder } = this.state;
       const body = {
          title: title,
          color_code: newColorCode,
@@ -139,12 +139,12 @@ export default class Dashboard extends Component {
             [newColumn.id]: newColumn
          };
          let newOrder = [
-            ...columnOrder,
+            ...listOrder,
             newColumn.id,
          ];
          this.setState({
             columns: newColumns,
-            columnOrder: newOrder,
+            listOrder: newOrder,
             displayAddListModal: false,
             title: '',
          }, () => {
@@ -174,18 +174,18 @@ export default class Dashboard extends Component {
    };
 
    deleteList = async (databaseId, id) => {
-      const { project_id, columnOrder, columns } = this.state;
+      const { project_id, listOrder, columns } = this.state;
       
       try {
          await axios.delete(`/project/${project_id}/list/${databaseId}`);
-         const indexToRemove = columnOrder.indexOf(id);
-         let newOrder = Array.from(columnOrder);
+         const indexToRemove = listOrder.indexOf(id);
+         let newOrder = Array.from(listOrder);
          newOrder.splice(indexToRemove, 1);
          let newColumns = columns;
          delete newColumns[id];
          this.setState({
             columns: newColumns,
-            columnOrder: newOrder,
+            listOrder: newOrder,
          }, () => {
             this.updateProject();
          });
@@ -215,10 +215,10 @@ export default class Dashboard extends Component {
    };
 
    updateProject = async () => {
-      const { projectId, project, columnOrder } = this.state;
+      const { projectId, project, listOrder } = this.state;
       const body = {
          title: project.title,
-         column_order: columnOrder
+         list_order: listOrder
       };
       try {
          await axios.put(`/project/${projectId}`, body);
@@ -258,13 +258,13 @@ export default class Dashboard extends Component {
       }
 
       if (type === 'column') { // If dragged item is a column
-         const newColumnOrder = Array.from(this.state.columnOrder);
-         newColumnOrder.splice(source.index, 1); // removing column out of original position
-         newColumnOrder.splice(destination.index, 0, draggableId); // putting column in new position
+         const newlistOrder = Array.from(this.state.listOrder);
+         newlistOrder.splice(source.index, 1); // removing column out of original position
+         newlistOrder.splice(destination.index, 0, draggableId); // putting column in new position
 
          const newState = {
             ...this.state,
-            columnOrder: newColumnOrder,
+            listOrder: newlistOrder,
             displayAddButton: true,
          };
          this.setState(newState, () => {
@@ -368,8 +368,8 @@ export default class Dashboard extends Component {
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
    displayColumns = () => {
-      const { tasks, columns, columnOrder, projectId, loggedInUser } = this.state;
-      let columnArr = columnOrder.map((columnId, index) => {
+      const { tasks, columns, listOrder, projectId, loggedInUser } = this.state;
+      let columnArr = listOrder.map((columnId, index) => {
          const column = columns[columnId];
          const taskArr = column.taskIds.map(taskId => tasks[taskId]);
          return (

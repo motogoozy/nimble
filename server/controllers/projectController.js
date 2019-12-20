@@ -25,11 +25,11 @@ module.exports = {
       const { title, created_by } = req.body;
       const created_at = new Date();
       const archived = false;
-      const column_order = [];
+      const list_order = [];
       const db = req.app.get('db');
       try {
          let added = await db.project.add_project({
-            title, column_order, created_at, created_by, archived,
+            title, list_order, created_at, created_by, archived,
          });
          res.status(200).send(added[0]);
       }
@@ -39,10 +39,10 @@ module.exports = {
    },
    updateProject: async (req, res) => {
       const { id } = req.params;
-      const { title, column_order } = req.body;
+      const { title, list_order } = req.body;
       const db = req.app.get('db');
       try {
-         let updatedProject = await db.project.update_project({ id, title, column_order });
+         let updatedProject = await db.project.update_project({ id, title, list_order });
          res.status(200).send(updatedProject);
       } catch (err) {
          console.log(err);

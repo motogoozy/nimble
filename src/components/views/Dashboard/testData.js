@@ -11,7 +11,7 @@ const testData = {
 			taskIds: ['task-1', 'task-2', 'task-3']
 		}
 	},
-	columnOrder: ['column-1']
+	listOrder: ['column-1']
 }
 
 export default testData;

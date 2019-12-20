@@ -1,4 +1,4 @@
 UPDATE project
-SET title = ${title}, column_order = ${column_order}
+SET title = ${title}, list_order = ${list_order}
 WHERE id = ${id}
 returning *;
