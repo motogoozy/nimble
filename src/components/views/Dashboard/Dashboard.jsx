@@ -15,16 +15,16 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      lists: {},
-      tasks: {},
-      listOrder: [], // array of strings
+      loggedInUser: 1,
       projectId: null,
       project: {},
+      tasks: {},
+      lists: {},
+      listOrder: [], // array of strings
       title: '',
       newColorCode: [96, 125, 139, 1],
       displayAddButton: false,
       displayAddListModal: false,
-      loggedInUser: 1,
    };
 
    componentDidMount = async () => {};
