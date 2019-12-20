@@ -23,7 +23,7 @@ CREATE TABLE list (
 	color_code integer[] NOT NULL,
 	archived boolean NOT NULL,
 	project_id integer NOT NULL,
-	task_order integer[]
+	task_order integer[] NOT NULL
 );
 
 CREATE TABLE task (
