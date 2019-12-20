@@ -13,7 +13,6 @@ import TextField from '@material-ui/core/TextField';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 
-
 export default class List extends Component {
 	state = {
 		title: '',
@@ -137,13 +136,15 @@ export default class List extends Component {
 	};
 
 	cancelAddTask = () => {
-
+		this.setState({
+			newTaskTitle: '',
+			displayAddTaskModal: false,
+		});
 	};
 
 	displayTasks = () => {
 		const { tasks } = this.props;
 		const { listColorCode } = this.state;
-		// console.log(tasks)
 		return tasks.map((task, index) => {
 			return (
 				<Task
@@ -153,6 +154,8 @@ export default class List extends Component {
 					title={task.title}
 					content={task.content}
 					colorCode={listColorCode}
+					formatColor={this.formatColor}
+					checkIsLight={this.checkIsLight}
 				/>
 			)
 		});
