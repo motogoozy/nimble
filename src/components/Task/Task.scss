@@ -1,3 +1,5 @@
+@import '../../styles.scss';
+
 .task {
 	width: 100%;
 	height: 7rem;
@@ -13,7 +15,102 @@
 	border-radius: .25rem;
 	z-index: 2;
 
-	h4 {
-		margin-bottom: .5rem;
+	.task-header {
+		width: 100%;
+		height: 2.5rem;
+		max-height: 2.5rem;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: flex-start;
+		text-align: left;
+
+		p {
+			margin-bottom: .5rem;
+		}
+
+		i {
+			color: $primary-lt-gray;
+			font-size: .85rem;
+		}
+	}
+}
+
+.edit-task-modal {
+	width: 35rem;
+	height: 42rem;
+	background-color: white;
+	border-radius: 6px 6px 5px 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	position: relative;
+	
+	.edit-task-modal-header {
+		width: 100%;
+		height: 2.5rem;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 1rem;
+		border-radius: 5px 5px 0px 0px;
+	}
+	
+	.edit-task-modal-body {
+		height: 100%;
+		width: 100%;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-items: center;
+
+		.edit-task-modal-body-item {
+			width: 100%;
+			height: auto;
+			margin-bottom: 1rem;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			align-items: flex-start;
+		}
+		
+		.edit-modal-buttons {
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+
+			.edit-modal-delete-container {
+				width: 50%;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: flex-end;
+			}
+
+			.edit-save-cancel-container {
+				width: 50%;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				align-items: flex-end;
+
+				div {
+					margin: 0 12px 12px 0;
+				}
+			}
+		}
+	}
+	.current-color-box {
+		width: 2rem;
+		height: 2rem;
 	}
 }
