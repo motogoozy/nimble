@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Column.scss';
+import './List.scss';
 import Task from '../Task/Task';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import { lightColors } from './colors.js';
@@ -14,13 +14,13 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 
 
-export default class Column extends Component {
+export default class List extends Component {
 	state = {
 		title: '',
 		newTitle: '',
 		newTaskTitle: '',
-		columnColorCode: [],
-		newColumnColorCode: [],
+		listColorCode: [],
+		newListColorCode: [],
 		displayAddTaskModal: false,
 		displayEditModal: false,
 		displayColorPicker: false,
@@ -28,13 +28,13 @@ export default class Column extends Component {
 	};
 
 	componentDidMount = () => {
-		const { column } = this.props;
+		const { list } = this.props;
 		this.setState({ 
-			title: column.title,
-			newTitle: column.title,
-			columnColorCode: column.colorCode,
-			newColumnColorCode: column.colorCode,
-			archived: column.archived,
+			title: list.title,
+			newTitle: list.title,
+			listColorCode: list.colorCode,
+			newListColorCode: list.colorCode,
+			archived: list.archived,
 		});
 	};
 
@@ -48,7 +48,7 @@ export default class Column extends Component {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
 		console.log(codeArr)
-		this.setState({ newColumnColorCode: codeArr });
+		this.setState({ newListColorCode: codeArr });
 	};
 
 	closeColorPicker = () => {
@@ -68,33 +68,33 @@ export default class Column extends Component {
 	};
 
 	cancelChanges = () => {
-		const { columnColorCode, title } = this.state;
+		const { listColorCode, title } = this.state;
 		this.setState({ 
 			title: title,
-			columnColorCode: columnColorCode,
-			newColumnColorCode: columnColorCode,
+			listColorCode: listColorCode,
+			newListColorCode: listColorCode,
 			displayEditModal: false,
 			displayColorPicker: false,
 		});
 	};
 
 	saveChanges = async () => {
-		const { newTitle, newColumnColorCode, archived } = this.state;
-		const { column } = this.props;
-		let taskIdIntegers = this.props.convertTaskIdsToIntegers(column.taskIds);
+		const { newTitle, newListColorCode, archived } = this.state;
+		const { list } = this.props;
+		let taskIdIntegers = this.props.convertTaskIdsToIntegers(list.taskIds);
 		const body = {
 			title: newTitle,
-			color_code: newColumnColorCode,
+			color_code: newListColorCode,
 			archived: archived,
 			task_order: taskIdIntegers,
 		};
 		try {
-			let updated = await this.props.updateList(column.databaseId, body);
+			let updated = await this.props.updateList(list.databaseId, body);
 			this.setState({
 				title: updated.title,
 				newTitle: updated.title,
-				columnColorCode: updated.color_code,
-				newColumnColorCode: updated.color_code,
+				listColorCode: updated.color_code,
+				newListColorCode: updated.color_code,
 				displayEditModal: false,
 				displayColorPicker: false,
 			});
@@ -106,22 +106,22 @@ export default class Column extends Component {
 
 	addTask = async () => {
 		const { newTaskTitle } = this.state;
-		const { loggedInUser, column, projectId, updateList, getLists } = this.props;
+		const { loggedInUser, list, projectId, updateList, getLists } = this.props;
 		const taskBody = {
 			title: newTaskTitle,
 			created_by: loggedInUser,
-			list_id: column.databaseId,
+			list_id: list.databaseId,
 		};
 		try {
 			let res = await axios.post(`/project/${projectId}/task`, taskBody);
 			let added = res.data;
-			let newTaskOrder = column.taskIds.map(id => parseInt(id));
+			let newTaskOrder = list.taskIds.map(id => parseInt(id));
 			let newTaskId = added.id;
 			newTaskOrder.push(newTaskId)
 			const listBody = {
-				title: column.title,
-				color_code: column.colorCode,
-				archived: column.archived,
+				title: list.title,
+				color_code: list.colorCode,
+				archived: list.archived,
 				task_order: newTaskOrder,
 			};
 			await this.props.getTasks();
@@ -142,7 +142,7 @@ export default class Column extends Component {
 
 	displayTasks = () => {
 		const { tasks } = this.props;
-		const { columnColorCode } = this.state;
+		const { listColorCode } = this.state;
 		// console.log(tasks)
 		return tasks.map((task, index) => {
 			return (
@@ -152,7 +152,7 @@ export default class Column extends Component {
 					index={index}
 					title={task.title}
 					content={task.content}
-					colorCode={columnColorCode}
+					colorCode={listColorCode}
 				/>
 			)
 		});
@@ -184,14 +184,14 @@ export default class Column extends Component {
 	};
 
 	editModal = () => {
-		const { column } = this.props;
-		const { title, newColumnColorCode } = this.state;
-		const currentColor = this.formatColor(newColumnColorCode);
-		const headerTextColor = this.checkIsLight(newColumnColorCode) === true ? 'black' : 'white';
+		const { list } = this.props;
+		const { title, newListColorCode } = this.state;
+		const currentColor = this.formatColor(newListColorCode);
+		const headerTextColor = this.checkIsLight(newListColorCode) === true ? 'black' : 'white';
 
 		return (
 			<div className='modal-wrapper' onClick={this.cancelChanges}>
-				<div className='edit-column-modal' onClick={e => e.stopPropagation()}>
+				<div className='edit-list-modal' onClick={e => e.stopPropagation()}>
 					<div className='edit-modal-header' style={{ backgroundColor: currentColor, color: headerTextColor }}>
 						<h4>{title}</h4>
 					</div>
@@ -224,7 +224,7 @@ export default class Column extends Component {
 						<div className='edit-modal-buttons'>
 							<div className='edit-modal-delete-container'>
 								<Tooltip title={'Delete List'}>
-									<IconButton aria-label="delete" onClick={() => this.props.deleteList(column.databaseId, column.id)}>
+									<IconButton aria-label="delete" onClick={() => this.props.deleteList(list.databaseId, list.id)}>
 										<DeleteIcon />
 									</IconButton>
 								</Tooltip>
@@ -246,28 +246,28 @@ export default class Column extends Component {
 
 
 	render() {
-		const { column, index } = this.props;
-		const { title, columnColorCode } = this.state;
+		const { list, index } = this.props;
+		const { title, listColorCode } = this.state;
 
 		return (
-			<Draggable draggableId={column.id} index={index}>
+			<Draggable draggableId={list.id} index={index}>
 				{(provided, snapshot) => {
-					const headerBackgroundColor = this.formatColor(columnColorCode);
-					const headerTextColor = this.checkIsLight(columnColorCode) === true ? 'black' : 'white';
-					const dragColor = `rgba(${columnColorCode[0]}, ${columnColorCode[1]}, ${columnColorCode[2]}, .25)`;
-					const columnStyle = {
+					const headerBackgroundColor = this.formatColor(listColorCode);
+					const headerTextColor = this.checkIsLight(listColorCode) === true ? 'black' : 'white';
+					const dragColor = `rgba(${listColorCode[0]}, ${listColorCode[1]}, ${listColorCode[2]}, .25)`;
+					const listStyle = {
 						boxShadow: snapshot.isDragging ? '0px 0px 10px 1px rgba(107,107,107,1)' : '',
 						...provided.draggableProps.style
 					}
 
 					return (
 						<div
-							className='column'
+							className='list'
 							ref={provided.innerRef}
 							{...provided.draggableProps}
-							style={columnStyle}
+							style={listStyle}
 							>
-							<div className='column-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
+							<div className='list-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
 								<p>{title}</p>
 								<Tooltip title='Edit List'>
 									<i style={{ padding: '.25rem .5rem' }} onClick={() => this.setState({ displayEditModal: true })} className="fas fa-ellipsis-v cursor-pointer"></i>
@@ -283,7 +283,7 @@ export default class Column extends Component {
 								&&
 								this.addTaskModal()
 							}
-							<Droppable droppableId={column.id} type='task'>
+							<Droppable droppableId={list.id} type='task'>
 								{(provided, snapshot) => {
 									const style = {
 										backgroundColor: snapshot.isDraggingOver ? dragColor : '',
@@ -292,7 +292,7 @@ export default class Column extends Component {
 
 									return (
 										<div
-											className='column-content'
+											className='list-content'
 											ref={provided.innerRef}
 											style={style}
 											{...provided.droppableProps}
@@ -303,8 +303,8 @@ export default class Column extends Component {
 									)
 								}}
 							</Droppable>
-							<div className='column-footer'>
-								<div className='column-add-button-container cursor-pointer' onClick={() => this.setState({ displayAddTaskModal: true })}>
+							<div className='list-footer'>
+								<div className='list-add-button-container cursor-pointer' onClick={() => this.setState({ displayAddTaskModal: true })}>
 									<i className="fas fa-plus"></i>
 									<p>ADD NEW TASK</p>
 								</div>

@@ -64,24 +64,13 @@
    }
 }
 
-.column-container {
+.list-container {
    width: auto;
    height: calc(100vh - #{$header-height});
    display: flex;
    flex-direction: row;
    justify-content: flex-start;
    align-items: center;
-
-   .column-list {
-      width: 100%;
-      height: 100%;
-      overflow-y: hidden;
-      overflow-x: auto;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-   }
 }
 
 .add-list-modal {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Dashboard.scss';
 import Sidebar from '../../Sidebar/Sidebar';
 import Header from '../../Header/Header';
-import Column from '../../Column/Column';
+import List from '../../List/List';
 import AddButton from '../../AddButton/AddButton';
 import ColorPicker from '../../ColorPicker/ColorPicker';
 
@@ -15,7 +15,7 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      columns: {},
+      lists: {},
       tasks: {},
       listOrder: [], // array of strings
       projectId: null,
@@ -44,21 +44,21 @@ export default class Dashboard extends Component {
    getLists = async () => {
       const { projectId } = this.state;
       let res = await axios.get(`/project/${projectId}/lists`);
-      let columns = {};
-      res.data.forEach(column => {
-         let taskOrderStrings = this.convertTaskIdsToStrings(column.task_order);
-         let newColumn = {
-            id: column.id.toString(),
-            databaseId: column.id,
-            title: column.title,
-            colorCode: column.color_code,
+      let lists = {};
+      res.data.forEach(list => {
+         let taskOrderStrings = this.convertTaskIdsToStrings(list.task_order);
+         let newList = {
+            id: list.id.toString(),
+            databaseId: list.id,
+            title: list.title,
+            colorCode: list.color_code,
             taskIds: taskOrderStrings,
-            archived: column.archived,
+            archived: list.archived,
          };
-         columns[newColumn.id] = newColumn;
+         lists[newList.id] = newList;
       });
       this.setState({
-         columns: columns,
+         lists: lists,
          displayAddButton: true,
       });
    };
@@ -98,7 +98,7 @@ export default class Dashboard extends Component {
    handleProjectSelection = async (id) => {
       this.setState({
          projectId: id,
-         columns: {},
+         lists: {},
          tasks: {},
          listOrder: [],
          displayAddButton: false,
@@ -107,7 +107,7 @@ export default class Dashboard extends Component {
             await this.getTasks();
             await this.getLists();
             await this.getProjectDetails();
-            // await this.assignTasksToColumns();
+            // await this.assignTasksToLists();
          }
          catch(err) {
             console.log(err);
@@ -116,7 +116,7 @@ export default class Dashboard extends Component {
    };
 
    addList = async () => {
-      const { projectId, newColorCode, title, columns, listOrder } = this.state;
+      const { projectId, newColorCode, title, lists, listOrder } = this.state;
       const body = {
          title: title,
          color_code: newColorCode,
@@ -126,7 +126,7 @@ export default class Dashboard extends Component {
       try {
          let res = await axios.post(`/project/${projectId}/list`, body);
          let added = res.data[0];
-         let newColumn = {
+         let newList = {
             id: added.id.toString(),
             title: added.title,
             databaseId: added.id,
@@ -134,16 +134,16 @@ export default class Dashboard extends Component {
             taskIds: [],
             archived: added.archived,
          };
-         let newColumns = {
-            ...columns,
-            [newColumn.id]: newColumn
+         let newLists = {
+            ...lists,
+            [newList.id]: newList
          };
          let newOrder = [
             ...listOrder,
-            newColumn.id,
+            newList.id,
          ];
          this.setState({
-            columns: newColumns,
+            lists: newLists,
             listOrder: newOrder,
             displayAddListModal: false,
             title: '',
@@ -174,17 +174,17 @@ export default class Dashboard extends Component {
    };
 
    deleteList = async (databaseId, id) => {
-      const { project_id, listOrder, columns } = this.state;
+      const { project_id, listOrder, lists } = this.state;
       
       try {
          await axios.delete(`/project/${project_id}/list/${databaseId}`);
          const indexToRemove = listOrder.indexOf(id);
          let newOrder = Array.from(listOrder);
          newOrder.splice(indexToRemove, 1);
-         let newColumns = columns;
-         delete newColumns[id];
+         let newLists = lists;
+         delete newLists[id];
          this.setState({
-            columns: newColumns,
+            lists: newLists,
             listOrder: newOrder,
          }, () => {
             this.updateProject();
@@ -233,7 +233,7 @@ export default class Dashboard extends Component {
 
    onDragStart = (result ) => {
       const { type } = result;
-      if (type === 'column') {
+      if (type === 'list') {
          this.setState({ displayAddButton: false });
       }
    };
@@ -257,10 +257,10 @@ export default class Dashboard extends Component {
          return;
       }
 
-      if (type === 'column') { // If dragged item is a column
+      if (type === 'list') { // If dragged item is a list
          const newlistOrder = Array.from(this.state.listOrder);
-         newlistOrder.splice(source.index, 1); // removing column out of original position
-         newlistOrder.splice(destination.index, 0, draggableId); // putting column in new position
+         newlistOrder.splice(source.index, 1); // removing list out of original position
+         newlistOrder.splice(destination.index, 0, draggableId); // putting list in new position
 
          const newState = {
             ...this.state,
@@ -272,45 +272,45 @@ export default class Dashboard extends Component {
          });
          return;
       } else if (type === 'task') { // If dragged item is a task
-         const start = this.state.columns[source.droppableId];
-         const finish = this.state.columns[destination.droppableId];
+         const start = this.state.lists[source.droppableId];
+         const finish = this.state.lists[destination.droppableId];
    
-         if (start === finish) { // If task is moved within the same column
+         if (start === finish) { // If task is moved within the same list
             const newTaskIds = Array.from(start.taskIds);
             newTaskIds.splice(source.index, 1);
             newTaskIds.splice(destination.index, 0, draggableId);
       
-            const newColumn = {
+            const newList = {
                ...start,
                taskIds: newTaskIds
             };
       
             const newState = {
                ...this.state,
-               columns: {
-                  ...this.state.columns,
-                  [newColumn.id]: newColumn
+               lists: {
+                  ...this.state.lists,
+                  [newList.id]: newList
                },
             };
 
-            let taskIdIntegers = newColumn.taskIds.map(id => parseInt(id));
+            let taskIdIntegers = newList.taskIds.map(id => parseInt(id));
 
-            const newColumnBody = {
-               title: newColumn.title,
-               color_code: newColumn.colorCode,
-               archived: newColumn.archived,
+            const newListBody = {
+               title: newList.title,
+               color_code: newList.colorCode,
+               archived: newList.archived,
                task_order: taskIdIntegers,
             };
 
             this.setState(newState, () => {
-               const listId = newColumn.id;
+               const listId = newList.id;
                try {
-                  this.updateList(listId, newColumnBody);
+                  this.updateList(listId, newListBody);
                } catch (err) {
                   console.log(err);
                }
             });
-         } else { // If task is moved to another column
+         } else { // If task is moved to another list
             const startTaskIds = Array.from(start.taskIds);
             startTaskIds.splice(source.index, 1);
             const newStart = {
@@ -327,8 +327,8 @@ export default class Dashboard extends Component {
       
             const newState = {
                ...this.state,
-               columns: {
-                  ...this.state.columns,
+               lists: {
+                  ...this.state.lists,
                   [newStart.id]: newStart,
                   [newFinish.id]: newFinish
                },
@@ -367,18 +367,18 @@ export default class Dashboard extends Component {
 
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
-   displayColumns = () => {
-      const { tasks, columns, listOrder, projectId, loggedInUser } = this.state;
-      let columnArr = listOrder.map((columnId, index) => {
-         const column = columns[columnId];
-         const taskArr = column.taskIds.map(taskId => tasks[taskId]);
+   displayLists = () => {
+      const { tasks, lists, listOrder, projectId, loggedInUser } = this.state;
+      let listArr = listOrder.map((listId, index) => {
+         const list = lists[listId];
+         const taskArr = list.taskIds.map(taskId => tasks[taskId]);
          return (
-            <Column
-               key={column.id}
-               column={column}
+            <List
+               key={list.id}
+               list={list}
                tasks={taskArr}
                index={index}
-               colorCode={column.colorCode}
+               colorCode={list.colorCode}
                projectId={projectId}
                updateList={this.updateList}
                deleteList={this.deleteList}
@@ -389,7 +389,7 @@ export default class Dashboard extends Component {
             />
          );
       });
-      return columnArr;
+      return listArr;
    };
 
    formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
@@ -448,12 +448,12 @@ export default class Dashboard extends Component {
             <div className='main-content-container'>
                <Header handleProjectSelection={this.handleProjectSelection}/>
                <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
-                  <Droppable droppableId='all-columns' direction='horizontal' type='column' >
+                  <Droppable droppableId='all-lists' direction='horizontal' type='list' >
                      {(provided) => {
                         return (
                            <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
-                              <div className='column-container'>
-                                 { this.displayColumns() }
+                              <div className='list-container'>
+                                 { this.displayLists() }
                                  { provided.placeholder }
                               </div>
                               <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>

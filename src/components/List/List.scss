@@ -1,6 +1,6 @@
 @import '../../styles.scss';
 
-.column {
+.list {
 	height: 95%;
 	width: 20%;
 	min-width: 17rem;
@@ -14,10 +14,10 @@
 	overflow: hidden;
 	border-radius: 5px;
 
-	.column-header {
+	.list-header {
 		width: 100%;
 		height: 3rem;
-		background-color: #4F5D75; // default column header color
+		background-color: #4F5D75; // default list header color
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -27,7 +27,7 @@
 		color: white;
 	}
 
-	.column-content {
+	.list-content {
 		width: 100%;
 		height: 100%;
 		display: flex;
@@ -41,7 +41,7 @@
 		background-color: rgb(235, 236, 240);
 	}
 
-	.column-footer {
+	.list-footer {
 		width: 100%;
 		height: 3rem;
 		display: flex;
@@ -53,7 +53,7 @@
 		color: gray;
 		background-color: rgb(235, 236, 240);
 		
-		.column-add-button-container {
+		.list-add-button-container {
 			display: flex;
 			flex-direction: row;
 			align-content: center;
@@ -78,7 +78,7 @@
 			}
 		}
 
-		.column-delete-button:hover {
+		.list-delete-button:hover {
 			// color: darkred;
 			color: $accent-orange;
 		}
@@ -119,7 +119,7 @@
 	}
 }
 
-.edit-column-modal {
+.edit-list-modal {
 	width: 35rem;
 	height: 42rem;
 	background-color: white;
