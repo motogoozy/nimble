@@ -143,7 +143,7 @@ export default class List extends Component {
 	};
 
 	displayTasks = () => {
-		const { tasks } = this.props;
+		const { tasks, projectId } = this.props;
 		const { listColorCode } = this.state;
 		return tasks.map((task, index) => {
 			return (
@@ -153,9 +153,14 @@ export default class List extends Component {
 					index={index}
 					title={task.title}
 					content={task.content}
+					list_id={this.props.list.databaseId}
+					created_by={task.created_by}
+					created_at={task.created_at}
 					colorCode={listColorCode}
 					formatColor={this.formatColor}
 					checkIsLight={this.checkIsLight}
+					project_id={projectId}
+					getTasks={this.props.getTasks}
 				/>
 			)
 		});
