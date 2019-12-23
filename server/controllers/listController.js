@@ -41,10 +41,11 @@ module.exports = {
       const { list_id } = req.params;
       const db = req.app.get('db');
 		try {
-			let deletedList = await db.list.delete_list({ list_id });
-			res.status(200).send(deletedList);
+         let deletedTasks = await db.task.delete_all_tasks_in_list({ list_id });
+         let deletedList = await db.list.delete_list({ list_id });
+			res.status(200).send([deletedList, deletedTasks]);
 		} catch(err) {
 			console.log(err);
 		}
    },
-};
+}

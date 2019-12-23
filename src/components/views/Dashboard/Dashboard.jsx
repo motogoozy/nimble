@@ -15,7 +15,7 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      loggedInUser: 1,
+      loggedInUserId: 1,
       projectId: null,
       project: {},
       tasks: {},
@@ -123,6 +123,7 @@ export default class Dashboard extends Component {
          archived: false,
          task_order: [],
       };
+      this.setState({ displayAddListModal: false });
       try {
          let res = await axios.post(`/project/${projectId}/list`, body);
          let added = res.data[0];
@@ -145,7 +146,6 @@ export default class Dashboard extends Component {
          this.setState({
             lists: newLists,
             listOrder: newOrder,
-            displayAddListModal: false,
             title: '',
          }, () => {
             this.updateProject()
@@ -176,7 +176,7 @@ export default class Dashboard extends Component {
 
    deleteList = async (databaseId, id) => {
       const { project_id, listOrder, lists } = this.state;
-      
+
       try {
          await axios.delete(`/project/${project_id}/list/${databaseId}`);
          const indexToRemove = listOrder.indexOf(id);
@@ -189,6 +189,7 @@ export default class Dashboard extends Component {
             listOrder: newOrder,
          }, () => {
             this.updateProject();
+            console.log('List and tasks successfully deleted.')
          });
       } catch(err) {
          console.log(err)
@@ -366,9 +367,13 @@ export default class Dashboard extends Component {
    convertTaskIdsToIntegers = strArr => strArr.map(str => parseInt(str));
 
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
+
+   filterTasksByUser = (tasks) => {
+      //TODO Filter tasks by assigned users
+   };
    
    displayLists = () => {
-      const { tasks, lists, listOrder, projectId, loggedInUser } = this.state;
+      const { tasks, lists, listOrder, projectId, loggedInUserId } = this.state;
       let listArr = listOrder.map((listId, index) => {
          const list = lists[listId];
          const taskArr = list.taskIds.map(taskId => tasks[taskId]);
@@ -382,7 +387,7 @@ export default class Dashboard extends Component {
                projectId={projectId}
                updateList={this.updateList}
                deleteList={this.deleteList}
-               loggedInUser={loggedInUser}
+               loggedInUserId={loggedInUserId}
                getTasks={this.getTasks}
                getLists={this.getLists}
                convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}

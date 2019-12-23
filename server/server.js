@@ -48,6 +48,7 @@ app.delete('/project/:project_id/list/:list_id', listController.deleteList); // 
 
 // Task
 app.get('/project/:project_id/tasks', taskController.getTasks); // Get all project tasks
+//TODO get tasks by user id 
 app.post('/project/:project_id/task', taskController.createTask); // Create new task
 app.put('/task/:id', taskController.updateTask) // Update task
 app.delete('/task/:id', taskController.deleteTask) // Delete task

@@ -105,18 +105,19 @@ export default class List extends Component {
 
 	addTask = async () => {
 		const { newTaskTitle } = this.state;
-		const { loggedInUser, list, projectId, updateList, getLists } = this.props;
+		const { loggedInUserId, list, projectId, updateList, getLists } = this.props;
 		const taskBody = {
 			title: newTaskTitle,
-			created_by: loggedInUser,
+			created_by: loggedInUserId,
 			list_id: list.databaseId,
 		};
+		this.setState({ displayAddTaskModal: false });
 		try {
 			let res = await axios.post(`/project/${projectId}/task`, taskBody);
 			let added = res.data;
 			let newTaskOrder = list.taskIds.map(id => parseInt(id));
 			let newTaskId = added.id;
-			newTaskOrder.push(newTaskId);
+			newTaskOrder.push(newTaskId)
 			const listBody = {
 				title: list.title,
 				color_code: list.colorCode,
@@ -128,7 +129,6 @@ export default class List extends Component {
 			await getLists();
 			this.setState({
 				newTaskTitle: '',
-				displayAddTaskModal: false,
 			});
 		} catch (err) {
 			console.log(err);
@@ -142,37 +142,31 @@ export default class List extends Component {
 		});
 	};
 
-	deleteTask = (taskId) => {
+	deleteTask = async (task_id) => {
 		const { list } = this.props;
-		return new Promise(async (resolve, reject) => {
-			try {
-				let res = await axios.delete(`/task/${taskId}`);
-				let deleteIndex = list.taskIds.indexOf(taskId.toString());
-				let removedList = list.taskIds;
-				removedList.splice(deleteIndex, 1);
-				let newTaskOrder = removedList.map(id => parseInt(id));
-				const listBody = {
-					title: list.title,
-					color_code: list.colorCode,
-					archived: list.archived,
-					task_order: newTaskOrder,
-				};
-				await this.props.getTasks();
-				this.props.updateList(list.id, listBody);
-				this.props.getLists();
-				this.setState({
-					displayEditModal: false
-				});
-				console.log(`${res.data.title} deleted.`)
-				resolve(res.data)
-			} catch (err) {
-				console.log(err);
-			}
-		})
+		let removedIndex = list.taskIds.indexOf(task_id.toString());
+		let taskOrder = list.taskIds;
+		taskOrder.splice(removedIndex, 1);
+		let newTaskOrder = taskOrder.map(task => parseInt(task));
+		this.setState({ displayEditModal: false });
+		const body = {
+			title: list.title,
+			color_code: list.colorCode,
+			archived: list.archived,
+			task_order: newTaskOrder,
+		};
+		try {
+			await axios.delete(`/task/${task_id}`);
+			await this.props.updateList(list.id, body);
+			await this.props.getTasks();
+			this.props.getLists();
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	displayTasks = () => {
-		const { tasks, projectId } = this.props;
+		const { tasks } = this.props;
 		const { listColorCode } = this.state;
 		return tasks.map((task, index) => {
 			return (
@@ -182,13 +176,9 @@ export default class List extends Component {
 					index={index}
 					title={task.title}
 					content={task.content}
-					list_id={this.props.list.databaseId}
-					created_by={task.created_by}
-					created_at={task.created_at}
 					colorCode={listColorCode}
 					formatColor={this.formatColor}
 					checkIsLight={this.checkIsLight}
-					project_id={projectId}
 					deleteTask={this.deleteTask}
 				/>
 			)

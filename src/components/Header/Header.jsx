@@ -20,7 +20,7 @@ class Header extends Component {
       search: '',
       newProjectName: '',
       displayAddProjectModal: false,
-      loggedInUser: 1,
+      loggedInUserId: 1,
       projects: [],
       selectedProject: '',
    };
@@ -50,8 +50,8 @@ class Header extends Component {
    };
 
    getUserProjects = async () => {
-      const { loggedInUser } = this.state;
-      let res = await axios.get(`/projects/${loggedInUser}`);
+      const { loggedInUserId } = this.state;
+      let res = await axios.get(`/projects/${loggedInUserId}`);
       let projectsArr = res.data.map(project => {
          project.value = project.id;
          project.label = project.title;
@@ -82,10 +82,10 @@ class Header extends Component {
    }
 
    addProject = async () => {
-      const { loggedInUser, newProjectName } = this.state;
+      const { loggedInUserId, newProjectName } = this.state;
       const body = {
          title: newProjectName,
-         created_by: loggedInUser,
+         created_by: loggedInUserId,
       };
       try {
          let res = await axios.post('/project', body);
