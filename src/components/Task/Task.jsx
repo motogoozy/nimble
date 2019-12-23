@@ -44,7 +44,8 @@ export default class Task extends Component {
 		};
 		try {
 			let res = await axios.put(`/task/${id}`, body);
-			this.props.getTasks();
+			await this.props.getTasks();
+			this.props.getLists();
 			this.setState({
 				displayEditModal: false,
 				title: res.data.title,
@@ -62,6 +63,15 @@ export default class Task extends Component {
 			content: content,
 			displayEditModal: false,
 		});
+	};
+
+	deleteTask = async () => {
+		const { id } = this.props;
+		try {
+			await this.props.deleteTask(id);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	editModal = () => {
@@ -89,7 +99,7 @@ export default class Task extends Component {
 						<div className='edit-modal-buttons'>
 							<div className='edit-modal-delete-container'>
 								<Tooltip title={'Delete List'}>
-									<IconButton aria-label="delete">
+									<IconButton aria-label="delete" onClick={this.deleteTask}>
 										<DeleteIcon />
 									</IconButton>
 								</Tooltip>

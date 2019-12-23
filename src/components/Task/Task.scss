@@ -32,6 +32,9 @@
 		i {
 			color: $primary-lt-gray;
 			font-size: .85rem;
+			&:hover {
+				color: $primary-dk-gray;
+			}
 		}
 	}
 }

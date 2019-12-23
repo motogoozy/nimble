@@ -33,4 +33,14 @@ module.exports = {
          console.log(err)
       }
    },
+   deleteTask: async (req, res) => {
+      const { id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let deletedTask = await db.task.delete_task({ id });
+         res.status(200).send(deletedTask[0]);
+      } catch (err) {
+         console.log(err);
+      }
+   },
 };

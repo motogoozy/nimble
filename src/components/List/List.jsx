@@ -116,7 +116,7 @@ export default class List extends Component {
 			let added = res.data;
 			let newTaskOrder = list.taskIds.map(id => parseInt(id));
 			let newTaskId = added.id;
-			newTaskOrder.push(newTaskId)
+			newTaskOrder.push(newTaskId);
 			const listBody = {
 				title: list.title,
 				color_code: list.colorCode,
@@ -142,6 +142,35 @@ export default class List extends Component {
 		});
 	};
 
+	deleteTask = (taskId) => {
+		const { list } = this.props;
+		return new Promise(async (resolve, reject) => {
+			try {
+				let res = await axios.delete(`/task/${taskId}`);
+				let deleteIndex = list.taskIds.indexOf(taskId.toString());
+				let removedList = list.taskIds;
+				removedList.splice(deleteIndex, 1);
+				let newTaskOrder = removedList.map(id => parseInt(id));
+				const listBody = {
+					title: list.title,
+					color_code: list.colorCode,
+					archived: list.archived,
+					task_order: newTaskOrder,
+				};
+				await this.props.getTasks();
+				this.props.updateList(list.id, listBody);
+				this.props.getLists();
+				this.setState({
+					displayEditModal: false
+				});
+				console.log(`${res.data.title} deleted.`)
+				resolve(res.data)
+			} catch (err) {
+				console.log(err);
+			}
+		})
+	};
+
 	displayTasks = () => {
 		const { tasks, projectId } = this.props;
 		const { listColorCode } = this.state;
@@ -160,7 +189,7 @@ export default class List extends Component {
 					formatColor={this.formatColor}
 					checkIsLight={this.checkIsLight}
 					project_id={projectId}
-					getTasks={this.props.getTasks}
+					deleteTask={this.deleteTask}
 				/>
 			)
 		});

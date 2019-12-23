@@ -20,7 +20,7 @@ export default class Dashboard extends Component {
       project: {},
       tasks: {},
       lists: {},
-      listOrder: [], // array of strings
+      listOrder: [], // array of strings of list-id's
       title: '',
       newColorCode: [96, 125, 139, 1],
       displayAddButton: false,
@@ -168,9 +168,10 @@ export default class Dashboard extends Component {
       const { projectId } = this.state;
       let res = await axios.put(`/project/${projectId}/list/${id}`, body);
       let updated = res.data[0];
-      return new Promise((resolve, reject) => {
-         resolve(updated);
-      });
+      return updated;
+      // return new Promise((resolve, reject) => {
+      //    resolve(updated);
+      // });
    };
 
    deleteList = async (databaseId, id) => {
@@ -194,7 +195,7 @@ export default class Dashboard extends Component {
       }
    };
 
-   updateTask = async (taskId, listId) => {
+   updateListIdOnTask = async (taskId, listId) => {
       const { tasks } = this.state;
       const task = tasks[taskId];
       const body = {
@@ -203,7 +204,6 @@ export default class Dashboard extends Component {
          list_id: listId,
          created_at: task.created_at,
          created_by: task.created_by,
-         project_id: task.project_id
       };
 
       let res = await axios.put(`/task/${taskId}`, body);
@@ -258,13 +258,13 @@ export default class Dashboard extends Component {
       }
 
       if (type === 'list') { // If dragged item is a list
-         const newlistOrder = Array.from(this.state.listOrder);
-         newlistOrder.splice(source.index, 1); // removing list out of original position
-         newlistOrder.splice(destination.index, 0, draggableId); // putting list in new position
+         const newListOrder = Array.from(this.state.listOrder);
+         newListOrder.splice(source.index, 1); // removing list out of original position
+         newListOrder.splice(destination.index, 0, draggableId); // putting list in new position
 
          const newState = {
             ...this.state,
-            listOrder: newlistOrder,
+            listOrder: newListOrder,
             displayAddButton: true,
          };
          this.setState(newState, () => {
@@ -355,9 +355,9 @@ export default class Dashboard extends Component {
             }
 
             this.setState(newState, () => {
-               this.updateTask(taskId, finishListId);
-               this.updateList(startListId, newStartBody);
-               this.updateList(finishListId, newFinishBody);
+               this.updateListIdOnTask(taskId, finishListId);
+               this.updateList(startListId, newStartBody); // Updating old list
+               this.updateList(finishListId, newFinishBody); // Updating new List
             });
          }
       }
