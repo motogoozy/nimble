@@ -1,7 +1,7 @@
 -- Initialize db tables
 
 CREATE TABLE users (
-	id SERIAL PRIMARY KEY,
+	user_id SERIAL PRIMARY KEY,
 	first_name character varying(50) NOT NULL,
 	last_name character varying(50) NOT NULL,
 	email character varying(50) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE project (
-	id SERIAL PRIMARY KEY,
+	project_id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
 	list_order text[] NOT NULL,
 	created_at timestamp without time zone NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE project (
 );
 
 CREATE TABLE list (
-	id SERIAL PRIMARY KEY,
+	list_id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
 	color_code integer[] NOT NULL,
 	archived boolean NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE list (
 );
 
 CREATE TABLE task (
-	id SERIAL PRIMARY KEY,
+	task_id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,
 	status character varying(50) NOT NULL,
 	list_id integer NOT NULL REFERENCES list(id),
@@ -49,7 +49,7 @@ CREATE TABLE project_lists (
 );
 
 CREATE TABLE task_users (
-	id SERIAL PRIMARY KEY,
+	tu_id SERIAL PRIMARY KEY,
 	task_id integer NOT NULL REFERENCES task(id),
 	user_id integer NOT NULL REFERENCES users(id)
 );

@@ -11,10 +11,10 @@ module.exports = {
       }
    },
    getProjectById: async (req, res) => {
-      const { id } = req.params;
+      const { project_id } = req.params;
       const db = req.app.get('db');
       try {
-         let project = await db.project.get_project_by_id({ id });
+         let project = await db.project.get_project_by_id({ project_id });
          res.status(200).send(project);
       }
       catch (err) {
@@ -38,11 +38,11 @@ module.exports = {
       }
    },
    updateProject: async (req, res) => {
-      const { id } = req.params;
+      const { project_id } = req.params;
       const { title, list_order } = req.body;
       const db = req.app.get('db');
       try {
-         let updatedProject = await db.project.update_project({ id, title, list_order });
+         let updatedProject = await db.project.update_project({ project_id, title, list_order });
          res.status(200).send(updatedProject);
       } catch (err) {
          console.log(err);

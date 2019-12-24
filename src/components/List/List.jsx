@@ -116,7 +116,7 @@ export default class List extends Component {
 			let res = await axios.post(`/project/${projectId}/task`, taskBody);
 			let added = res.data;
 			let newTaskOrder = list.taskIds.map(id => parseInt(id));
-			let newTaskId = added.id;
+			let newTaskId = added.task_id;
 			newTaskOrder.push(newTaskId)
 			const listBody = {
 				title: list.title,

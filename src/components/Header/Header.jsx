@@ -28,7 +28,7 @@ class Header extends Component {
    componentDidMount = async () => {
       await this.getUserProjects();
       if (this.props.match.params.project_id) {
-         const project = this.state.projects.filter(project => project.id === parseInt(this.props.match.params.project_id))[0];
+         const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
          if (project) {
             this.handleSelection(project)
          }
@@ -41,7 +41,7 @@ class Header extends Component {
          this.setState({ currentPage: window.location.hash });
       };
       if (this.props.match.params.project_id !== prevProps.match.params.project_id) {
-         const project = this.state.projects.filter(project => project.id === parseInt(this.props.match.params.project_id))[0];
+         const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
          if (project) {
             this.handleSelection(project)
          }
@@ -53,7 +53,7 @@ class Header extends Component {
       const { loggedInUserId } = this.state;
       let res = await axios.get(`/projects/${loggedInUserId}`);
       let projectsArr = res.data.map(project => {
-         project.value = project.id;
+         project.value = project.project_id;
          project.label = project.title;
          return project;
       });
@@ -74,8 +74,8 @@ class Header extends Component {
    };
 
    handleSelection = (project) => {
-      this.props.history.push(`/dashboard/project/${project.id}`)
-      this.props.handleProjectSelection(project.id);
+      this.props.history.push(`/dashboard/project/${project.project_id}`)
+      this.props.handleProjectSelection(project.project_id);
       this.setState({
          selectedProject: project
       });
@@ -90,8 +90,8 @@ class Header extends Component {
       try {
          let res = await axios.post('/project', body);
          await this.getUserProjects();
-         this.props.handleProjectSelection(res.data.id);
-         res.data.value = res.data.id;
+         this.props.handleProjectSelection(res.data.project_id);
+         res.data.value = res.data.project_id;
          res.data.label = res.data.title;
          this.setState({
             selectedProject: res.data,

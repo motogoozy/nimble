@@ -1,3 +1,3 @@
 DELETE FROM task
-WHERE id = ${id}
+WHERE task_id = ${task_id}
 RETURNING *;

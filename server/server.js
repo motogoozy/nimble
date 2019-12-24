@@ -33,9 +33,9 @@ massive(CONNECTION_STRING).then(db => {
 // ENDPOINTS
 // Project
 app.get('/projects/:user_id', projectController.getProjectsByUserId) // Get all user's projects
-app.get('/project/:id', projectController.getProjectById); // Get project by Id
+app.get('/project/:project_id', projectController.getProjectById); // Get project by Id
 app.post('/project', projectController.createProject);
-app.put('/project/:id', projectController.updateProject) // Update Project
+app.put('/project/:project_id', projectController.updateProject) // Update Project
 
 // User
 app.post(`/user`, userController.createUser); // Add user
@@ -50,5 +50,5 @@ app.delete('/project/:project_id/list/:list_id', listController.deleteList); // 
 app.get('/project/:project_id/tasks', taskController.getTasks); // Get all project tasks
 app.get('/project/:project_id/tasks/:user_id', taskController.getTasksByUserId) // Get all tasks assigned to a specific user
 app.post('/project/:project_id/task', taskController.createTask); // Create new task
-app.put('/task/:id', taskController.updateTask) // Update task
-app.delete('/task/:id', taskController.deleteTask) // Delete task
+app.put('/task/:task_id', taskController.updateTask) // Update task
+app.delete('/task/:task_id', taskController.deleteTask) // Delete task

@@ -1,2 +1,2 @@
 SELECT * FROM project
-WHERE id = ${id};
+WHERE project_id = ${project_id};

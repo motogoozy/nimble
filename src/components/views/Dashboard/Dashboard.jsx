@@ -48,8 +48,8 @@ export default class Dashboard extends Component {
       res.data.forEach(list => {
          let taskOrderStrings = this.convertTaskIdsToStrings(list.task_order);
          let newList = {
-            id: list.id.toString(),
-            databaseId: list.id,
+            id: list.list_id.toString(),
+            databaseId: list.list_id,
             title: list.title,
             colorCode: list.color_code,
             taskIds: taskOrderStrings,
@@ -68,8 +68,8 @@ export default class Dashboard extends Component {
       let res = await axios.get(`/project/${projectId}/tasks`)
       let tasks = {};
       res.data.forEach(task => {
-         task.databaseId = task.id;
-         task.id = task.id.toString();
+         task.databaseId = task.task_id;
+         task.id = task.task_id.toString();
          task.content = '';
          tasks[task.id] = task;
       });
@@ -127,9 +127,9 @@ export default class Dashboard extends Component {
          let res = await axios.post(`/project/${projectId}/list`, body);
          let added = res.data[0];
          let newList = {
-            id: added.id.toString(),
+            id: added.list_id.toString(),
             title: added.title,
-            databaseId: added.id,
+            databaseId: added.list_id,
             colorCode: added.color_code,
             taskIds: [],
             archived: added.archived,
@@ -168,9 +168,6 @@ export default class Dashboard extends Component {
       let res = await axios.put(`/project/${projectId}/list/${id}`, body);
       let updated = res.data[0];
       return updated;
-      // return new Promise((resolve, reject) => {
-      //    resolve(updated);
-      // });
    };
 
    deleteList = async (databaseId, id) => {
@@ -366,10 +363,6 @@ export default class Dashboard extends Component {
    convertTaskIdsToIntegers = strArr => strArr.map(str => parseInt(str));
 
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
-
-   filterTasksByUser = (tasks) => {
-      //TODO Filter tasks by assigned users
-   };
    
    displayLists = () => {
       const { tasks, lists, listOrder, projectId, loggedInUserId } = this.state;
