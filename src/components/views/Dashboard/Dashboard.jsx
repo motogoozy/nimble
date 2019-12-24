@@ -107,7 +107,6 @@ export default class Dashboard extends Component {
             await this.getTasks();
             await this.getLists();
             await this.getProjectDetails();
-            // await this.assignTasksToLists();
          }
          catch(err) {
             console.log(err);

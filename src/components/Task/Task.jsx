@@ -119,7 +119,6 @@ export default class Task extends Component {
 		)
 	};
 	
-	
 	render() {
 		const { title, content } = this.state;
 		const { id, index, colorCode } = this.props;
@@ -144,7 +143,9 @@ export default class Task extends Component {
 							>
 								<div className='task-header'>
 									<p>{title}</p>
-									<i className="fas fa-pencil-alt cursor-pointer" onClick={() => this.setState({ displayEditModal: true })}></i>
+									<Tooltip title={'Edit Task'}>
+										<i className="fas fa-pencil-alt cursor-pointer" onClick={() => this.setState({ displayEditModal: true })}></i>
+									</Tooltip>
 								</div>
 								<p>{content}</p>
 							</div>
