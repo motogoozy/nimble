@@ -6,10 +6,11 @@ import Profile from './components/views/Profile/Profile';
 import SettingsPage from './components/views/SettingsPage/SettingsPage';
 
 export default (
-   <Switch>
+   <Switch>e
       <Route component={LandingPage} exact path='/' />
       <Route component={Dashboard} exact path='/dashboard' />
-      <Route component={Dashboard} path='/dashboard/project/:project_id' />
+      <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
+      <Route component={Dashboard} path='/dashboard/project/:project_id/user/:user_id' />
       <Route component={Profile} path='/profile' />
       <Route component={SettingsPage} path='/settings' />
    </Switch>

@@ -74,8 +74,8 @@ class Header extends Component {
    };
 
    handleSelection = (project) => {
-      this.props.history.push(`/dashboard/project/${project.project_id}`)
-      this.props.handleProjectSelection(project.project_id);
+      this.props.history.push(`/dashboard/project/${project.project_id}`);
+      this.props.getProjectData(project.project_id);
       this.setState({
          selectedProject: project
       });
@@ -90,7 +90,7 @@ class Header extends Component {
       try {
          let res = await axios.post('/project', body);
          await this.getUserProjects();
-         this.props.handleProjectSelection(res.data.project_id);
+         this.props.getProjectData(res.data.project_id);
          res.data.value = res.data.project_id;
          res.data.label = res.data.title;
          this.setState({

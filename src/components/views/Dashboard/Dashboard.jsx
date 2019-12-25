@@ -15,19 +15,61 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      loggedInUserId: 1,
-      projectId: null,
-      project: {},
-      tasks: {},
-      lists: {},
-      listOrder: [], // array of strings of list-id's
-      title: '',
-      newColorCode: [96, 125, 139, 1],
+      allTasks: {}, // all project tasks
+      defaultLists: {}, // lists with all project tasks (to be used to reset)
       displayAddButton: false,
       displayAddListModal: false,
+      lists: {},
+      listOrder: [], // array of strings of list_id's
+      loggedInUserId: 1,
+      newColorCode: [96, 125, 139, 1],
+      project: {},
+      projectId: null,
+      tasks: {}, // tasks to be displayed
+      title: '',
    };
 
-   componentDidMount = async () => {};
+   componentDidMount = async () => {
+      if (this.props.match.params.project_id && this.props.match.params.user_id) {
+         let project_id = this.props.match.params.project_id;
+         await this.getProjectData(project_id);
+      }
+   };
+
+   componentDidUpdate = async (prevProps) => {
+      if (prevProps.match.params !== this.props.match.params) {
+         // if the url has project_id and user_id specified 
+         if (this.props.match.params.project_id && this.props.match.params.user_id) {
+            let user_id = this.props.match.params.user_id;
+            let project_id = this.props.match.params.project_id;
+            await this.getTasksByUserId(user_id);
+         }
+         // if the project_id is specified but no user_id
+         else if (this.props.match.params.project_id && !this.props.match.params.user_id) {
+            let project_id = this.props.match.params.project_id;
+            await this.getProjectData(project_id);
+         }
+      }
+   };
+
+   getProjectData = async (id) => {
+      this.setState({
+         projectId: id,
+         lists: {},
+         tasks: {},
+         listOrder: [],
+         displayAddButton: false,
+      }, async () => {
+         try {
+            await this.getAllTasks();
+            await this.getLists();
+            await this.getProjectDetails();
+         }
+         catch(err) {
+            console.log(err);
+         }
+      })
+   };
 
    getProjectDetails = async () => {
       const { projectId } = this.state;
@@ -52,18 +94,19 @@ export default class Dashboard extends Component {
             databaseId: list.list_id,
             title: list.title,
             colorCode: list.color_code,
-            taskIds: taskOrderStrings,
+            taskIds: taskOrderStrings, // array of strings of task_id's
             archived: list.archived,
          };
          lists[newList.id] = newList;
       });
       this.setState({
          lists: lists,
+         defaultLists: lists,
          displayAddButton: true,
       });
    };
 
-   getTasks = async () => {
+   getAllTasks = async () => {
       const { projectId } = this.state;
       let res = await axios.get(`/project/${projectId}/tasks`)
       let tasks = {};
@@ -73,9 +116,51 @@ export default class Dashboard extends Component {
          task.content = '';
          tasks[task.id] = task;
       });
+
       this.setState({
          tasks: tasks,
+         allTasks: tasks,
       });
+   };
+
+   getTasksByUserId = async (user_id) => {
+      const { projectId, lists } = this.state;
+      let res = await axios.get(`/project/${projectId}/tasks/${user_id}`);
+      let userTasks = {};
+      let updatedLists = {};
+      res.data.forEach(task => {
+         task.databaseId = task.task_id;
+         task.id = task.task_id.toString();
+         task.content = '';
+         userTasks[task.id] = task;
+      });
+
+      for (let key in lists) {
+         let list = lists[key];
+         let updatedTaskIds = list.taskIds.filter(taskId => {
+            if (userTasks[taskId]) return true;
+            else return false;
+         })
+         list.taskIds = updatedTaskIds;
+         updatedLists[list.id] = list;
+      }
+      
+      this.setState({
+         tasks: userTasks,
+         lists: updatedLists,
+      });
+   };
+
+   handleSidebarSelection = async (selection) => {
+      const { loggedInUserId, allTasks, defaultLists } = this.state;
+      if (selection === 'my-tasks') {
+         this.getTasksByUserId(loggedInUserId)
+      } else if (selection === 'overview') {
+         this.setState({
+            tasks: allTasks,
+            lists: defaultLists,
+         })
+      }
    };
 
    handleInput = (key, value) => {
@@ -94,25 +179,6 @@ export default class Dashboard extends Component {
 			displayColorPicker: false,
 		});
 	};
-
-   handleProjectSelection = async (id) => {
-      this.setState({
-         projectId: id,
-         lists: {},
-         tasks: {},
-         listOrder: [],
-         displayAddButton: false,
-      }, async () => {
-         try {
-            await this.getTasks();
-            await this.getLists();
-            await this.getProjectDetails();
-         }
-         catch(err) {
-            console.log(err);
-         }
-      })
-   };
 
    addList = async () => {
       const { projectId, newColorCode, title, lists, listOrder } = this.state;
@@ -380,7 +446,7 @@ export default class Dashboard extends Component {
                updateList={this.updateList}
                deleteList={this.deleteList}
                loggedInUserId={loggedInUserId}
-               getTasks={this.getTasks}
+               getAllTasks={this.getAllTasks}
                getLists={this.getLists}
                convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}
             />
@@ -437,13 +503,18 @@ export default class Dashboard extends Component {
          </div>
       )
    }
-	
+
 	render() {
 		return (
 			<div className='dashboard'>
-				<Sidebar />
+				<Sidebar
+               projectId={this.state.projectId}
+               loggedInUserId={this.state.loggedInUserId}
+               getProjectData={this.getProjectData}
+               handleSidebarSelection={this.handleSidebarSelection}
+            />
             <div className='main-content-container'>
-               <Header handleProjectSelection={this.handleProjectSelection}/>
+               <Header getProjectData={this.getProjectData}/>
                <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
                   <Droppable droppableId='all-lists' direction='horizontal' type='list' >
                      {(provided) => {

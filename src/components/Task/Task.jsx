@@ -12,10 +12,10 @@ import { Draggable } from 'react-beautiful-dnd';
 
 export default class Task extends Component {
 	state = {
-		title: '',
-		newTitle: '',
 		content: '',
 		displayEditModal: false,
+		newTitle: '',
+		title: '',
 	};
 
 	componentDidMount = () => {
@@ -43,8 +43,8 @@ export default class Task extends Component {
 			created_by: created_by,
 		};
 		try {
-			let res = await axios.put(`/task/${id}`, body);
-			await this.props.getTasks();
+			let res = await axios.put(`/task/${parseInt(id)}`, body);
+			await this.props.getAllTasks();
 			this.props.getLists();
 			this.setState({
 				displayEditModal: false,

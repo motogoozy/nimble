@@ -15,15 +15,15 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 export default class List extends Component {
 	state = {
-		title: '',
-		newTitle: '',
-		newTaskTitle: '',
+		archived: false,
+		displayAddTaskModal: false,
+		displayColorPicker: false,
+		displayEditModal: false,
 		listColorCode: [],
 		newListColorCode: [],
-		displayAddTaskModal: false,
-		displayEditModal: false,
-		displayColorPicker: false,
-		archived: false,
+		newTaskTitle: '',
+		newTitle: '',
+		title: '',
 	};
 
 	componentDidMount = () => {
@@ -124,7 +124,7 @@ export default class List extends Component {
 				archived: list.archived,
 				task_order: newTaskOrder,
 			};
-			await this.props.getTasks();
+			await this.props.getAllTasks();
 			await updateList(added.list_id, listBody);
 			await getLists();
 			this.setState({
@@ -158,7 +158,7 @@ export default class List extends Component {
 		try {
 			await axios.delete(`/task/${task_id}`);
 			await this.props.updateList(list.id, body);
-			await this.props.getTasks();
+			await this.props.getAllTasks();
 			this.props.getLists();
 		} catch (err) {
 			console.log(err);
@@ -177,9 +177,14 @@ export default class List extends Component {
 					title={task.title}
 					content={task.content}
 					colorCode={listColorCode}
+					list_id={task.list_id}
+					created_at={task.created_at}
+					created_by={task.created_by}
 					formatColor={this.formatColor}
 					checkIsLight={this.checkIsLight}
 					deleteTask={this.deleteTask}
+					getAllTasks={this.props.getAllTasks}
+					getLists={this.props.getLists}
 				/>
 			)
 		});

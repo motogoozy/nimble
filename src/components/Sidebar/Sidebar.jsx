@@ -10,12 +10,19 @@ class Sidebar extends Component {
       selectedButton: 'overview',
    };
 
-   handleButtonClick = (selected) => {
+   handleButtonClick = async (selected) => {
+      const { projectId, loggedInUserId } = this.props;
+      if (selected === 'overview') {
+         // this.props.history.push(`/dashboard/project/${projectId}`);
+      } else if (selected === 'my-tasks') {
+         // this.props.history.push(`/dashboard/project/${projectId}/user/${loggedInUserId}`);
+      }
       this.setState({ selectedButton: selected });
-   }
+   };
 
    render() {
       const { selectedButton } = this.state;
+      const { projectId, loggedInUserId } = this.props;
 
       return (
          <div className='sidebar'>
@@ -31,7 +38,7 @@ class Sidebar extends Component {
             </Link>
             <div className='sidebar-buttons-container'>
                <Link 
-                  to='/dashboard'
+                  to={`/dashboard/project/${this.props.projectId}`}
                   onClick={() => this.handleButtonClick('overview')}
                   className={selectedButton === 'overview' ? 'link active-button' : 'link'}
                   style={{ textDecoration: 'none' }}
@@ -43,15 +50,19 @@ class Sidebar extends Component {
                      </div>
                   </Tooltip>
                </Link>
-               <Tooltip title={'Only My Tasks'} enterDelay={300}>
-                  <div
-                     onClick={() => this.handleButtonClick('my-tasks')}
-                     className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
-                  >
-                     <i className="far fa-user"></i>
-                     <p>MY TASKS</p>
-                  </div>
-               </Tooltip>
+               <Link
+                  to={`/dashboard/project/${projectId}/user/${loggedInUserId}`}
+                  onClick={() => this.handleButtonClick('my-tasks')}
+                  className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
+                  style={{ textDecoration: 'none' }}
+               >
+                  <Tooltip title={'Only My Tasks'} enterDelay={300}>
+                     <div>
+                        <i className="far fa-user"></i>
+                        <p>MY TASKS</p>
+                     </div>
+                  </Tooltip>
+               </Link>
                <Tooltip title={'Unassigned Tasks'} enterDelay={300}>
                   <div
                      onClick={() => this.handleButtonClick('unassigned')}
