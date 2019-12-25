@@ -1,5 +1,5 @@
 module.exports = {
-   getTasks: async (req, res) => {
+   getAllTasks: async (req, res) => {
       const { project_id } = req.params;
       const db = req.app.get('db');
       try {
@@ -47,6 +47,7 @@ module.exports = {
       const { task_id } = req.params;
       const db = req.app.get('db');
       try {
+         await db.task_users.delete_task_users({ task_id });
          let deletedTask = await db.task.delete_task({ task_id });
          res.status(200).send(deletedTask[0]);
       } catch (err) {

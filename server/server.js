@@ -47,7 +47,7 @@ app.put('/project/:project_id/list/:list_id', listController.updateList); // Edi
 app.delete('/project/:project_id/list/:list_id', listController.deleteList); // Delete list
 
 // Task
-app.get('/project/:project_id/tasks', taskController.getTasks); // Get all project tasks
+app.get('/project/:project_id/tasks', taskController.getAllTasks); // Get all project tasks
 app.get('/project/:project_id/tasks/:user_id', taskController.getTasksByUserId) // Get all tasks assigned to a specific user
 app.post('/project/:project_id/task', taskController.createTask); // Create new task
 app.put('/task/:task_id', taskController.updateTask) // Update task
