@@ -11,7 +11,7 @@ class Sidebar extends Component {
    };
 
    handleButtonClick = async (selected) => {
-      const { projectId, loggedInUserId } = this.props;
+      // const { projectId, loggedInUserId } = this.props;
       if (selected === 'overview') {
          // this.props.history.push(`/dashboard/project/${projectId}`);
       } else if (selected === 'my-tasks') {

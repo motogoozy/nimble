@@ -41,7 +41,7 @@ export default class Dashboard extends Component {
          // if the url has project_id and user_id specified 
          if (this.props.match.params.project_id && this.props.match.params.user_id) {
             let user_id = this.props.match.params.user_id;
-            let project_id = this.props.match.params.project_id;
+            // let project_id = this.props.match.params.project_id;
             await this.getTasksByUserId(user_id);
          }
          // if the project_id is specified but no user_id
