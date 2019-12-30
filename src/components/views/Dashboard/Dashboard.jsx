@@ -15,8 +15,6 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      defaultLists: {}, // lists with all project tasks (to be used to reset)
-      defaultTasks: {}, // all project tasks
       displayAddButton: false,
       displayAddListModal: false,
       lists: {},
@@ -28,28 +26,23 @@ export default class Dashboard extends Component {
       tasks: {}, // tasks to be displayed
       taskUsers: {},
       title: '',
+      highlightTasksOfUser: 'all',
    };
 
    componentDidMount = async () => {
       if (this.props.match.params.project_id && this.props.match.params.user_id) {
          let project_id = this.props.match.params.project_id;
+         let user_id = this.props.match.params.user_id;
+         this.setState({ highlightTasksOfUser: user_id });
          await this.getProjectData(project_id);
       }
    };
 
    componentDidUpdate = async (prevProps) => {
-      if (prevProps.match.params !== this.props.match.params) {
-         // if the url has project_id and user_id specified 
-         if (this.props.match.params.project_id && this.props.match.params.user_id) {
-            let user_id = this.props.match.params.user_id;
-            await this.getTasksByUserId(user_id);
-         }
-         // if the project_id is specified but no user_id
-         else if (this.props.match.params.project_id && !this.props.match.params.user_id) {
-            let project_id = this.props.match.params.project_id;
-            await this.getProjectData(project_id);
-         }
-      }
+      // if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
+      //    let user_id = this.props.match.params.user_id;
+      //    this.setState({ highlightTasksOfUser: user_id });
+      // }
    };
 
    getProjectData = async (id) => {
@@ -102,16 +95,20 @@ export default class Dashboard extends Component {
       });
       this.setState({
          lists: lists,
-         defaultLists: {...lists},
          displayAddButton: true,
       });
    };
 
    getAllTasks = async () => {
-      const { projectId } = this.state;
+      const { projectId, taskUsers } = this.state;
       let res = await axios.get(`/project/${projectId}/tasks`)
       let tasks = {};
       res.data.forEach(task => {
+         if (taskUsers[task.task_id]) {
+            task.assignedUsers = taskUsers[task.task_id];
+         } else {
+            task.assignedUsers = [];
+         }
          task.databaseId = task.task_id;
          task.id = task.task_id.toString();
          task.content = '';
@@ -120,7 +117,6 @@ export default class Dashboard extends Component {
 
       this.setState({
          tasks: tasks,
-         defaultTasks: {...tasks},
       });
    };
 
@@ -155,21 +151,20 @@ export default class Dashboard extends Component {
    getTaskUsers = async () => {
       const { projectId } = this.state;
       let res = await axios.get(`/task_users/${projectId}`);
+      let taskUserObj = {};
+      res.data.forEach(tu => {
+         if (!taskUserObj[tu.task_id]) {
+            taskUserObj[tu.task_id] = [];
+         }
+         taskUserObj[tu.task_id].push(tu.user_id);
+      })
       this.setState({
-         taskUsers: res.data
+         taskUsers: taskUserObj
       });
    };
 
    handleSidebarSelection = async (selection) => {
-      const { loggedInUserId, defaultTasks, defaultLists } = this.state;
-      if (selection === 'my-tasks') {
-         this.getTasksByUserId(loggedInUserId)
-      } else if (selection === 'overview') {
-         this.setState({
-            tasks: defaultTasks,
-            lists: defaultLists,
-         })
-      }
+      this.setState({ highlightTasksOfUser: selection });
    };
 
    handleInput = (key, value) => {
@@ -179,7 +174,6 @@ export default class Dashboard extends Component {
    handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
-		console.log(codeArr)
 		this.setState({ newColorCode: codeArr });
    };
    
@@ -444,7 +438,7 @@ export default class Dashboard extends Component {
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
    displayLists = () => {
-      const { tasks, lists, listOrder, projectId, loggedInUserId } = this.state;
+      const { tasks, lists, listOrder, projectId, loggedInUserId, highlightTasksOfUser } = this.state;
       let listArr = listOrder.map((listId, index) => {
          const list = lists[listId];
          const taskArr = list.taskIds.map(taskId => tasks[taskId]);
@@ -462,6 +456,7 @@ export default class Dashboard extends Component {
                getAllTasks={this.getAllTasks}
                getLists={this.getLists}
                convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}
+               highlightTasksOfUser={highlightTasksOfUser}
             />
          );
       });
@@ -520,7 +515,7 @@ export default class Dashboard extends Component {
 	render() {
 		return (
 			<div className='dashboard'>
-				<Sidebar projectId={this.state.projectId} loggedInUserId={this.state.loggedInUserId} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection} />
+				<Sidebar projectId={this.state.projectId} loggedInUserId={this.state.loggedInUserId} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection}/>
             <div className='main-content-container'>
                <Header getProjectData={this.getProjectData}/>
                <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >

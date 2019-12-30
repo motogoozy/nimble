@@ -31,6 +31,7 @@
 
 		i {
 			color: $primary-lt-gray;
+			background-color: transparent;
 			font-size: .85rem;
 			&:hover {
 				color: $primary-dk-gray;
@@ -115,5 +116,16 @@
 	.current-color-box {
 		width: 2rem;
 		height: 2rem;
+	}
+}
+
+.unselected-task {
+	background-color: rgba(196, 196, 196, 0.8);
+	color: rgb(92, 92, 92);
+
+	.task-header {
+		i {
+			color: rgb(139, 138, 138);
+		}
 	}
 }

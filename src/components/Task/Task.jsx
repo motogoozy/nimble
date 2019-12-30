@@ -121,30 +121,44 @@ export default class Task extends Component {
 	
 	render() {
 		const { title, content } = this.state;
-		const { id, index, colorCode } = this.props;
+		const { id, index, colorCode, highlightTasksOfUser, assignedUsers } = this.props;
+
+		let highlight = false;
+		if (highlightTasksOfUser === 'all') {
+			highlight = true;
+		} else if (assignedUsers.includes(highlightTasksOfUser)) {
+			highlight = true;
+		} else if (assignedUsers.length === 0 && highlightTasksOfUser === 'none') {
+			highlight = true;
+		}
+
 		return (
 			<>
 				<Draggable draggableId={id} index={index}>
 					{(provided, snapshot) => {
 						const borderColor = `rgba(${[...colorCode]})`
-						const style = {
+						const mainStyle = {
 							border: snapshot.isDragging ? `2px solid ${borderColor}` : `1px solid ${borderColor}`,
 							boxShadow: snapshot.isDragging ? '0px 0px 10px 0px rgba(107,107,107,1)' : 'none',
-							...provided.draggableProps.style
 						};
+
+						const borderStyle = {
+							border: highlight ? `2px solid ${borderColor}` : 'none',
+							...provided.draggableProps.style
+						}
 
 						return (
 							<div
-								className='task'
+								className={highlight ? 'task' : ' task unselected-task'}
 								{...provided.draggableProps}
 								{...provided.dragHandleProps}
-								style={style}
+								style={{...mainStyle, ...borderStyle}}
 								ref={provided.innerRef} 
 							>
 								<div className='task-header'>
 									<p>{title}</p>
 									<Tooltip title={'Edit Task'}>
-										<i className="fas fa-pencil-alt cursor-pointer" onClick={() => this.setState({ displayEditModal: true })}></i>
+										<i className={highlight ? 'fas fa-pencil-alt cursor-pointer' : 'fas fa-pencil-alt cursor-pointer unselected-task'} onClick={() => this.setState({ displayEditModal: true })}></i>
 									</Tooltip>
 								</div>
 								<p>{content}</p>

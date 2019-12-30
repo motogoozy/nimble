@@ -11,11 +11,13 @@ class Sidebar extends Component {
    };
 
    handleButtonClick = async (selected) => {
-      // const { projectId, loggedInUserId } = this.props;
+      const { loggedInUserId } = this.props
       if (selected === 'overview') {
-         // this.props.history.push(`/dashboard/project/${projectId}`);
+         this.props.handleSidebarSelection('all');
       } else if (selected === 'my-tasks') {
-         // this.props.history.push(`/dashboard/project/${projectId}/user/${loggedInUserId}`);
+         this.props.handleSidebarSelection(loggedInUserId);
+      } else if (selected === 'unassigned') {
+         this.props.handleSidebarSelection('none');
       }
       this.setState({ selectedButton: selected });
    };
@@ -50,19 +52,16 @@ class Sidebar extends Component {
                      </div>
                   </Tooltip>
                </Link>
-               <Link
-                  to={`/dashboard/project/${projectId}/user/${loggedInUserId}`}
-                  onClick={() => this.handleButtonClick('my-tasks')}
-                  className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
-                  style={{ textDecoration: 'none' }}
-               >
-                  <Tooltip title={'Only My Tasks'} enterDelay={300}>
-                     <div>
-                        <i className="far fa-user"></i>
-                        <p>MY TASKS</p>
-                     </div>
-                  </Tooltip>
-               </Link>
+               <Tooltip title={'Only My Tasks'} enterDelay={300}>
+                  <div
+                     onClick={() => this.handleButtonClick('my-tasks')}
+                     className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
+                     style={{ textDecoration: 'none' }}
+                  >
+                     <i className="far fa-user"></i>
+                     <p>MY TASKS</p>
+                  </div>
+               </Tooltip>
                <Tooltip title={'Unassigned Tasks'} enterDelay={300}>
                   <div
                      onClick={() => this.handleButtonClick('unassigned')}

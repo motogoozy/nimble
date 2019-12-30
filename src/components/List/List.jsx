@@ -46,7 +46,6 @@ export default class List extends Component {
 	handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
-		console.log(codeArr)
 		this.setState({ newListColorCode: codeArr });
 	};
 
@@ -177,7 +176,7 @@ export default class List extends Component {
 	};
 
 	displayTasks = () => {
-		const { tasks } = this.props;
+		const { tasks, highlightTasksOfUser } = this.props;
 		const { listColorCode } = this.state;
 		return tasks.map((task, index) => {
 			return (
@@ -196,6 +195,8 @@ export default class List extends Component {
 					deleteTask={this.deleteTask}
 					getAllTasks={this.props.getAllTasks}
 					getLists={this.props.getLists}
+					highlightTasksOfUser={highlightTasksOfUser}
+					assignedUsers={task.assignedUsers}
 				/>
 			)
 		});
