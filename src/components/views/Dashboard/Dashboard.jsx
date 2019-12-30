@@ -102,7 +102,7 @@ export default class Dashboard extends Component {
       });
       this.setState({
          lists: lists,
-         defaultLists: Array.from(lists),
+         defaultLists: {...lists},
          displayAddButton: true,
       });
    };
@@ -120,7 +120,7 @@ export default class Dashboard extends Component {
 
       this.setState({
          tasks: tasks,
-         defaultTasks: Array.from(tasks),
+         defaultTasks: {...tasks},
       });
    };
 
