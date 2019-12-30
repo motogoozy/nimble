@@ -9,6 +9,16 @@ module.exports = {
          console.log(err);
       }
    },
+   getListById: async (req, res) => {
+      const { list_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let list = await db.list.get_list_by_id({ list_id });
+         res.status(200).send(list[0]);
+      } catch (err) {
+
+      }
+   },
    createList: async (req, res) => {
       const { title, color_code, archived, task_order } = req.body;
       const { project_id } = req.params;

@@ -15,8 +15,8 @@ import { Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
-      allTasks: {}, // all project tasks
       defaultLists: {}, // lists with all project tasks (to be used to reset)
+      defaultTasks: {}, // all project tasks
       displayAddButton: false,
       displayAddListModal: false,
       lists: {},
@@ -26,6 +26,7 @@ export default class Dashboard extends Component {
       project: {},
       projectId: null,
       tasks: {}, // tasks to be displayed
+      taskUsers: {},
       title: '',
    };
 
@@ -41,7 +42,6 @@ export default class Dashboard extends Component {
          // if the url has project_id and user_id specified 
          if (this.props.match.params.project_id && this.props.match.params.user_id) {
             let user_id = this.props.match.params.user_id;
-            // let project_id = this.props.match.params.project_id;
             await this.getTasksByUserId(user_id);
          }
          // if the project_id is specified but no user_id
@@ -61,6 +61,7 @@ export default class Dashboard extends Component {
          displayAddButton: false,
       }, async () => {
          try {
+            await this.getTaskUsers();
             await this.getAllTasks();
             await this.getLists();
             await this.getProjectDetails();
@@ -101,7 +102,7 @@ export default class Dashboard extends Component {
       });
       this.setState({
          lists: lists,
-         defaultLists: lists,
+         defaultLists: Array.from(lists),
          displayAddButton: true,
       });
    };
@@ -119,7 +120,7 @@ export default class Dashboard extends Component {
 
       this.setState({
          tasks: tasks,
-         allTasks: tasks,
+         defaultTasks: Array.from(tasks),
       });
    };
 
@@ -151,13 +152,21 @@ export default class Dashboard extends Component {
       });
    };
 
+   getTaskUsers = async () => {
+      const { projectId } = this.state;
+      let res = await axios.get(`/task_users/${projectId}`);
+      this.setState({
+         taskUsers: res.data
+      });
+   };
+
    handleSidebarSelection = async (selection) => {
-      const { loggedInUserId, allTasks, defaultLists } = this.state;
+      const { loggedInUserId, defaultTasks, defaultLists } = this.state;
       if (selection === 'my-tasks') {
          this.getTasksByUserId(loggedInUserId)
       } else if (selection === 'overview') {
          this.setState({
-            tasks: allTasks,
+            tasks: defaultTasks,
             lists: defaultLists,
          })
       }
@@ -292,6 +301,10 @@ export default class Dashboard extends Component {
       catch (err) {
          console.log(err);
       }
+   };
+
+   mergeTaskOrders = async () => {
+      // TODO: Fetch list by id and merge the old column_order with new column_order, removing duplicates and pushing new tasks to end of list *** See saveChanges method on List for example
    };
 
    onDragStart = (result ) => {
@@ -502,17 +515,12 @@ export default class Dashboard extends Component {
             </div>
          </div>
       )
-   }
+   };
 
 	render() {
 		return (
 			<div className='dashboard'>
-				<Sidebar
-               projectId={this.state.projectId}
-               loggedInUserId={this.state.loggedInUserId}
-               getProjectData={this.getProjectData}
-               handleSidebarSelection={this.handleSidebarSelection}
-            />
+				<Sidebar projectId={this.state.projectId} loggedInUserId={this.state.loggedInUserId} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection} />
             <div className='main-content-container'>
                <Header getProjectData={this.getProjectData}/>
                <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >

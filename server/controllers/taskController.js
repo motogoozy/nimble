@@ -19,6 +19,35 @@ module.exports = {
          console.log(err);
       }
    },
+   getUnassignedTasks: async (req, res) => {
+      const { project_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let allTasks = await db.task.get_tasks({ project_id });
+         let taskUsers = await db.task_users.get_all_task_users({ project_id });
+         let tasksWithUsers = {};
+         taskUsers.forEach(taskUser => {
+            tasksWithUsers[taskUser.task_id] = taskUser;
+         });
+         let unassignedTasks = allTasks.filter(task => {
+            if (tasksWithUsers[task.task_id.toString()]) return false;
+            else return true;
+         });
+         res.status(200).send(unassignedTasks);
+      } catch (err) {
+         console.log(err);
+      }
+   },
+   getTaskUsers: async (req, res) => {
+      const { project_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let taskUsers = await db.task_users.get_all_task_users({ project_id });
+         res.status(200).send(taskUsers)
+      } catch (err) {
+         console.log(err);
+      }
+   },
    createTask: async (req, res) => {
       const { project_id } = req.params;
       const { title, created_by, list_id } = req.body;

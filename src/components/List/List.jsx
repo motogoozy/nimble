@@ -80,14 +80,25 @@ export default class List extends Component {
 	saveChanges = async () => {
 		const { newTitle, newListColorCode, archived } = this.state;
 		const { list } = this.props;
-		let taskIdIntegers = this.props.convertTaskIdsToIntegers(list.taskIds);
-		const body = {
-			title: newTitle,
-			color_code: newListColorCode,
-			archived: archived,
-			task_order: taskIdIntegers,
-		};
 		try {
+			let taskIdIntegers = this.props.convertTaskIdsToIntegers(list.taskIds);
+			let oldList = await axios.get(`/list/${list.databaseId}`);
+			let newTaskOrder = taskIdIntegers;
+			let mergedTaskOrder = oldList.data.task_order.filter(task => {
+				if (newTaskOrder.includes(task)) {
+					return false;
+				} else {
+					return true;
+				}
+			});
+			mergedTaskOrder = [...mergedTaskOrder, ...newTaskOrder];
+			const body = {
+				title: newTitle,
+				color_code: newListColorCode,
+				archived: archived,
+				task_order: mergedTaskOrder,
+			};
+
 			let updated = await this.props.updateList(list.databaseId, body);
 			this.setState({
 				title: updated.title,

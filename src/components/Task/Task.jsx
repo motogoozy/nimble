@@ -49,7 +49,7 @@ export default class Task extends Component {
 			this.setState({
 				displayEditModal: false,
 				title: res.data.title,
-				newTitle: res.data.newTitle,
+				newTitle: res.data.title,
 			});
 		} catch (err) {
 			console.log(err);
@@ -92,7 +92,7 @@ export default class Task extends Component {
 							<TextField
 								required
 								id="standard-required"
-								defaultValue={title}
+								value={title}
 								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
 						</div>
