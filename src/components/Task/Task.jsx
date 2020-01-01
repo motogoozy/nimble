@@ -76,7 +76,7 @@ export default class Task extends Component {
 
 	editModal = () => {
 		const { colorCode, formatColor, checkIsLight } = this.props;
-		const { title } = this.state;
+		const { title, newTitle } = this.state;
 		const currentColor = formatColor(colorCode);
 		const headerTextColor = checkIsLight(colorCode) === true ? 'black' : 'white';
 
@@ -92,7 +92,8 @@ export default class Task extends Component {
 							<TextField
 								required
 								id="standard-required"
-								value={title}
+								fullWidth={true}
+								value={newTitle}
 								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
 						</div>

@@ -211,10 +211,11 @@ export default class List extends Component {
                   <div className='add-modal-body-item'>
                      <h4>Title</h4>
                      <TextField
-                     required
-                     id="standard-required"
-                     onChange={e => this.handleInput('newTaskTitle', e.target.value)}
-                     autoFocus
+								required
+								autoFocus
+								placeholder='Title (60 chars max)'
+								id="standard-required"
+								onChange={e => this.handleInput('newTaskTitle', e.target.value)}
                      />
                   </div>
                </div>
@@ -239,19 +240,27 @@ export default class List extends Component {
 					<div className='edit-modal-header' style={{ backgroundColor: currentColor, color: headerTextColor }}>
 						<h4>{title}</h4>
 					</div>
-					<div className='edit-modal-body'>
+					<div className='edit-modal-body' onClick={() => this.setState({ displayColorPicker: false })}>
 						<div className='edit-modal-body-item'>
 							<h4>Title</h4>
 							<TextField
 								required
 								id="standard-required"
+								fullWidth={true}
 								defaultValue={title}
 								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
 						</div>
 						<div className='edit-modal-body-item'>
 							<h4>List Color:</h4>
-							<div onClick={() => this.setState({ displayColorPicker: !this.state.displayColorPicker })} className='current-color-box cursor-pointer' style={{ backgroundColor: currentColor, margin: '.5rem .5rem .5rem 0' }}></div>
+							<div
+								onClick={e => {
+									this.setState({ displayColorPicker: !this.state.displayColorPicker });
+									e.stopPropagation();
+								}}
+								className='current-color-box cursor-pointer'
+								style={{ backgroundColor: currentColor, margin: '.5rem .5rem .5rem 0' }}
+							/>
 							{
 								this.state.displayColorPicker
 								&&

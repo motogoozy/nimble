@@ -24,7 +24,6 @@ class Sidebar extends Component {
 
    render() {
       const { selectedButton } = this.state;
-      const { projectId, loggedInUserId } = this.props;
 
       return (
          <div className='sidebar'>
