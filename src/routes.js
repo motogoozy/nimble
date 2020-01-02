@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import LandingPage from './components/views/LandingPage/LandingPage';
 import Dashboard from './components/views/Dashboard/Dashboard';
-import Profile from './components/views/Profile/Profile';
+import ProfilePage from './components/views/ProfilePage/ProfilePage';
 import SettingsPage from './components/views/SettingsPage/SettingsPage';
 
 export default (
@@ -10,7 +10,7 @@ export default (
       <Route component={LandingPage} exact path='/' />
       <Route component={Dashboard} exact path='/dashboard' />
       <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
-      <Route component={Profile} path='/profile' />
+      <Route component={ProfilePage} path='/profile' />
       <Route component={SettingsPage} path='/settings' />
    </Switch>
 )
