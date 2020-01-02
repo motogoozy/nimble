@@ -18,6 +18,8 @@ class Sidebar extends Component {
          this.props.handleSidebarSelection(loggedInUserId);
       } else if (selected === 'unassigned') {
          this.props.handleSidebarSelection('none');
+      } else if (selected === 'people') {
+         this.props.handleSidebarSelection('people');
       }
       this.setState({ selectedButton: selected });
    };

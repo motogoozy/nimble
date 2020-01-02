@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Dashboard.scss';
 import Sidebar from '../../Sidebar/Sidebar';
 import Header from '../../Header/Header';
+import People from '../../People/People';
 import List from '../../List/List';
 import AddButton from '../../AddButton/AddButton';
 import ColorPicker from '../../ColorPicker/ColorPicker';
@@ -17,6 +18,9 @@ export default class Dashboard extends Component {
    state = {
       displayAddButton: false,
       displayAddListModal: false,
+      displayLists: true,
+      displayPeople: false,
+      displaySettings: false,
       lists: {},
       listOrder: [], // array of strings of list_id's
       loggedInUserId: 1,
@@ -33,7 +37,7 @@ export default class Dashboard extends Component {
       if (this.props.match.params.project_id && this.props.match.params.user_id) {
          let project_id = this.props.match.params.project_id;
          let user_id = this.props.match.params.user_id;
-         this.setState({ highlightTasksOfUser: user_id });
+         this.setState({ displayLists: true, highlightTasksOfUser: user_id });
          await this.getProjectData(project_id);
       }
    };
@@ -164,7 +168,29 @@ export default class Dashboard extends Component {
    };
 
    handleSidebarSelection = async (selection) => {
-      this.setState({ highlightTasksOfUser: selection });
+      if (selection === 'people') {
+         this.setState({
+            displayPeople: true,
+            displayLists: false,
+            displaySettings: false,
+         });
+         return;
+      }
+      if (selection === 'settings') {
+         this.setState({
+            displaySettings: true,
+            displayLists: false,
+            displayPeople: false,
+         });
+         return;
+      }
+
+      this.setState({
+         highlightTasksOfUser: selection,
+         displayLists: true,
+         displayPeople: false,
+         displaySettings: false,
+      });
    };
 
    handleInput = (key, value) => {
@@ -518,41 +544,54 @@ export default class Dashboard extends Component {
 				<Sidebar projectId={this.state.projectId} loggedInUserId={this.state.loggedInUserId} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection}/>
             <div className='main-content-container'>
                <Header getProjectData={this.getProjectData}/>
-               <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
-                  <Droppable droppableId='all-lists' direction='horizontal' type='list' >
-                     {(provided) => {
-                        return (
-                           <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
-                              <div className='list-container'>
-                                 { this.displayLists() }
-                                 { provided.placeholder }
-                              </div>
-                              <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
-                                 <Tooltip title={'Add New List'}>
-                                    <div style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true, displayColorPicker: true })}>
-                                       <AddButton />
-                                    </div>
-                                 </Tooltip>
-                              </div>
-                              {
-                                 !this.state.projectId
-                                 &&
-                                 <div className='no-project-prompt-container'>
-                                    <div className='bounce'>
-                                       <i className="fas fa-chevron-up"></i> 
-                                       <p>Select or Add a Project to Begin</p>
-                                    </div>
-                                 </div>
-                              }
-                           </div>
-                        )
-                     }}
-                  </Droppable>
-               </DragDropContext>
                {
-                  this.state.displayAddListModal
+                  this.state.displayLists === true
                   &&
-                  this.addListModal()
+                  <>
+                     <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
+                        <Droppable droppableId='all-lists' direction='horizontal' type='list' >
+                           {(provided) => {
+                              return (
+                                 <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
+                                    <div className='list-container'>
+                                       { this.displayLists() }
+                                       { provided.placeholder }
+                                    </div>
+                                    <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
+                                       <Tooltip title={'Add New List'}>
+                                          <div style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true, displayColorPicker: true })}>
+                                             <AddButton />
+                                          </div>
+                                       </Tooltip>
+                                    </div>
+                                    {
+                                       !this.state.projectId
+                                       &&
+                                       <div className='no-project-prompt-container'>
+                                          <div className='bounce'>
+                                             <i className="fas fa-chevron-up"></i> 
+                                             <p>Select or Add a Project to Begin</p>
+                                          </div>
+                                       </div>
+                                    }
+                                 </div>
+                              )
+                           }}
+                        </Droppable>
+                     </DragDropContext>
+                     {
+                        this.state.displayAddListModal
+                        &&
+                        this.addListModal()
+                     }
+                  </>
+               }
+               {
+                  this.state.displayPeople
+                  &&
+                  <>
+                     <People />
+                  </>
                }
             </div>
 			</div>
