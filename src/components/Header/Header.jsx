@@ -159,7 +159,7 @@ class Header extends Component {
                   ?
                   <Link to='/dashboard' className='header-link'>
                      <div className='header-back-container'>
-                        <i class="fas fa-undo" style={{ marginRight: '.5rem'}}></i>
+                        <i className="fas fa-undo" style={{ marginRight: '.5rem'}}></i>
                         <span>Back To Dashboard</span>
                      </div>
                   </Link>
