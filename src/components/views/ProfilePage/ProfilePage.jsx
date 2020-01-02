@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Profile.scss';
+import './ProfilePage.scss';
 import Header from '../../Header/Header';
 
 export default class Profile extends Component {
