@@ -178,7 +178,7 @@ class Header extends Component {
                         />
                   </div>
                }
-               <Badge color="error" badgeContent={3} overlap='circle'>
+               <Badge classes={{ colorPrimary: 'badge-style' }} color="primary" badgeContent={3} overlap='circle'>
                   <i className="far fa-bell cursor-pointer"></i>
                </Badge>
                <div className='header-avatar-container cursor-pointer'>
