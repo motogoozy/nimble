@@ -4,13 +4,14 @@ import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import Avatar from '../Avatar/Avatar';
 import SearchBar from '../SearchBar/SearchBar';
 
+import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import axios from 'axios';
+import Badge from '@material-ui/core/Badge';
 
 
 class Header extends Component {
@@ -177,6 +178,9 @@ class Header extends Component {
                         />
                   </div>
                }
+               <Badge color="error" badgeContent={3} overlap='circle'>
+                  <i className="far fa-bell cursor-pointer"></i>
+               </Badge>
                <div className='header-avatar-container cursor-pointer'>
                   <Button
                      aria-controls='simple-menu'
@@ -186,7 +190,7 @@ class Header extends Component {
                   >
                      <Avatar
                         letter={'kp'}
-                        color={'crimson'}
+                        color={'turquoise'}
                      />
                   </Button>
                   <Menu

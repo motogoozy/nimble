@@ -46,8 +46,19 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      .header-avatar-container {
-         margin: 0 1rem;
+      padding: 0 .5rem;
+
+      .header-searchbar-container {
+         margin: 0 .5rem;
+      }
+
+      i {
+         margin: 0 .5rem;
+         font-size: 1.5rem;
+         color: $accent-purple;
+         &:hover {
+            color: $accent-purple-hover;
+         }
       }
    }
 }
