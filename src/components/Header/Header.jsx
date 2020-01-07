@@ -158,12 +158,12 @@ class Header extends Component {
                {
                   currentPage === '#/profile' || currentPage === '#/settings'
                   ?
-                  <Link to='/dashboard' className='header-link'>
-                     <div className='header-back-container'>
+                  // <Link to='/dashboard' className='header-link'>
+                     <div className='header-back-container cursor-pointer' onClick={this.props.history.goBack}>
                         <i className="fas fa-undo" style={{ marginRight: '.5rem'}}></i>
                         <span>Back To Dashboard</span>
                      </div>
-                  </Link>
+                  // </Link>
                   :
                   null
                }
