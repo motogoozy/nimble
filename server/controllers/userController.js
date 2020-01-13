@@ -12,4 +12,14 @@ module.exports = {
 			console.log(err);
 		}
 	},
+	getUserByEmail: async (req, res) => {
+		const { email } = req.body;
+		const db = req.app.get('db');
+		try {
+			let foundUser = await db.user.get_user_by_email({ email });
+			res.status(200).send(foundUser);
+		} catch(err) {
+			console.log(err);
+		}
+	},
 }

@@ -173,9 +173,9 @@ class Header extends Component {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
                   <div className='header-searchbar-container'>
-                        <SearchBar
-                           onChangeFunc={e => console.log(e.target.value)}
-                        />
+                     <SearchBar
+                        onChangeFunc={e => console.log(e.target.value)}
+                     />
                   </div>
                }
                <Badge classes={{ colorPrimary: 'badge-style' }} color="primary" badgeContent={3} overlap='circle'>

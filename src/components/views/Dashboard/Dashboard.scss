@@ -31,6 +31,10 @@
       overflow-y: hidden;
       position: relative;
 
+      button {
+         margin: .5rem !important;
+      }
+
       .no-project-prompt-container {
          width: 11rem;
          margin-left: 3rem;

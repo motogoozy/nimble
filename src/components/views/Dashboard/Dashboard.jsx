@@ -40,6 +40,7 @@ export default class Dashboard extends Component {
          this.setState({ displayLists: true, highlightTasksOfUser: user_id });
          await this.getProjectData(project_id);
       }
+      // this.handleSidebarSelection('people');
    };
 
    componentDidUpdate = async (prevProps) => {
@@ -503,10 +504,10 @@ export default class Dashboard extends Component {
                   <div className='add-modal-body-item'>
                      <h4>Title</h4>
                      <TextField
-                     required
-                     id="standard-required"
-                     onChange={e => this.handleInput('title', e.target.value)}
-                     autoFocus
+                        required
+                        id="standard-required"
+                        onChange={e => this.handleInput('title', e.target.value)}
+                        autoFocus
                      />
                   </div>
                   <div>
@@ -590,7 +591,9 @@ export default class Dashboard extends Component {
                   this.state.displayPeople
                   &&
                   <>
-                     <People />
+                     <People
+                        loggedInUserId={this.state.loggedInUserId}
+                     />
                   </>
                }
             </div>

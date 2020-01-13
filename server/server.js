@@ -2,6 +2,7 @@ const userController = require('./controllers/userController');
 const projectController = require('./controllers/projectController');
 const listController = require('./controllers/listController');
 const taskController = require('./controllers/taskController');
+const connectionController = require('./controllers/connectionController');
 
 require('dotenv').config();
 const express = require('express');
@@ -28,7 +29,7 @@ massive(CONNECTION_STRING).then(db => {
    app.listen(SERVER_PORT, () => {
       console.log(`Listening on port: ${SERVER_PORT}`)
    })
-})
+});
 
 // ENDPOINTS
 // Project
@@ -39,6 +40,7 @@ app.put('/project/:project_id', projectController.updateProject); // Update Proj
 
 // User
 app.post(`/user`, userController.createUser); // Add user
+app.get('/find-user', userController.getUserByEmail) // Get user by email
 
 // List
 app.get('/project/:project_id/lists', listController.getLists); // Get all project lists
@@ -55,3 +57,7 @@ app.get('/task_users/:project_id', taskController.getTaskUsers); // Get all task
 app.post('/project/:project_id/task', taskController.createTask); // Create new task
 app.put('/task/:task_id', taskController.updateTask); // Update task
 app.delete('/task/:task_id', taskController.deleteTask); // Delete task
+
+// Connection
+app.get('/connection/:user_id', connectionController.getUserConnections); // Get all connections for user
+app.post('/connection/:user_id', connectionController.addConnection); // Add user connection

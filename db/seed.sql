@@ -60,3 +60,10 @@ CREATE TABLE checklist_item (
 	completed boolean NOT NULL,
 	list_id integer NOT NULL REFERENCES list(id)
 );
+
+CREATE TABLE connection (
+	connection_id SERIAL PRIMARY KEY,
+	send_id integer NOT NULL REFERENCES users(user_id),
+	receive_id integer NOT NULL REFERENCES users(user_id),
+	status integer NOT NULL
+);
