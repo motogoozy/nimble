@@ -5,7 +5,30 @@ export default class PeoplePage extends Component {
 	render() {
 		return (
 			<div className='people-page'>
-				<h1>People Component</h1>
+				<div className='connection-column'>
+					<div className="connection-column-header">
+						<h4>Current Connections</h4>
+					</div>
+					<div className='connection-column-body'>
+
+					</div>
+				</div>
+				<div className='connection-column'>
+					<div className="connection-column-header">
+						<h4>Connection Requests (Received)</h4>
+					</div>
+					<div className='connection-column-body'>
+
+					</div>
+				</div>
+				<div className='connection-column'>
+					<div className="connection-column-header">
+						<h4>Pending Connections (Sent)</h4>
+					</div>
+					<div className='connection-column-body'>
+
+					</div>
+				</div>
 			</div>
 		)
 	}
