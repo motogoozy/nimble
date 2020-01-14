@@ -40,7 +40,7 @@ export default class Dashboard extends Component {
          this.setState({ displayLists: true, highlightTasksOfUser: user_id });
          await this.getProjectData(project_id);
       }
-      // this.handleSidebarSelection('people');
+      this.handleSidebarSelection('people');
    };
 
    componentDidUpdate = async (prevProps) => {

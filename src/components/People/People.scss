@@ -1,16 +1,65 @@
 @import '../../styles.scss';
 
-.people-page {
+.people-main {
 	width: 100%;
 	height: 100%;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
 	align-items: center;
+	
+	.project-collaborators-container {
+		height: 100%;
+		flex: 2;
+		padding: 1rem .5rem 1rem 1rem;
+
+		.project-collaborators-column {
+			height: 100%;
+			width: 100%;
+			border: 1px solid lightgray;
+			border-radius: 5px;
+
+			.collaborators-column-header {
+				height: 2rem;
+				width: 100%;
+				padding: 0 1rem;
+				border-bottom: 1px solid gray;
+				background-color: $accent-purple;
+				color: white;
+				border-radius: 5px 5px 0 0;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+	
+				.add-button {
+					cursor: default;
+				}
+	
+				i {
+					color: white;
+					&:hover {
+						color: $accent-orange;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
+	
+	.connections-container {
+		height: 100%;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem 1rem 1rem .5rem;
+	}
 
 	.connection-column {
-		height: 90%;
-		width: 30%;
+		height: 100%;
+		width: 100%;
 		border: 1px solid lightgray;
 		border-radius: 5px;
 
@@ -48,6 +97,18 @@
 			justify-content: flex-start;
 			align-items: flex-start;
 			flex-wrap: nowrap;
+			overflow-x: hidden;
+			overflow-y: auto;
+			padding: 1rem;
+
+			.user-connection {
+				width: 100%;
+				height: 3rem;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: flex-start;
+			}
 		}
 	}
 }
