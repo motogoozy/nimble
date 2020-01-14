@@ -40,6 +40,7 @@ app.put('/project/:project_id', projectController.updateProject); // Update Proj
 
 // User
 app.post(`/user`, userController.createUser); // Add user
+app.get('/user/:user_id', userController.getUserById) // Get user by id
 app.get('/find-user', userController.getUserByEmail) // Get user by email
 
 // List

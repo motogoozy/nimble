@@ -12,6 +12,16 @@ module.exports = {
 			console.log(err);
 		}
 	},
+	getUserById: async (req, res) => {
+		const { user_id } = req.params;
+		const db = req.app.get('db');
+		try {
+			let user = await db.user.get_user_by_id({ user_id });
+			res.status(200).send(user[0]);
+		} catch (err) {
+			console.log(err);
+		}
+	},
 	getUserByEmail: async (req, res) => {
 		const { email } = req.body;
 		const db = req.app.get('db');
