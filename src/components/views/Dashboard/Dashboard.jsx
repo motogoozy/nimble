@@ -44,10 +44,7 @@ export default class Dashboard extends Component {
    };
 
    componentDidUpdate = async (prevProps) => {
-      // if (prevProps.match.params.user_id !== this.props.match.params.user_id) {
-      //    let user_id = this.props.match.params.user_id;
-      //    this.setState({ highlightTasksOfUser: user_id });
-      // }
+      
    };
 
    getProjectData = async (id) => {

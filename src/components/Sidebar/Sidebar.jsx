@@ -20,6 +20,9 @@ class Sidebar extends Component {
          this.props.handleSidebarSelection('none');
       } else if (selected === 'people') {
          this.props.handleSidebarSelection('people');
+      } else if (selected === 'nimble') {
+         this.props.history.push('/dashboard');
+         window.location.reload();
       }
       this.setState({ selectedButton: selected });
    };
@@ -32,7 +35,7 @@ class Sidebar extends Component {
             <Link
                to='/dashboard'
                style={{ textDecoration: 'none' }}
-               onClick={() => this.setState({ selectedButton: 'overview' })}
+               onClick={() => this.handleButtonClick('nimble')}
             >
                <div className='sidebar-logo-container logo-text'>
                   <img src={NimbleLogo} alt="Nimble Logo"/>
