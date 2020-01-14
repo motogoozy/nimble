@@ -31,8 +31,14 @@
       overflow-y: hidden;
       position: relative;
 
-      button {
-         margin: .5rem !important;
+      .add-list-button {
+         button {
+            margin: 0 1rem;
+            background-color: #995D81;
+            &:hover {
+               background-color: #663f56;
+            }
+         }
       }
 
       .no-project-prompt-container {

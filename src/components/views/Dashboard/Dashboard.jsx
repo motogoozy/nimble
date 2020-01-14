@@ -557,7 +557,7 @@ export default class Dashboard extends Component {
                                     </div>
                                     <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
                                        <Tooltip title={'Add New List'}>
-                                          <div style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true, displayColorPicker: true })}>
+                                          <div className='add-list-button' style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true, displayColorPicker: true })}>
                                              <AddButton />
                                           </div>
                                        </Tooltip>
