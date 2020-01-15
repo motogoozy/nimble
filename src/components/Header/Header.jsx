@@ -189,7 +189,7 @@ class Header extends Component {
                      style={{ backgroundColor: 'transparent' }}
                   >
                      <Avatar
-                        letter={'kp'}
+                        initials={'kp'}
                         color={'turquoise'}
                      />
                   </Button>

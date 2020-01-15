@@ -14,6 +14,6 @@ export default function LetterAvatars(props) {
    const classes = useStyles();
 
    return (
-      <Avatar className={classes.avatar}>{props.letter.toUpperCase()}</Avatar>
+      <Avatar className={classes.avatar}>{props.initials.toUpperCase()}</Avatar>
    );
 }
