@@ -50,6 +50,14 @@
 				width: 100%;
 				border: 1px solid lightgray;
 				border-radius: 0 0 5px 5px;
+				padding: 1rem;
+				overflow-x: hidden;
+				overflow-y: auto;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: flex-start;
+				flex-wrap: nowrap;
 			}
 		}
 	}
@@ -89,7 +97,7 @@
 			i {
 				color: white;
 				&:hover {
-					color: $accent-purple;
+					color: $accent-orange;
 					cursor: pointer;
 				}
 			}
@@ -107,6 +115,7 @@
 			overflow-y: auto;
 			border: 1px solid lightgray;
 			border-radius: 0 0 5px 5px;
+			padding: 1rem;
 		}
 	}
 }

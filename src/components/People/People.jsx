@@ -11,11 +11,13 @@ export default class PeoplePage extends Component {
 		connectionRequests: [],
 		pendingConnections: [],
 		users: {},
+		projectCollaborators: [],
 	};
 
 	componentDidMount = async () => {
+		this.getProjectUsers();
 		await this.getUserConnections();
-		await this.getUsers();
+		this.categorizeConnections();
 	};
 
 	getUserConnections = async () => {
@@ -42,7 +44,7 @@ export default class PeoplePage extends Component {
 
 	getUserById = (userId) => axios.get(`user/${userId}`);
 
-	getUsers = async () => {
+	categorizeConnections = async () => {
 		const { currentConnections, connectionRequests, pendingConnections } = this.state;
 		let connected = await this.getUserDetails(currentConnections);
 		let requests = await this.getUserDetails(connectionRequests);
@@ -75,8 +77,15 @@ export default class PeoplePage extends Component {
 		})
 		return userMap;
 	};
+
+	getProjectUsers = async () => {
+		const { projectId } = this.props;
+
+		let res = await axios.get(`/project/${projectId}/users`);
+		this.setState({ projectCollaborators: res.data });
+	};
 	
-	displayConnections = (list) => {
+	displayUsers = (list, action, tooltipTitle) => {
 		const { users } = this.state;
 		const { loggedInUserId } = this.props;
 
@@ -88,13 +97,27 @@ export default class PeoplePage extends Component {
 				userId = connection.send_id;
 			}
 			let user = users[userId];
-			return <UserConnection key={user.user_id} user={user}/>
+			return <UserConnection key={`${list}: ${user.user_id}`} user={user} action={action} tooltipTitle={tooltipTitle}/>
+		})
+	};
+
+	displayProjectCollaborators = () => {
+		const { projectCollaborators } = this.state;
+		return projectCollaborators.map(user => {
+			return (
+				<UserConnection
+					key={`projectCollaborator: ${user.user_id}`}
+					user={user}
+					action={'Remove'}
+					tooltipTitle={'Remove Person From Project'}
+				/>
+			)
 		})
 	};
 
 
 	render() {
-		const { currentConnections, connectionRequests, pendingConnections, users } = this.state;
+		const { currentConnections, connectionRequests, pendingConnections, users, projectCollaborators } = this.state;
 
 		return (
 			<div className='people-main'>
@@ -105,7 +128,11 @@ export default class PeoplePage extends Component {
 							<SmallAddButton title={'Invite User to Project'}/>
 						</div>
 						<div className='collaborators-column-body'>
-
+							{
+								Object.keys(projectCollaborators).length !== 0
+								&&
+								this.displayProjectCollaborators()
+							}
 						</div>
 					</div>
 				</div>
@@ -119,7 +146,7 @@ export default class PeoplePage extends Component {
 							{
 								Object.keys(users).length !== 0
 								&&
-								this.displayConnections(currentConnections)
+								this.displayUsers(currentConnections, 'Remove', 'Remove Connection')
 							}
 						</div>
 					</div>
@@ -131,7 +158,7 @@ export default class PeoplePage extends Component {
 							{
 								Object.keys(users).length !== 0
 								&&
-								this.displayConnections(connectionRequests)
+								this.displayUsers(connectionRequests, 'Delete', 'Delete Connection Request')
 							}
 						</div>
 					</div>
@@ -143,7 +170,7 @@ export default class PeoplePage extends Component {
 							{
 								Object.keys(users).length !== 0
 								&&
-								this.displayConnections(pendingConnections)
+								this.displayUsers(pendingConnections, 'Cancel', 'Cancel Connection Request')
 							}
 						</div>
 					</div>
