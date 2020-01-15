@@ -102,14 +102,15 @@ export default class PeoplePage extends Component {
 					<div className='project-collaborators-column'>
 						<div className='collaborators-column-header'>
 							<p>Project Collaborators</p>
+							<SmallAddButton title={'Invite User to Project'}/>
 						</div>
-						<div>
+						<div className='collaborators-column-body'>
 
 						</div>
 					</div>
 				</div>
 				<div className='connections-container'>
-					<div className='connection-column' style={{ margin: '0 0 .5rem 0' }}>
+					<div className='connection-column' >
 						<div className="connection-column-header">
 							<p>Current Connections</p>
 							<SmallAddButton title={'Add Connection'}/>
@@ -122,7 +123,7 @@ export default class PeoplePage extends Component {
 							}
 						</div>
 					</div>
-					<div className='connection-column' style={{ margin: '.5rem 0 .5rem 0' }}>
+					<div className='connection-column' >
 						<div className="connection-column-header">
 							<p>Connection Requests (Received)</p>
 						</div>
@@ -134,7 +135,7 @@ export default class PeoplePage extends Component {
 							}
 						</div>
 					</div>
-					<div className='connection-column' style={{ margin: '.5rem 0 0 0' }}>
+					<div className='connection-column' >
 						<div className="connection-column-header">
 							<p>Pending Connections (Sent)</p>
 						</div>
