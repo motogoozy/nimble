@@ -21,6 +21,16 @@ module.exports = {
          console.log(err);
       }
    },
+   getProjectUsers: async (req, res) => {
+      const { project_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let users = await db.project.get_project_users({ project_id });
+         res.status(200).send(users);
+      } catch (err) {
+         console.log(err);
+      }
+   },
    createProject: async (req, res) => {
       const { title, created_by } = req.body;
       const created_at = new Date();

@@ -35,13 +35,14 @@ massive(CONNECTION_STRING).then(db => {
 // Project
 app.get('/projects/:user_id', projectController.getProjectsByUserId); // Get all user's projects
 app.get('/project/:project_id', projectController.getProjectById); // Get project by Id
+app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
 app.post('/project', projectController.createProject);
 app.put('/project/:project_id', projectController.updateProject); // Update Project
 
 // User
-app.post(`/user`, userController.createUser); // Add user
 app.get('/user/:user_id', userController.getUserById) // Get user by id
 app.get('/find-user', userController.getUserByEmail) // Get user by email
+app.post(`/user`, userController.createUser); // Add user
 
 // List
 app.get('/project/:project_id/lists', listController.getLists); // Get all project lists
