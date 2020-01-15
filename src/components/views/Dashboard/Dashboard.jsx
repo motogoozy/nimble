@@ -34,17 +34,11 @@ export default class Dashboard extends Component {
    };
 
    componentDidMount = async () => {
-      if (this.props.match.params.project_id && this.props.match.params.user_id) {
-         let project_id = this.props.match.params.project_id;
-         let user_id = this.props.match.params.user_id;
-         this.setState({ displayLists: true, highlightTasksOfUser: user_id });
-         await this.getProjectData(project_id);
-      }
       this.handleSidebarSelection('people');
    };
 
    componentDidUpdate = async (prevProps) => {
-      
+      // if (prevProps.match.params.project)
    };
 
    getProjectData = async (id) => {
@@ -585,11 +579,12 @@ export default class Dashboard extends Component {
                   </>
                }
                {
-                  this.state.displayPeople
+                  this.state.displayPeople && this.state.projectId
                   &&
                   <>
                      <People
                         loggedInUserId={this.state.loggedInUserId}
+                        projectId={this.state.projectId}
                      />
                   </>
                }

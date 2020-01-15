@@ -9,7 +9,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { Draggable } from 'react-beautiful-dnd';
 
-
 export default class Task extends Component {
 	state = {
 		content: '',
@@ -125,9 +124,9 @@ export default class Task extends Component {
 		const { id, index, colorCode, highlightTasksOfUser, assignedUsers } = this.props;
 
 		let highlight = false;
-		if (highlightTasksOfUser === 'all') {
-			highlight = true;
-		} else if (assignedUsers.includes(highlightTasksOfUser)) {
+		if (
+			highlightTasksOfUser === 'all' || assignedUsers.includes(highlightTasksOfUser)
+		) {
 			highlight = true;
 		} else if (assignedUsers.length === 0 && highlightTasksOfUser === 'none') {
 			highlight = true;
