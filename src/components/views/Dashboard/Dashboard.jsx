@@ -539,7 +539,16 @@ export default class Dashboard extends Component {
 	render() {
 		return (
 			<div className='dashboard'>
-				<Sidebar projectId={this.state.projectId} loggedInUser={this.state.loggedInUser} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection}/>
+            {
+               this.state.loggedInUser
+               &&
+               <Sidebar 
+                  projectId={this.state.projectId}
+                  loggedInUser={this.state.loggedInUser}
+                  getProjectData={this.getProjectData}
+                  handleSidebarSelection={this.handleSidebarSelection}
+               />
+            }
             <div className='main-content-container'>
                {
                   this.state.loggedInUser
@@ -567,7 +576,7 @@ export default class Dashboard extends Component {
                                        </Tooltip>
                                     </div>
                                     {
-                                       !this.state.projectId
+                                       !this.state.projectId && this.state.loggedInUser
                                        &&
                                        <div className='no-project-prompt-container'>
                                           <div className='bounce'>
