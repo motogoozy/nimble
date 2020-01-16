@@ -15,9 +15,10 @@ export default class PeoplePage extends Component {
 	};
 
 	componentDidMount = async () => {
-		this.getProjectUsers();
+		await this.getProjectUsers();
 		await this.getUserConnections();
-		this.categorizeConnections();
+		await this.categorizeConnections();
+		console.log(this.state)
 	};
 
 	getUserConnections = async () => {
@@ -84,6 +85,8 @@ export default class PeoplePage extends Component {
 		let res = await axios.get(`/project/${projectId}/users`);
 		this.setState({ projectCollaborators: res.data });
 	};
+
+	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
 	
 	displayUsers = (list, action, tooltipTitle) => {
 		const { users } = this.state;
@@ -97,24 +100,35 @@ export default class PeoplePage extends Component {
 				userId = connection.send_id;
 			}
 			let user = users[userId];
-			return <UserConnection key={`${list}: ${user.user_id}`} user={user} action={action} tooltipTitle={tooltipTitle}/>
+			let avatarColor = this.formatColor(user.color);
+			return (
+				<UserConnection
+					key={`${list}: ${user.user_id}`}
+					user={user}
+					action={action}
+					tooltipTitle={tooltipTitle}
+					avatarColor={avatarColor}
+				/>
+			)
 		})
 	};
 
 	displayProjectCollaborators = () => {
 		const { projectCollaborators } = this.state;
+
 		return projectCollaborators.map(user => {
+			let avatarColor = this.formatColor(user.color);
 			return (
 				<UserConnection
 					key={`projectCollaborator: ${user.user_id}`}
 					user={user}
 					action={'Remove'}
 					tooltipTitle={'Remove Person From Project'}
+					avatarColor={avatarColor}
 				/>
 			)
 		})
 	};
-
 
 	render() {
 		const { currentConnections, connectionRequests, pendingConnections, users, projectCollaborators } = this.state;
