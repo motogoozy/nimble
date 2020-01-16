@@ -5,7 +5,8 @@ CREATE TABLE users (
 	first_name character varying(50) NOT NULL,
 	last_name character varying(50) NOT NULL,
 	email character varying(50) NOT NULL,
-	hash character varying(256) NOT NULL
+	hash character varying(256) NOT NULL,
+	color integer[]
 );
 
 CREATE TABLE project (
