@@ -18,20 +18,19 @@ export default class PeoplePage extends Component {
 		await this.getProjectUsers();
 		await this.getUserConnections();
 		await this.categorizeConnections();
-		console.log(this.state)
 	};
 
 	getUserConnections = async () => {
-		const { loggedInUserId } = this.props;
-		let res = await axios.get(`/connection/${loggedInUserId}`);
+		const { loggedInUser } = this.props;
+		let res = await axios.get(`/connection/${loggedInUser.user_id}`);
 		let current = [], requests = [], pending = [];
 		res.data.forEach(connection => {
 			if (connection.status === 2) {
 				current.push(connection);
 			} else {
-				if (connection.receive_id === loggedInUserId) {
+				if (connection.receive_id === loggedInUser.user_id) {
 					requests.push(connection);
-				} else if (connection.send_id === loggedInUserId) {
+				} else if (connection.send_id === loggedInUser.user_id) {
 					pending.push(connection);
 				}
 			}
@@ -61,11 +60,11 @@ export default class PeoplePage extends Component {
 	}
 
 	getUserDetails = async (list) => {
-		const { loggedInUserId } = this.props;
+		const { loggedInUser } = this.props;
 		let userMap = {};
 
 		let promises = list.map(connection => {
-			if (connection.send_id !== loggedInUserId) {
+			if (connection.send_id !== loggedInUser.user_id) {
 				return this.getUserById(connection.send_id);
 			} else {
 				return this.getUserById(connection.receive_id);
@@ -90,11 +89,11 @@ export default class PeoplePage extends Component {
 	
 	displayUsers = (list, action, tooltipTitle) => {
 		const { users } = this.state;
-		const { loggedInUserId } = this.props;
+		const { loggedInUser } = this.props;
 
 		return list.map(connection => {
 			let userId;
-			if (connection.send_id === loggedInUserId ) {
+			if (connection.send_id === loggedInUser.user_id ) {
 				userId = connection.receive_id;
 			} else {
 				userId = connection.send_id;

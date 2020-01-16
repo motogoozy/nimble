@@ -21,13 +21,14 @@ class Header extends Component {
       search: '',
       newProjectName: '',
       displayAddProjectModal: false,
-      loggedInUserId: 1,
+      loggedInUser: '',
       projects: [],
       selectedProject: '',
    };
 
    componentDidMount = async () => {
-      await this.getUserProjects();
+      let userId = this.props.loggedInUser.user_id;
+      await this.getUserProjects(userId);
       if (this.props.match.params.project_id) {
          const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
          if (project) {
@@ -47,12 +48,15 @@ class Header extends Component {
             this.handleSelection(project)
          }
          this.setState({ currentPage: window.location.hash });
+      };
+      if (!prevProps.loggedInUser.user_id && this.props.loggedInUser.user_id) {
+         this.getUserProjects();
       }
    };
 
    getUserProjects = async () => {
-      const { loggedInUserId } = this.state;
-      let res = await axios.get(`/projects/${loggedInUserId}`);
+      const { loggedInUser } = this.props;
+      let res = await axios.get(`/projects/${loggedInUser.user_id}`);
       let projectsArr = res.data.map(project => {
          project.value = project.project_id;
          project.label = project.title;
@@ -83,10 +87,11 @@ class Header extends Component {
    }
 
    addProject = async () => {
-      const { loggedInUserId, newProjectName } = this.state;
+      const { newProjectName } = this.state;
+      const { loggedInUser } = this.props;
       const body = {
          title: newProjectName,
-         created_by: loggedInUserId,
+         created_by: loggedInUser.user_id,
       };
       try {
          let res = await axios.post('/project', body);
@@ -131,8 +136,12 @@ class Header extends Component {
       )
    };
 
+   formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
+
    render() {
       const { currentPage, projects } = this.state;
+      const { loggedInUser } = this.props;
+      const avatarColor = this.formatColor(loggedInUser.color);
 
       return (
          <div className='header'>
@@ -190,7 +199,7 @@ class Header extends Component {
                   >
                      <Avatar
                         initials={'kp'}
-                        color={'turquoise'}
+                        color={avatarColor}
                      />
                   </Button>
                   <Menu

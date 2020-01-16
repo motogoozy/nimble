@@ -23,7 +23,7 @@ export default class Dashboard extends Component {
       displaySettings: false,
       lists: {},
       listOrder: [], // array of strings of list_id's
-      loggedInUserId: 1,
+      loggedInUser: '',
       newColorCode: [96, 125, 139, 1],
       project: {},
       projectId: null,
@@ -34,12 +34,18 @@ export default class Dashboard extends Component {
    };
 
    componentDidMount = async () => {
-      this.handleSidebarSelection('people');
+      let userId = 1;
+      let user = await this.getUserById(userId);
+      this.setState({ loggedInUser: user });
    };
 
    componentDidUpdate = async (prevProps) => {
-      // if (prevProps.match.params.project)
    };
+
+   getUserById = async (userId) => {
+      let res = await axios.get(`/user/${userId}`);
+      return res.data;
+   }
 
    getProjectData = async (id) => {
       this.setState({
@@ -456,7 +462,7 @@ export default class Dashboard extends Component {
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
    displayLists = () => {
-      const { tasks, lists, listOrder, projectId, loggedInUserId, highlightTasksOfUser } = this.state;
+      const { tasks, lists, listOrder, projectId, loggedInUser, highlightTasksOfUser } = this.state;
       let listArr = listOrder.map((listId, index) => {
          const list = lists[listId];
          const taskArr = list.taskIds.map(taskId => tasks[taskId]);
@@ -470,7 +476,7 @@ export default class Dashboard extends Component {
                projectId={projectId}
                updateList={this.updateList}
                deleteList={this.deleteList}
-               loggedInUserId={loggedInUserId}
+               loggedInUser={loggedInUser}
                getAllTasks={this.getAllTasks}
                getLists={this.getLists}
                convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}
@@ -533,9 +539,13 @@ export default class Dashboard extends Component {
 	render() {
 		return (
 			<div className='dashboard'>
-				<Sidebar projectId={this.state.projectId} loggedInUserId={this.state.loggedInUserId} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection}/>
+				<Sidebar projectId={this.state.projectId} loggedInUser={this.state.loggedInUser} getProjectData={this.getProjectData} handleSidebarSelection={this.handleSidebarSelection}/>
             <div className='main-content-container'>
-               <Header getProjectData={this.getProjectData}/>
+               {
+                  this.state.loggedInUser
+                  &&
+                  <Header getProjectData={this.getProjectData} loggedInUser={this.state.loggedInUser}/>
+               }
                {
                   this.state.displayLists === true
                   &&
@@ -583,7 +593,7 @@ export default class Dashboard extends Component {
                   &&
                   <>
                      <People
-                        loggedInUserId={this.state.loggedInUserId}
+                        loggedInUser={this.state.loggedInUser}
                         projectId={this.state.projectId}
                      />
                   </>

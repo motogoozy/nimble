@@ -115,10 +115,10 @@ export default class List extends Component {
 
 	addTask = async () => {
 		const { newTaskTitle } = this.state;
-		const { loggedInUserId, list, projectId, updateList, getLists } = this.props;
+		const { loggedInUser, list, projectId, updateList, getLists } = this.props;
 		const taskBody = {
 			title: newTaskTitle,
-			created_by: loggedInUserId,
+			created_by: loggedInUser.user_id,
 			list_id: list.databaseId,
 		};
 		this.setState({ displayAddTaskModal: false });

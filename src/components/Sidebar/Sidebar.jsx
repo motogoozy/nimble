@@ -11,11 +11,11 @@ class Sidebar extends Component {
    };
 
    handleButtonClick = async (selected) => {
-      const { loggedInUserId } = this.props
+      const { loggedInUser } = this.props
       if (selected === 'overview') {
          this.props.handleSidebarSelection('all');
       } else if (selected === 'my-tasks') {
-         this.props.handleSidebarSelection(loggedInUserId);
+         this.props.handleSidebarSelection(loggedInUser.user_id);
       } else if (selected === 'unassigned') {
          this.props.handleSidebarSelection('none');
       } else if (selected === 'people') {
