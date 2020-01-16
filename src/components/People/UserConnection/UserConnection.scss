@@ -35,8 +35,11 @@
 	}
 
 	.connection-button-container {
+      display: flex;
+      flex-direction: row;
 		p {
-			font-size: .8rem;
+         font-size: .8rem;
+         margin-left: .3rem;
 			&:hover {
 				color: $accent-purple;
 			}

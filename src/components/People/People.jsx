@@ -87,7 +87,7 @@ export default class PeoplePage extends Component {
 
 	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
 	
-	displayUsers = (list, action, tooltipTitle) => {
+	displayConnections = (list, actions, tooltipTitles) => {
 		const { users } = this.state;
 		const { loggedInUser } = this.props;
 
@@ -104,8 +104,8 @@ export default class PeoplePage extends Component {
 				<UserConnection
 					key={`${list}: ${user.user_id}`}
 					user={user}
-					action={action}
-					tooltipTitle={tooltipTitle}
+					actions={actions}
+					tooltipTitles={tooltipTitles}
 					avatarColor={avatarColor}
 				/>
 			)
@@ -121,8 +121,8 @@ export default class PeoplePage extends Component {
 				<UserConnection
 					key={`projectCollaborator: ${user.user_id}`}
 					user={user}
-					action={'Remove'}
-					tooltipTitle={'Remove Person From Project'}
+					actions={['Remove']}
+					tooltipTitles={['Remove Person From Project']}
 					avatarColor={avatarColor}
 				/>
 			)
@@ -159,7 +159,7 @@ export default class PeoplePage extends Component {
 							{
 								Object.keys(users).length !== 0
 								&&
-								this.displayUsers(currentConnections, 'Remove', 'Remove Connection')
+								this.displayConnections(currentConnections, ['Remove'], ['Remove Connection'])
 							}
 						</div>
 					</div>
@@ -171,7 +171,7 @@ export default class PeoplePage extends Component {
 							{
 								Object.keys(users).length !== 0
 								&&
-								this.displayUsers(connectionRequests, 'Delete', 'Delete Connection Request')
+								this.displayConnections(connectionRequests, ['Accept', 'Delete'], ['Accept Connection Request', 'Delete Connection Request'])
 							}
 						</div>
 					</div>
@@ -183,7 +183,7 @@ export default class PeoplePage extends Component {
 							{
 								Object.keys(users).length !== 0
 								&&
-								this.displayUsers(pendingConnections, 'Cancel', 'Cancel Connection Request')
+								this.displayConnections(pendingConnections, ['Cancel'], ['Cancel Connection Request'])
 							}
 						</div>
 					</div>
