@@ -4,6 +4,7 @@ import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import UserConnection from './UserConnection/UserConnection';
 
 import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default class PeoplePage extends Component {
 	state = {
@@ -143,8 +144,12 @@ export default class PeoplePage extends Component {
 						<div className='collaborators-column-body'>
 							{
 								Object.keys(projectCollaborators).length !== 0
-								&&
+								?
 								this.displayProjectCollaborators()
+								:
+								<div className='progress-container'>
+									<CircularProgress />
+								</div>
 							}
 						</div>
 					</div>
@@ -158,8 +163,12 @@ export default class PeoplePage extends Component {
 						<div className='connection-column-body'>
 							{
 								Object.keys(users).length !== 0
-								&&
+								?
 								this.displayConnections(currentConnections, ['Remove'], ['Remove Connection'])
+								:
+								<div className='progress-container'>
+									<CircularProgress />
+								</div>
 							}
 						</div>
 					</div>
@@ -170,8 +179,12 @@ export default class PeoplePage extends Component {
 						<div className='connection-column-body'>
 							{
 								Object.keys(users).length !== 0
-								&&
+								?
 								this.displayConnections(connectionRequests, ['Accept', 'Delete'], ['Accept Connection Request', 'Delete Connection Request'])
+								:
+								<div className='progress-container'>
+									<CircularProgress />
+								</div>
 							}
 						</div>
 					</div>
@@ -182,8 +195,12 @@ export default class PeoplePage extends Component {
 						<div className='connection-column-body'>
 							{
 								Object.keys(users).length !== 0
-								&&
+								?
 								this.displayConnections(pendingConnections, ['Cancel'], ['Cancel Connection Request'])
+								:
+								<div className='progress-container'>
+									<CircularProgress />
+								</div>
 							}
 						</div>
 					</div>
