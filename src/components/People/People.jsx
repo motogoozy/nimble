@@ -8,17 +8,25 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default class PeoplePage extends Component {
 	state = {
-		currentConnections: [],
-		connectionRequests: [],
-		pendingConnections: [],
-		users: {},
-		projectCollaborators: [],
+		currentConnections: '',
+		connectionRequests: '',
+		pendingConnections: '',
+		users: '',
+		projectCollaborators: '',
 	};
 
 	componentDidMount = async () => {
 		await this.getProjectUsers();
 		await this.getUserConnections();
 		await this.categorizeConnections();
+	};
+
+	componentDidUpdate = async (prevProps) => {
+		if (prevProps.projectId !== this.props.projectId) {
+			await this.getProjectUsers();
+			await this.getUserConnections();
+			await this.categorizeConnections();
+		}
 	};
 
 	getUserConnections = async () => {
@@ -87,47 +95,71 @@ export default class PeoplePage extends Component {
 	};
 
 	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
+
+	displayProjectCollaborators = () => {
+		const { projectCollaborators } = this.state;
+
+		if (projectCollaborators.length === 0) {
+			return (
+				<div>
+					<p>No users assigned to this project.</p>
+				</div>
+			)
+		} else {
+			return projectCollaborators.map(user => {
+				let avatarColor = this.formatColor(user.color);
+				return (
+					<UserConnection
+						key={`projectCollaborator: ${user.user_id}`}
+						user={user}
+						actions={['Remove']}
+						tooltipTitles={['Remove Person From Project']}
+						avatarColor={avatarColor}
+					/>
+				)
+			})
+		}
+	};
 	
 	displayConnections = (list, actions, tooltipTitles) => {
 		const { users } = this.state;
 		const { loggedInUser } = this.props;
 
-		return list.map(connection => {
-			let userId;
-			if (connection.send_id === loggedInUser.user_id ) {
-				userId = connection.receive_id;
+		if (list.length === 0) {
+			let text;
+			if (actions[0] === 'Remove') {
+				text = 'No connections.'
+			} else if (actions[0] === 'Accept') {
+				text = 'No connection requests.'
 			} else {
-				userId = connection.send_id;
+				text = 'No pending connections.'
 			}
-			let user = users[userId];
-			let avatarColor = this.formatColor(user.color);
 			return (
-				<UserConnection
-					key={`${list}: ${user.user_id}`}
-					user={user}
-					actions={actions}
-					tooltipTitles={tooltipTitles}
-					avatarColor={avatarColor}
-				/>
+				<div>
+					<p>{text}</p>
+				</div>
 			)
-		})
-	};
-
-	displayProjectCollaborators = () => {
-		const { projectCollaborators } = this.state;
-
-		return projectCollaborators.map(user => {
-			let avatarColor = this.formatColor(user.color);
-			return (
-				<UserConnection
-					key={`projectCollaborator: ${user.user_id}`}
-					user={user}
-					actions={['Remove']}
-					tooltipTitles={['Remove Person From Project']}
-					avatarColor={avatarColor}
-				/>
-			)
-		})
+		} else {
+			return list.map(connection => {
+				let userId;
+				if (connection.send_id === loggedInUser.user_id ) {
+					userId = connection.receive_id;
+				} else {
+					userId = connection.send_id;
+				}
+				let user = users[userId];
+				let avatarColor = this.formatColor(user.color);
+				return (
+					<UserConnection
+						key={`${list}: ${user.user_id}`}
+						user={user}
+						actions={actions}
+						tooltipTitles={tooltipTitles}
+						avatarColor={avatarColor}
+					/>
+				)
+			})
+		}
 	};
 
 	render() {
@@ -143,7 +175,7 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='collaborators-column-body'>
 							{
-								Object.keys(projectCollaborators).length !== 0
+								projectCollaborators
 								?
 								this.displayProjectCollaborators()
 								:
@@ -162,7 +194,7 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								Object.keys(users).length !== 0
+								users
 								?
 								this.displayConnections(currentConnections, ['Remove'], ['Remove Connection'])
 								:
@@ -178,7 +210,7 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								Object.keys(users).length !== 0
+								users
 								?
 								this.displayConnections(connectionRequests, ['Accept', 'Delete'], ['Accept Connection Request', 'Delete Connection Request'])
 								:
@@ -194,7 +226,7 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								Object.keys(users).length !== 0
+								users
 								?
 								this.displayConnections(pendingConnections, ['Cancel'], ['Cancel Connection Request'])
 								:
