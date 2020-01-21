@@ -50,7 +50,7 @@ export default class LandingPage extends Component {
 					<span></span>
 					<div className='landing-info-box'>
 						<div className='info-box-header'>
-							<p>Organize Projects</p>
+							<p>Organize</p>
 						</div>
 						<div className='info-box-body'>
 							<p>Group tasks together with custom lists. Moving tasks is a breeze with intuitive drag-and-drop
@@ -60,7 +60,7 @@ export default class LandingPage extends Component {
 					<span></span>
 					<div className='landing-info-box'>
 						<div className='info-box-header'>
-							<p>Collaborate With Others</p>
+							<p>Collaborate</p>
 						</div>
 						<div className='info-box-body'>
 							<p>Easy to use Dashboard provides a high-level overview of the project. Quickly filter by assigned &
