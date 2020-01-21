@@ -63,8 +63,7 @@ export default class LandingPage extends Component {
 							<p>Collaborate</p>
 						</div>
 						<div className='info-box-body'>
-							<p>Easy to use Dashboard provides a high-level overview of the project. Quickly filter by assigned &
-								unassigned tasks.</p>
+							<p>See what others are working on at any time. The easy to use Dashboard provides a high-level overview of the project.</p>
 						</div>
 					</div>
 				</div>
