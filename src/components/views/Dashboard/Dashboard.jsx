@@ -575,16 +575,6 @@ export default class Dashboard extends Component {
                                           </div>
                                        </Tooltip>
                                     </div>
-                                    {
-                                       !this.state.projectId && this.state.loggedInUser
-                                       &&
-                                       <div className='no-project-prompt-container'>
-                                          <div className='bounce'>
-                                             <i className="fas fa-chevron-up"></i> 
-                                             <p>Select or Add a Project to Begin</p>
-                                          </div>
-                                       </div>
-                                    }
                                  </div>
                               )
                            }}
@@ -606,6 +596,16 @@ export default class Dashboard extends Component {
                         projectId={this.state.projectId}
                      />
                   </>
+               }
+               {
+                  !this.state.projectId && this.state.loggedInUser
+                  &&
+                  <div className='no-project-prompt-container'>
+                     <div className='bounce'>
+                        <i className="fas fa-chevron-up"></i> 
+                        <p>Select or Add a Project to Begin</p>
+                     </div>
+                  </div>
                }
             </div>
 			</div>
