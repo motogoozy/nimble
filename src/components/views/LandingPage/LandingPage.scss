@@ -44,6 +44,10 @@
 				margin-left: 1rem;
 				color: white;
 				border-color: white;
+				background-color: rgba(45, 49, 66, 0.225);
+				&:hover {
+					background-color: rgba(45, 49, 66, 0.650);
+				}
 			}
 		}
 	}
@@ -117,15 +121,22 @@
 			button {
 				color: white;
 				border-color: white;
+				background-color: rgba(45, 49, 66, 0.225);
+				&:hover {
+					background-color: rgba(45, 49, 66, 0.650);
+				}
 			}
 
 			p {
 				font-size: 1rem;
 				margin: 1rem;
 				span {
-					color: $primary-dk-gray;
+					color: $accent-orange;
 					text-decoration: underline;
+					transition: ease-in-out .2s;
+
 					&:hover {
+						transition: ease-in-out .2s;
 						cursor: pointer;
 						color: $primary-lt-gray;
 					}

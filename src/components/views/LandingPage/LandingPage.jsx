@@ -41,10 +41,10 @@ export default class LandingPage extends Component {
 				<div className='landing-info-box-container'>
 					<div className='landing-info-box'>
 						<div className='info-box-header'>
-							<p>Tasks</p>
+							<p>Manage</p>
 						</div>
 						<div className='info-box-body'>
-							<p>Create, Manage, & Assign Tasks. Break large tasks down into smaller checklists.</p>
+							<p>Create & manage multiple projects, and assign tasks to people involved. Break large tasks down into smaller checklists.</p>
 						</div>
 					</div>
 					<span></span>
