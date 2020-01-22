@@ -36,7 +36,14 @@ export default class LandingPage extends Component {
 					</div>
 				</div>
 				<div className='landing-bottom-container'>
-
+					<div>
+						{/* Reviews or something can go here */}
+					</div>
+					<div></div> {/* Don't Touch Me */}
+					
+					<div>
+						{/* Reviews or something can go here */}
+					</div>
 				</div>
 				<div className='landing-info-box-container'>
 					<div className='landing-info-box'>
