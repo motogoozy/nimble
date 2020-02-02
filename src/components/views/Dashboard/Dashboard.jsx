@@ -321,10 +321,6 @@ export default class Dashboard extends Component {
       }
    };
 
-   mergeTaskOrders = async () => {
-      // TODO: Fetch list by id and merge the old column_order with new column_order, removing duplicates and pushing new tasks to end of list *** See saveChanges method on List for example
-   };
-
    onDragStart = (result ) => {
       const { type } = result;
       if (type === 'list') {
