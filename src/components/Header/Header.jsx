@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import './Header.scss';
 import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import Avatar from '../Avatar/Avatar';
-import SearchBar from '../SearchBar/SearchBar';
 
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -181,11 +181,7 @@ class Header extends Component {
                {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
-                  <div className='header-searchbar-container'>
-                     <SearchBar
-                        onChangeFunc={e => console.log(e.target.value)}
-                     />
-                  </div>
+                  <Input type='search' placeholder='Search name or task'/>
                }
                <Badge classes={{ colorPrimary: 'badge-style' }} color="primary" badgeContent={3} overlap='circle'>
                   <i className="far fa-bell cursor-pointer"></i>

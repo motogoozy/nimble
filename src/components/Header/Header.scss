@@ -42,16 +42,20 @@
    }
 
    .header-right-container {
-   display: flex;
+      display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       padding: 0 .5rem;
 
-      .header-searchbar-container {
+      div:nth-child(1) {
          margin: 0 .5rem;
       }
-
+      
+      .MuiInput-underline::after {
+         border-bottom-color: $accent-purple;
+      }
+      
       i {
          margin: 0 .5rem;
          font-size: 1.5rem;
