@@ -321,10 +321,6 @@ export default class Dashboard extends Component {
       }
    };
 
-   mergeTaskOrders = async () => {
-      // TODO: Fetch list by id and merge the old column_order with new column_order, removing duplicates and pushing new tasks to end of list *** See saveChanges method on List for example
-   };
-
    onDragStart = (result ) => {
       const { type } = result;
       if (type === 'list') {
@@ -575,16 +571,6 @@ export default class Dashboard extends Component {
                                           </div>
                                        </Tooltip>
                                     </div>
-                                    {
-                                       !this.state.projectId && this.state.loggedInUser
-                                       &&
-                                       <div className='no-project-prompt-container'>
-                                          <div className='bounce'>
-                                             <i className="fas fa-chevron-up"></i> 
-                                             <p>Select or Add a Project to Begin</p>
-                                          </div>
-                                       </div>
-                                    }
                                  </div>
                               )
                            }}
@@ -606,6 +592,16 @@ export default class Dashboard extends Component {
                         projectId={this.state.projectId}
                      />
                   </>
+               }
+               {
+                  !this.state.projectId && this.state.loggedInUser
+                  &&
+                  <div className='no-project-prompt-container'>
+                     <div className='bounce'>
+                        <i className="fas fa-chevron-up"></i> 
+                        <p>Select or Add a Project to Begin</p>
+                     </div>
+                  </div>
                }
             </div>
 			</div>

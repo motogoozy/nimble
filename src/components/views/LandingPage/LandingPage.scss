@@ -44,6 +44,10 @@
 				margin-left: 1rem;
 				color: white;
 				border-color: white;
+				background-color: rgba(45, 49, 66, 0.225);
+				&:hover {
+					background-color: rgba(45, 49, 66, 0.650);
+				}
 			}
 		}
 	}
@@ -117,15 +121,22 @@
 			button {
 				color: white;
 				border-color: white;
+				background-color: rgba(45, 49, 66, 0.225);
+				&:hover {
+					background-color: rgba(45, 49, 66, 0.650);
+				}
 			}
 
 			p {
 				font-size: 1rem;
 				margin: 1rem;
 				span {
-					color: $primary-dk-gray;
+					color: $accent-orange;
 					text-decoration: underline;
+					transition: ease-in-out .2s;
+
 					&:hover {
+						transition: ease-in-out .2s;
 						cursor: pointer;
 						color: $primary-lt-gray;
 					}
@@ -138,6 +149,22 @@
 	.landing-bottom-container {
 		width: 100vw;
 		height: 20vh;
+		display: flex;
+		flex-direction: row;
+
+		div {
+			flex: 1;
+			height: 100%;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+
+			&:nth-child(2) {
+				flex: 3;
+			}
+		}
 	}
 
 	.landing-info-box-container {
