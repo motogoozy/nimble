@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './LandingPage.scss';
-import NimbleLogo from '../../../assets/nimble-logo.png';
-import DashboardScreenshot from '../../../assets/dashboard-screenshot.png';
+import NimbleLogo from '../../assets/nimble-logo.png';
+import DashboardScreenshot from '../../assets/dashboard-screenshot.png';
 
 import { Button } from '@material-ui/core';
 

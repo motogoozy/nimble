@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './Dashboard.scss';
-import Sidebar from '../../Sidebar/Sidebar';
-import Header from '../../Header/Header';
-import People from '../../People/People';
-import List from '../../List/List';
-import AddButton from '../../AddButton/AddButton';
-import ColorPicker from '../../ColorPicker/ColorPicker';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import Header from '../../components/Header/Header';
+import People from '../../components/People/People';
+import List from '../../components/List/List';
+import AddButton from '../../components/AddButton/AddButton';
+import ColorPicker from '../../components/ColorPicker/ColorPicker';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';

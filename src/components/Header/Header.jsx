@@ -205,12 +205,12 @@ class Header extends Component {
                      open={Boolean(this.state.anchorEl)}
                      onClose={this.closeMenu}
                   >
-                     <Link to='/profile' className='header-link' onClick={this.closeMenu}>
+                     {/* <Link to='/profile' className='header-link' onClick={this.closeMenu}> */}
                         <MenuItem>Profile</MenuItem>
-                     </Link>
-                     <Link to='/settings' className='header-link' onClick={this.closeMenu}>
+                     {/* </Link> */}
+                     {/* <Link to='/settings' className='header-link' onClick={this.closeMenu}> */}
                         <MenuItem>Settings</MenuItem>
-                     </Link>
+                     {/* </Link> */}
                      <MenuItem className='header-link'>Logout</MenuItem>
                   </Menu>
                </div>

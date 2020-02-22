@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './SettingsPage.scss';
-import Header from '../../Header/Header';
+import Header from '../SettingsPage/SettingsPage';
 
 export default class SettingsPage extends Component {
    render() {

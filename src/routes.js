@@ -1,9 +1,9 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import LandingPage from './components/views/LandingPage/LandingPage';
-import Dashboard from './components/views/Dashboard/Dashboard';
-import ProfilePage from './components/views/ProfilePage/ProfilePage';
-import SettingsPage from './components/views/SettingsPage/SettingsPage';
+import LandingPage from './views/LandingPage/LandingPage';
+import Dashboard from './views/Dashboard/Dashboard';
+import ProfilePage from './views/ProfilePage/ProfilePage';
+import SettingsPage from './views/SettingsPage/SettingsPage';
 
 export default (
    <Switch>e
