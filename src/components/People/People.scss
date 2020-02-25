@@ -132,3 +132,45 @@
 		}
 	}
 }
+
+.add-project-collaborator-modal {
+	width: 500px;
+	height: 500px;
+	background-color: white;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 1rem;
+
+	h3 {
+		margin-bottom: 1rem;
+	}
+
+	
+	.add-project-collaborator-connections-container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+
+		p {
+			display: flex;
+			flex-direction: row;
+		}
+
+		.add-project-collaborator-connections {
+			height: 100%;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+	}
+}

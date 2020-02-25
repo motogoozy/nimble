@@ -13,6 +13,7 @@ export default class PeoplePage extends Component {
 		pendingConnections: '',
 		users: '',
 		projectCollaborators: '',
+		displayAddCollaboratorModal: false,
 	};
 
 	componentDidMount = async () => {
@@ -121,46 +122,138 @@ export default class PeoplePage extends Component {
 		}
 	};
 	
-	displayConnections = (list, actions, tooltipTitles) => {
+	displayCurrentConnections = (list) => {
 		const { users } = this.state;
 		const { loggedInUser } = this.props;
 
-		if (list.length === 0) {
-			let text;
-			if (actions[0] === 'Remove') {
-				text = 'No connections.'
-			} else if (actions[0] === 'Accept') {
-				text = 'No connection requests.'
+		return list.map(connection => {
+			let userId;
+			if (connection.send_id === loggedInUser.user_id ) {
+				userId = connection.receive_id;
 			} else {
-				text = 'No pending connections.'
+				userId = connection.send_id;
 			}
+			let user = users[userId];
+			let avatarColor = this.formatColor(user.color);
 			return (
-				<div>
-					<p>{text}</p>
-				</div>
+				<UserConnection
+					key={`connection-id: ${connection.connection_id}`}
+					user={user}
+					avatarColor={avatarColor}
+				/>
 			)
-		} else {
-			return list.map(connection => {
-				let userId;
-				if (connection.send_id === loggedInUser.user_id ) {
-					userId = connection.receive_id;
-				} else {
-					userId = connection.send_id;
-				}
-				let user = users[userId];
-				let avatarColor = this.formatColor(user.color);
-				return (
-					<UserConnection
-						key={`${list}: ${user.user_id}`}
-						user={user}
-						actions={actions}
-						tooltipTitles={tooltipTitles}
-						avatarColor={avatarColor}
-					/>
-				)
-			})
-		}
+		})
 	};
+
+	displayConnectionRequests = (list) => {
+		const { users } = this.state;
+		const { loggedInUser } = this.props;
+
+		return list.map(connection => {
+			let userId;
+			if (connection.send_id === loggedInUser.user_id ) {
+				userId = connection.receive_id;
+			} else {
+				userId = connection.send_id;
+			}
+			let user = users[userId];
+			let avatarColor = this.formatColor(user.color);
+			return (
+				<UserConnection
+					key={`connection-id: ${connection.connection_id}`}
+					user={user}
+					avatarColor={avatarColor}
+				/>
+			)
+		})
+	};
+
+	displayPendingConnections = (list) => {
+		const { users } = this.state;
+		const { loggedInUser } = this.props;
+
+		return list.map(connection => {
+			let userId;
+			if (connection.send_id === loggedInUser.user_id ) {
+				userId = connection.receive_id;
+			} else {
+				userId = connection.send_id;
+			}
+			let user = users[userId];
+			let avatarColor = this.formatColor(user.color);
+			return (
+				<UserConnection
+					key={`connection-id: ${connection.connection_id}`}
+					user={user}
+					avatarColor={avatarColor}
+				/>
+			)
+		})
+	};
+
+	displayAvailableConnections = (list) => {
+		if (list.length === 0) {
+			return <i style={{ color: 'gray' }}>No connections available.</i>
+		}
+		return list.map(user => {
+			const avatarColor = this.formatColor(user.color);
+
+			return (
+				<UserConnection
+					key={`available: ${user.user_id}`}
+					user={user}
+					actions={[]}
+					tooltipTitles={[]}
+					avatarColor={avatarColor}
+				/>
+			)
+		});
+	}
+
+	addCollaboratorModal = () => {
+		const { currentConnections, projectCollaborators, users } = this.state;
+		const { loggedInUser } = this.props;
+
+		let remainingConnections = currentConnections.filter(connection => {
+			let isAvailable = true;
+			for (let i = 0; i < projectCollaborators.length; i++) {
+				if (connection.send_id === loggedInUser.user_id) {
+					if (connection.receive_id === projectCollaborators[i].user_id) {
+						isAvailable = false;
+						break;
+					}
+				} else {
+					if (connection.send_id === projectCollaborators[i].user_id) {
+						isAvailable = false;
+						break;
+					}
+				}
+			}
+			return isAvailable;
+		})
+
+		let userList = remainingConnections.map(connection => {
+			if (connection.receive_id === loggedInUser.user_id) {
+				return users[connection.send_id];
+			} else {
+				return users[connection.receive_id];
+			}
+		});
+
+		return (
+			<div className='modal-wrapper' onClick={() => this.setState({ displayAddCollaboratorModal: false })}>
+				<div className='add-project-collaborator-modal' onClick={e => e.stopPropagation()}>
+					<h3>Add Person to Project</h3>
+					<div className='add-project-collaborator-connections-container'>
+						<p style={{ marginBottom: '1rem', textDecoration: 'underline' }}>Available Connections:</p>
+						<div className='add-project-collaborator-connections'>
+							{ this.displayAvailableConnections(userList) }
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
 
 	render() {
 		const { currentConnections, connectionRequests, pendingConnections, users, projectCollaborators } = this.state;
@@ -171,7 +264,9 @@ export default class PeoplePage extends Component {
 					<div className='project-collaborators-column'>
 						<div className='collaborators-column-header'>
 							<p>Project Collaborators</p>
-							<SmallAddButton title={'Invite User to Project'}/>
+							<div onClick={() => this.setState({ displayAddCollaboratorModal: true })}>
+								<SmallAddButton title={'Add User to Project'} />
+							</div>
 						</div>
 						<div className='collaborators-column-body'>
 							{
@@ -196,7 +291,7 @@ export default class PeoplePage extends Component {
 							{
 								users
 								?
-								this.displayConnections(currentConnections, ['Remove'], ['Remove Connection'])
+								this.displayCurrentConnections(currentConnections)
 								:
 								<div className='progress-container'>
 									<CircularProgress />
@@ -212,7 +307,7 @@ export default class PeoplePage extends Component {
 							{
 								users
 								?
-								this.displayConnections(connectionRequests, ['Accept', 'Delete'], ['Accept Connection Request', 'Delete Connection Request'])
+								this.displayConnectionRequests(connectionRequests)
 								:
 								<div className='progress-container'>
 									<CircularProgress />
@@ -228,7 +323,7 @@ export default class PeoplePage extends Component {
 							{
 								users
 								?
-								this.displayConnections(pendingConnections, ['Cancel'], ['Cancel Connection Request'])
+								this.displayPendingConnections(pendingConnections)
 								:
 								<div className='progress-container'>
 									<CircularProgress />
@@ -237,6 +332,11 @@ export default class PeoplePage extends Component {
 						</div>
 					</div>
 				</div>
+				{
+					this.state.displayAddCollaboratorModal
+					&&
+					this.addCollaboratorModal()
+				}
 			</div>
 		)
 	}
