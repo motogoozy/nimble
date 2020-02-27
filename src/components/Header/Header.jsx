@@ -120,7 +120,7 @@ class Header extends Component {
       return (
          <div className='modal-wrapper' onClick={this.cancelAddProject}>
             <div className='add-project-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-               <h3>New Project:</h3>
+               <p style={{ fontSize: '1.2rem' }}>New Project:</p>
                <TextField
                   id="standard-search"
                   label="Project Name"

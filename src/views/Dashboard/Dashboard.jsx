@@ -37,7 +37,6 @@ export default class Dashboard extends Component {
       let userId = 1;
       let user = await this.getUserById(userId);
       this.setState({ loggedInUser: user });
-      this.handleSidebarSelection('people')
    };
 
    componentDidUpdate = async (prevProps) => {
@@ -493,10 +492,10 @@ export default class Dashboard extends Component {
       return (
          <div className='modal-wrapper' onClick={this.cancelAddList}>
             <div className='add-list-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-               <h3>New List:</h3>
+               <p style={{ fontSize: '1.2rem' }}>New List:</p>
                <div className='add-list-modal-body'>
                   <div className='add-modal-body-item'>
-                     <h4>Title</h4>
+                     <p>Title</p>
                      <TextField
                         required
                         id="standard-required"
@@ -506,7 +505,7 @@ export default class Dashboard extends Component {
                   </div>
                   <div>
                      <div className='add-modal-body-item'>
-                        <h4>List Color:</h4>
+                        <p>List Color:</p>
                         <div onClick={()=> this.setState({ displayColorPicker: !this.state.displayColorPicker })} className='current-color-box cursor-pointer' style={{ backgroundColor: defaultColor, margin: '.5rem .5rem .5rem 0' }}></div>
                         <div className='color-picker-container'>
                            {

@@ -206,10 +206,10 @@ export default class List extends Component {
 		return (
 			<div className='modal-wrapper' onClick={this.cancelAddTask}>
             <div className='add-task-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-               <h3>New Task:</h3>
+               <p style={{ fontSize: '1.2rem' }}>New Task:</p>
                <div className='add-task-modal-body'>
                   <div className='add-modal-body-item'>
-                     <h4>Title</h4>
+                     <p>Title</p>
                      <TextField
 								required
 								autoFocus
