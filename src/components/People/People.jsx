@@ -129,6 +129,7 @@ export default class PeoplePage extends Component {
 
 	displayProjectCollaborators = () => {
 		const { projectCollaborators } = this.state;
+		const { loggedInUser } = this.props;
 
 		if (projectCollaborators.length === 0) {
 			return (
@@ -148,7 +149,11 @@ export default class PeoplePage extends Component {
 							tooltipTitles={['Remove Person From Project']}
 							avatarColor={avatarColor}
 						/>
-						<p className='remove-project-user cursor-pointer' onClick={() => this.removeProjectUser(user.user_id)}>Remove</p>
+						{
+							user.user_id !== loggedInUser.user_id
+							&&
+							<p className='remove-project-user cursor-pointer' onClick={() => this.removeProjectUser(user.user_id)}>Remove</p>
+						}
 					</div>
 				)
 			})
@@ -284,7 +289,9 @@ export default class PeoplePage extends Component {
 		return (
 			<div className='modal-wrapper' onClick={() => this.setState({ displayAddCollaboratorModal: false })}>
 				<div className='add-project-collaborator-modal' onClick={e => e.stopPropagation()}>
-					<h3>Add Person to Project</h3>
+					<div className='add-project-collaborator-modal-header'>
+						<p>Add Person to Project</p>
+					</div>
 					<div className='add-project-collaborator-connections-container'>
 						<p style={{ marginBottom: '1rem', textDecoration: 'underline' }}>Available Connections:</p>
 						<div className='add-project-collaborator-connections'>

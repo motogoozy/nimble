@@ -158,10 +158,17 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 1rem;
 
-	h3 {
-		margin-bottom: 1rem;
+	.add-project-collaborator-modal-header {
+		width: 100%;
+		height: 2rem;
+		background-color: $accent-purple;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 0 1rem;
+		color: white;
 	}
 
 	.add-project-collaborator-connections-container {
@@ -171,6 +178,7 @@
 		flex-direction: column;
 		justify-content: flex-start;
 		align-items: flex-start;
+		padding: 1rem;
 
 		p {
 			display: flex;
