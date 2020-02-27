@@ -58,6 +58,23 @@
 				justify-content: flex-start;
 				align-items: flex-start;
 				flex-wrap: nowrap;
+
+				.project-collaborator-user {
+					width: 100%;
+					height: auto;
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+					align-items: center;
+					border-bottom: 1px solid lightgray;
+					
+					.remove-project-user {
+						font-size: .8rem;
+						&:hover {
+							text-decoration: underline;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -73,7 +90,6 @@
 	}
 
 	.connection-column {
-		// height: 32%;
 		height: calc(33.3% - .5rem);
 		width: 100%;
 
@@ -148,7 +164,6 @@
 		margin-bottom: 1rem;
 	}
 
-	
 	.add-project-collaborator-connections-container {
 		width: 100%;
 		height: 100%;
@@ -171,6 +186,16 @@
 			align-items: flex-start;
 			overflow-x: hidden;
 			overflow-y: auto;
+		}
+
+		.add-available-connection {
+			width: 100%;
+			height: auto;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			padding-right: 1rem;
 		}
 	}
 }

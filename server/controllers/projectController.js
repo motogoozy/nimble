@@ -38,7 +38,7 @@ module.exports = {
       const list_order = [];
       const db = req.app.get('db');
       try {
-         let added = await db.project.add_project({
+         let added = await db.project.create_project({
             title, list_order, created_at, created_by, archived,
          });
          res.status(200).send(added[0]);
@@ -56,6 +56,32 @@ module.exports = {
          res.status(200).send(updatedProject);
       } catch (err) {
          console.log(err);
+      }
+   },
+   addProjectUser: async (req, res) => {
+      const { project_id, user_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let addedUser = await db.project.add_project_user({ project_id, user_id });
+         res.status(200).send(addedUser[0]);
+      } catch (err) {
+         console.log(err);
+         res.status(400).send({
+            message: 'Error adding user to project. Please try again.'
+         })
+      }
+   },
+   removeProjectUser: async (req, res) => {
+      const { project_id, user_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let removedUser = await db.project.remove_project_user({ project_id, user_id });
+         res.status(200).send(removedUser[0]);
+      } catch(err) {
+         console.log(err);
+         res.status(400).send({
+            message: 'Error removing user from project. Please try again.'
+         })
       }
    },
 };

@@ -38,6 +38,8 @@ app.get('/project/:project_id', projectController.getProjectById); // Get projec
 app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
 app.post('/project', projectController.createProject);
 app.put('/project/:project_id', projectController.updateProject); // Update Project
+app.post('/project/:project_id/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
+app.delete('/project/:project_id/:user_id', projectController.removeProjectUser) // Remove User from Project (Collaborator)
 
 // User
 app.get('/user/:user_id', userController.getUserById) // Get user by id

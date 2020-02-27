@@ -97,6 +97,36 @@ export default class PeoplePage extends Component {
 
 	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
 
+	addProjectUser = async (userId) => {
+		const { projectId } = this.props;
+		
+		try {
+			await axios.post(`/project/${projectId}/${userId}`);
+			await this.getProjectUsers();
+			await this.getUserConnections();
+			await this.categorizeConnections();
+		} catch (err) {
+			if (err.response.data.message) {
+				console.log(err.response.data.message);
+			}
+		}
+	};
+
+	removeProjectUser = async (userId) => {
+		const { projectId } = this.props;
+
+		try {
+			await axios.delete(`/project/${projectId}/${userId}`);
+			await this.getProjectUsers();
+			await this.getUserConnections();
+			await this.categorizeConnections();
+		} catch (err) {
+			if (err.response.data.message) {
+				console.log(err.response.data.message);
+			}
+		}
+	};
+
 	displayProjectCollaborators = () => {
 		const { projectCollaborators } = this.state;
 
@@ -110,13 +140,16 @@ export default class PeoplePage extends Component {
 			return projectCollaborators.map(user => {
 				let avatarColor = this.formatColor(user.color);
 				return (
-					<UserConnection
-						key={`projectCollaborator: ${user.user_id}`}
-						user={user}
-						actions={['Remove']}
-						tooltipTitles={['Remove Person From Project']}
-						avatarColor={avatarColor}
-					/>
+					<div className='project-collaborator-user'>
+						<UserConnection
+							key={`projectCollaborator: ${user.user_id}`}
+							user={user}
+							actions={['Remove']}
+							tooltipTitles={['Remove Person From Project']}
+							avatarColor={avatarColor}
+						/>
+						<p className='remove-project-user cursor-pointer' onClick={() => this.removeProjectUser(user.user_id)}>Remove</p>
+					</div>
 				)
 			})
 		}
@@ -191,28 +224,36 @@ export default class PeoplePage extends Component {
 		})
 	};
 
-	displayAvailableConnections = (list) => {
-		if (list.length === 0) {
-			return <i style={{ color: 'gray' }}>No connections available.</i>
-		}
-		return list.map(user => {
-			const avatarColor = this.formatColor(user.color);
-
-			return (
-				<UserConnection
-					key={`available: ${user.user_id}`}
-					user={user}
-					actions={[]}
-					tooltipTitles={[]}
-					avatarColor={avatarColor}
-				/>
-			)
-		});
-	}
 
 	addCollaboratorModal = () => {
 		const { currentConnections, projectCollaborators, users } = this.state;
 		const { loggedInUser } = this.props;
+
+		const displayAvailableConnections = (list) => {
+			if (list.length === 0) {
+				return <i style={{ color: 'gray' }}>No connections available.</i>
+			}
+
+			return list.map(user => {
+				if (user) {
+					const avatarColor = this.formatColor(user.color);
+					
+					return (
+						<div className='add-available-connection' key={`available: ${user.user_id}`}>
+							<UserConnection
+								user={user}
+								actions={[]}
+								tooltipTitles={[]}
+								avatarColor={avatarColor}
+							/>
+							<div onClick={() => this.addProjectUser(user.user_id)}>
+								<SmallAddButton title={'Add Person'}/>
+							</div>
+						</div>
+					)
+				} else return null;
+			});
+		};
 
 		let remainingConnections = currentConnections.filter(connection => {
 			let isAvailable = true;
@@ -247,13 +288,13 @@ export default class PeoplePage extends Component {
 					<div className='add-project-collaborator-connections-container'>
 						<p style={{ marginBottom: '1rem', textDecoration: 'underline' }}>Available Connections:</p>
 						<div className='add-project-collaborator-connections'>
-							{ this.displayAvailableConnections(userList) }
+							{ displayAvailableConnections(userList) }
 						</div>
 					</div>
 				</div>
 			</div>
 		)
-	}
+	};
 
 	render() {
 		const { currentConnections, connectionRequests, pendingConnections, users, projectCollaborators } = this.state;
@@ -264,9 +305,13 @@ export default class PeoplePage extends Component {
 					<div className='project-collaborators-column'>
 						<div className='collaborators-column-header'>
 							<p>Project Collaborators</p>
-							<div onClick={() => this.setState({ displayAddCollaboratorModal: true })}>
-								<SmallAddButton title={'Add User to Project'} />
-							</div>
+							{
+								currentConnections
+								&&
+								<div onClick={() => this.setState({ displayAddCollaboratorModal: true })}>
+									<SmallAddButton title={'Add User to Project'} />
+								</div>
+							}
 						</div>
 						<div className='collaborators-column-body'>
 							{
@@ -285,7 +330,11 @@ export default class PeoplePage extends Component {
 					<div className='connection-column' >
 						<div className="connection-column-header">
 							<p>Current Connections</p>
-							<SmallAddButton title={'Add Connection'}/>
+							{
+								currentConnections
+								&&
+								<SmallAddButton title={'Add Connection'}/>
+							}
 						</div>
 						<div className='connection-column-body'>
 							{

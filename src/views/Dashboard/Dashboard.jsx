@@ -37,6 +37,7 @@ export default class Dashboard extends Component {
       let userId = 1;
       let user = await this.getUserById(userId);
       this.setState({ loggedInUser: user });
+      this.handleSidebarSelection('people')
    };
 
    componentDidUpdate = async (prevProps) => {
