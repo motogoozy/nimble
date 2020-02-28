@@ -5,6 +5,9 @@ import UserConnection from './UserConnection/UserConnection';
 
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tooltip from '@material-ui/core/Tooltip';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 export default class PeoplePage extends Component {
 	state = {
@@ -13,13 +16,15 @@ export default class PeoplePage extends Component {
 		pendingConnections: '',
 		users: '',
 		projectCollaborators: '',
+		newUserEmail: '',
 		displayAddCollaboratorModal: false,
+		displayAddConnectionModal: false,
 	};
 
 	componentDidMount = async () => {
-		await this.getProjectUsers();
 		await this.getUserConnections();
 		await this.categorizeConnections();
+		await this.getProjectUsers();
 	};
 
 	componentDidUpdate = async (prevProps) => {
@@ -32,7 +37,7 @@ export default class PeoplePage extends Component {
 
 	getUserConnections = async () => {
 		const { loggedInUser } = this.props;
-		let res = await axios.get(`/connection/${loggedInUser.user_id}`);
+		let res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
 		let current = [], requests = [], pending = [];
 		res.data.forEach(connection => {
 			if (connection.status === 2) {
@@ -88,6 +93,12 @@ export default class PeoplePage extends Component {
 		return userMap;
 	};
 
+	handleInput = (key, value) => {
+      this.setState({ [key]: value });
+	};
+	
+	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
+
 	getProjectUsers = async () => {
 		const { projectId } = this.props;
 
@@ -95,16 +106,94 @@ export default class PeoplePage extends Component {
 		this.setState({ projectCollaborators: res.data });
 	};
 
-	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
-
 	addProjectUser = async (userId) => {
 		const { projectId } = this.props;
 		
 		try {
-			await axios.post(`/project/${projectId}/${userId}`);
-			await this.getProjectUsers();
+			await axios.post(`/project/${projectId}/user/${userId}`);
 			await this.getUserConnections();
 			await this.categorizeConnections();
+			await this.getProjectUsers();
+		} catch (err) {
+			if (err.response.data.message) {
+				console.log(err.response.data.message);
+			}
+		}
+	};
+
+	addUserConnection = async () => {
+		const { newUserEmail } = this.state;
+		const { loggedInUser } = this.props;
+		const body = {
+			email: newUserEmail,
+		};
+
+		try {
+			await axios.post(`/connection/user/${loggedInUser.user_id}`, body);
+			this.setState({
+				users: '',
+				displayAddConnectionModal: false ,
+				newUserEmail: '',
+			}, async () => {
+				await this.getUserConnections();
+				await this.categorizeConnections();
+			});
+		} catch (err) {
+			if (err.response.data.message) {
+				console.log(err.response.data.message);
+			}
+		}
+	};
+
+	cancelAddUserConnection = () => {
+		this.setState({
+			newUserEmail: '',
+			displayAddConnectionModal: false
+		});
+	};
+
+	removeUserConnection = async (connection) => {
+		const { loggedInUser, projectId } = this.props;
+		let userId;
+
+		if (connection.send_id === loggedInUser.user_id) {
+			userId = connection.receive_id;
+		} else {
+			userId = connection.send_id;
+		}
+
+		try {
+			await axios.delete(`/connection/${connection.connection_id}/user/${loggedInUser.user_id}`);
+			await axios.delete(`/project/${projectId}/${userId}`)
+			this.setState({
+				users: ''
+			}, async () => {
+				await this.getUserConnections();
+				await this.categorizeConnections();
+				await this.getProjectUsers();
+			})
+		} catch (err) {
+			if (err.response.data.message) {
+				console.log(err.response.data.message);
+			}
+		}
+	};
+
+	acceptUserConnection = async (connectionId) => {
+		const { loggedInUser } = this.props;
+		const body = {
+			user_id: loggedInUser.user_id,
+		};
+
+		try {
+			await axios.put(`/connection/${connectionId}`, body);
+			this.setState({
+				users: '',
+			}, async () => {
+				await this.getUserConnections();
+				await this.categorizeConnections();
+				await this.getProjectUsers();
+			});
 		} catch (err) {
 			if (err.response.data.message) {
 				console.log(err.response.data.message);
@@ -134,37 +223,48 @@ export default class PeoplePage extends Component {
 		if (projectCollaborators.length === 0) {
 			return (
 				<div>
-					<p>No users assigned to this project.</p>
+					<i className='no-connections-text'>No users assigned to this project.</i>
 				</div>
 			)
-		} else {
-			return projectCollaborators.map(user => {
-				let avatarColor = this.formatColor(user.color);
-				return (
-					<div className='project-collaborator-user'>
-						<UserConnection
-							key={`projectCollaborator: ${user.user_id}`}
-							user={user}
-							actions={['Remove']}
-							tooltipTitles={['Remove Person From Project']}
-							avatarColor={avatarColor}
-						/>
-						{
-							user.user_id !== loggedInUser.user_id
-							&&
-							<p className='remove-project-user cursor-pointer' onClick={() => this.removeProjectUser(user.user_id)}>Remove</p>
-						}
-					</div>
-				)
-			})
 		}
+
+		return projectCollaborators.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1).map(user => {
+			let avatarColor = this.formatColor(user.color);
+			return (
+				<div className='user-connection-container' key={`projectCollaborator: ${user.user_id}`}>
+					<UserConnection
+						user={user}
+						actions={['Remove']}
+						tooltipTitles={['Remove Person From Project']}
+						avatarColor={avatarColor}
+					/>
+					{
+						user.user_id !== loggedInUser.user_id
+						&&
+						<div className='user-connection-actions'>
+							<Tooltip title={'Remove User from Project'}>
+								<p onClick={() => this.removeProjectUser(user.user_id)}>Remove</p>
+							</Tooltip>
+						</div>
+					}
+				</div>
+			)
+		})
 	};
 	
-	displayCurrentConnections = (list) => {
-		const { users } = this.state;
+	displayCurrentConnections = () => {
+		const { users, currentConnections } = this.state;
 		const { loggedInUser } = this.props;
 
-		return list.map(connection => {
+		if (currentConnections.length === 0) {
+			return (
+				<div>
+					<i className='no-connections-text'>No current connections.</i>
+				</div>
+			)
+		}
+
+		let connectionList = currentConnections.map(connection => {
 			let userId;
 			if (connection.send_id === loggedInUser.user_id ) {
 				userId = connection.receive_id;
@@ -173,21 +273,45 @@ export default class PeoplePage extends Component {
 			}
 			let user = users[userId];
 			let avatarColor = this.formatColor(user.color);
+			return {
+				connection: connection,
+				user: user,
+				avatarColor: avatarColor
+			}
+		});
+
+		connectionList.sort((a, b) => (a.user.first_name > b.user.first_name) ? 1 : -1);
+
+		return connectionList.map(obj => {
 			return (
-				<UserConnection
-					key={`connection-id: ${connection.connection_id}`}
-					user={user}
-					avatarColor={avatarColor}
-				/>
+				<div className='user-connection-container' key={`current-connection-id: ${obj.connection.connection_id}`}>
+					<UserConnection
+						user={obj.user}
+						avatarColor={obj.avatarColor}
+					/>
+					<div className='user-connection-actions'>
+						<Tooltip title={'Remove User Connection'}>
+							<p onClick={() => this.removeUserConnection(obj.connection)}>Remove</p>
+						</Tooltip>
+					</div>
+				</div>
 			)
 		})
 	};
 
-	displayConnectionRequests = (list) => {
-		const { users } = this.state;
+	displayConnectionRequests = () => {
+		const { users, connectionRequests } = this.state;
 		const { loggedInUser } = this.props;
 
-		return list.map(connection => {
+		if (connectionRequests.length === 0) {
+			return (
+				<div>
+					<i className='no-connections-text'>No connection requests.</i>
+				</div>
+			)
+		}
+
+		let connectionList = connectionRequests.map(connection => {
 			let userId;
 			if (connection.send_id === loggedInUser.user_id ) {
 				userId = connection.receive_id;
@@ -196,21 +320,48 @@ export default class PeoplePage extends Component {
 			}
 			let user = users[userId];
 			let avatarColor = this.formatColor(user.color);
+			return {
+				connection: connection,
+				user: user,
+				avatarColor: avatarColor
+			}
+		});
+
+		connectionList.sort((a, b) => (a.user.first_name > b.user.first_name) ? 1 : -1);
+
+		return connectionList.map(obj => {
 			return (
-				<UserConnection
-					key={`connection-id: ${connection.connection_id}`}
-					user={user}
-					avatarColor={avatarColor}
-				/>
+				<div className='user-connection-container' key={`request-connection-id: ${obj.connection.connection_id}`}>
+					<UserConnection
+						user={obj.user}
+						avatarColor={obj.avatarColor}
+					/>
+					<div className='user-connection-actions'>
+						<Tooltip title={'Accept Connection Request'}>
+							<p className='accept-connection-button' onClick={() => this.acceptUserConnection(obj.connection.connection_id)}>Accept</p>
+						</Tooltip>
+						<Tooltip title={'Ignore Connection Request'}>
+							<p onClick={() => this.removeUserConnection(obj.connection)}>Ignore</p>
+						</Tooltip>
+					</div>
+				</div>
 			)
 		})
 	};
 
-	displayPendingConnections = (list) => {
-		const { users } = this.state;
+	displayPendingConnections = () => {
+		const { users, pendingConnections } = this.state;
 		const { loggedInUser } = this.props;
 
-		return list.map(connection => {
+		if (pendingConnections.length === 0) {
+			return (
+				<div>
+					<i className='no-connections-text'>No pending connections.</i>
+				</div>
+			)
+		}
+
+		let connectionList = pendingConnections.map(connection => {
 			let userId;
 			if (connection.send_id === loggedInUser.user_id ) {
 				userId = connection.receive_id;
@@ -219,12 +370,28 @@ export default class PeoplePage extends Component {
 			}
 			let user = users[userId];
 			let avatarColor = this.formatColor(user.color);
+			return {
+				connection: connection,
+				user: user,
+				avatarColor: avatarColor
+			}
+		});
+
+		connectionList.sort((a, b) => (a.user.first_name > b.user.first_name) ? 1 : -1);
+
+		return connectionList.map(obj => {
 			return (
-				<UserConnection
-					key={`connection-id: ${connection.connection_id}`}
-					user={user}
-					avatarColor={avatarColor}
-				/>
+				<div className='user-connection-container' key={`pending-connection-id: ${obj.connection.connection_id}`}>
+					<UserConnection
+						user={obj.user}
+						avatarColor={obj.avatarColor}
+					/>
+					<div className='user-connection-actions'>
+						<Tooltip title={'Cancel Connection Request'}>
+							<p onClick={() => this.removeUserConnection(obj.connection)}>Cancel</p>
+						</Tooltip>
+					</div>
+				</div>
 			)
 		})
 	};
@@ -291,14 +458,37 @@ export default class PeoplePage extends Component {
 				<div className='add-project-collaborator-modal' onClick={e => e.stopPropagation()}>
 					<div className='add-project-collaborator-modal-header'>
 						<p>Add Person to Project</p>
+						<i className="fas fa-times cursor-pointer" onClick={() => this.setState({ displayAddCollaboratorModal: false })}></i>
 					</div>
 					<div className='add-project-collaborator-connections-container'>
-						<p style={{ marginBottom: '1rem', textDecoration: 'underline' }}>Available Connections:</p>
+						<p style={{ marginBottom: '1rem' }}>Available Connections:</p>
 						<div className='add-project-collaborator-connections'>
 							{ displayAvailableConnections(userList) }
 						</div>
 					</div>
 				</div>
+			</div>
+		)
+	};
+
+	addConnectionModal = () => {
+		const { newUserEmail } = this.state;
+		return (
+			<div className='modal-wrapper' onClick={this.cancelAddUserConnection}>
+				<div className='add-connection-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
+               <p style={{ fontSize: '1.2rem' }}>Add New Connection:</p>
+               <TextField
+                  id="standard-search"
+						label="User Email"
+						value={newUserEmail}
+                  onChange={e => this.handleInput('newUserEmail', e.target.value)}
+                  autoFocus
+               />
+               <div>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddUserConnection}>Cancel</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addUserConnection}>Save</Button>
+               </div>
+            </div>
 			</div>
 		)
 	};
@@ -340,14 +530,16 @@ export default class PeoplePage extends Component {
 							{
 								currentConnections
 								&&
-								<SmallAddButton title={'Add Connection'}/>
+								<div onClick={() => this.setState({ displayAddConnectionModal: true })}>
+									<SmallAddButton title={'Add Connection'}/>
+								</div>
 							}
 						</div>
 						<div className='connection-column-body'>
 							{
-								users
+								users && currentConnections
 								?
-								this.displayCurrentConnections(currentConnections)
+								this.displayCurrentConnections()
 								:
 								<div className='progress-container'>
 									<CircularProgress />
@@ -361,9 +553,9 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								users
+								users && connectionRequests
 								?
-								this.displayConnectionRequests(connectionRequests)
+								this.displayConnectionRequests()
 								:
 								<div className='progress-container'>
 									<CircularProgress />
@@ -377,9 +569,9 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								users
+								users && pendingConnections
 								?
-								this.displayPendingConnections(pendingConnections)
+								this.displayPendingConnections()
 								:
 								<div className='progress-container'>
 									<CircularProgress />
@@ -392,6 +584,11 @@ export default class PeoplePage extends Component {
 					this.state.displayAddCollaboratorModal
 					&&
 					this.addCollaboratorModal()
+				}
+				{
+					this.state.displayAddConnectionModal
+					&&
+					this.addConnectionModal()
 				}
 			</div>
 		)

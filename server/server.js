@@ -38,7 +38,7 @@ app.get('/project/:project_id', projectController.getProjectById); // Get projec
 app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
 app.post('/project', projectController.createProject);
 app.put('/project/:project_id', projectController.updateProject); // Update Project
-app.post('/project/:project_id/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
+app.post('/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
 app.delete('/project/:project_id/:user_id', projectController.removeProjectUser) // Remove User from Project (Collaborator)
 
 // User
@@ -63,5 +63,7 @@ app.put('/task/:task_id', taskController.updateTask); // Update task
 app.delete('/task/:task_id', taskController.deleteTask); // Delete task
 
 // Connection
-app.get('/connection/:user_id', connectionController.getUserConnections); // Get all connections for user
-app.post('/connection/:user_id', connectionController.addConnection); // Add user connection
+app.get('/connection/user/:user_id', connectionController.getUserConnections); // Get all connections for user
+app.post('/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
+app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
+app.delete('/connection/:connection_id/user/:user_id', connectionController.removeUserConnection); // Remove, ignore, and cancel user connection,
