@@ -138,10 +138,13 @@ class Header extends Component {
 
    formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
 
+   getUserInitials = (user) => `${user.first_name.split('')[0]}${user.last_name.split('')[0]}`;
+
    render() {
       const { currentPage, projects } = this.state;
       const { loggedInUser } = this.props;
       const avatarColor = this.formatColor(loggedInUser.color);
+      const userInitials = this.getUserInitials(loggedInUser);
 
       return (
          <div className='header'>
@@ -194,7 +197,7 @@ class Header extends Component {
                      style={{ backgroundColor: 'transparent' }}
                   >
                      <Avatar
-                        initials={'kp'}
+                        initials={userInitials}
                         color={avatarColor}
                      />
                   </Button>
