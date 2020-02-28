@@ -22,28 +22,6 @@
       .header-select-container {
          width: 15rem;
          margin: 0 1rem;
-
-         div:nth-child(1) {
-            div:nth-child(1) {
-               div {
-                  &:hover {
-                     cursor: pointer;
-                  }
-               }
-
-               div:nth-child(1) {
-                  &:hover {
-                     cursor: text;
-                  }
-               }
-               div:nth-child(2) {
-                  &:hover {
-                     cursor: pointer;
-                  }
-               }
-            }
-         }
-
       }
 
       .header-back-container {
