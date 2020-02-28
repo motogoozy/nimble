@@ -322,7 +322,7 @@ export default class List extends Component {
 							>
 							<div className='list-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
 								<p>{title}</p>
-								<Tooltip title='Edit List'>
+								<Tooltip title={'Edit List'}>
 									<i style={{ padding: '.25rem .5rem' }} onClick={() => this.setState({ displayEditModal: true })} className="fas fa-ellipsis-v cursor-pointer"></i>
 								</Tooltip>
 							</div>
