@@ -228,7 +228,9 @@ export default class PeoplePage extends Component {
 			)
 		}
 
-		return projectCollaborators.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1).map(user => {
+		projectCollaborators.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
+
+		return projectCollaborators.map(user => {
 			let avatarColor = this.formatColor(user.color);
 			return (
 				<div className='user-connection-container' key={`projectCollaborator: ${user.user_id}`}>
@@ -452,6 +454,8 @@ export default class PeoplePage extends Component {
 				return users[connection.receive_id];
 			}
 		});
+
+		userList.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
 
 		return (
 			<div className='modal-wrapper' onClick={() => this.setState({ displayAddCollaboratorModal: false })}>
