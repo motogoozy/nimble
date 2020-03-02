@@ -63,10 +63,10 @@ module.exports = {
    },
    updateTask: async (req, res) => {
       const { task_id } = req.params;
-      const { title, status, list_id, created_at, created_by } = req.body;
+      const { title, notes, status, list_id, created_at, created_by } = req.body;
       const db = req.app.get('db');
       try {
-         let updatedTask = await db.task.update_task({ task_id, title, status, list_id, created_at, created_by });
+         let updatedTask = await db.task.update_task({ task_id, title, notes, status, list_id, created_at, created_by });
          res.status(200).send(updatedTask[0]);
       } catch (err) {
          console.log(err)

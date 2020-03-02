@@ -34,7 +34,8 @@ CREATE TABLE task (
 	list_id integer NOT NULL REFERENCES list(id),
 	project_id integer NOT NULL REFERENCES project(id),
 	created_at timestamp without time zone,
-	created_by integer NOT NULL REFERENCES users(id)
+	created_by integer NOT NULL REFERENCES users(id),
+	notes character varying(250)
 );
 
 CREATE TABLE project_users (
