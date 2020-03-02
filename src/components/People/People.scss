@@ -224,6 +224,12 @@
 			justify-content: space-between;
 			align-items: center;
 			padding-right: 1rem;
+
+			.adding-user-progress {
+				div {
+					color: $accent-purple;
+				}
+			}
 		}
 	}
 }

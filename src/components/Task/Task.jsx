@@ -11,19 +11,22 @@ import { Draggable } from 'react-beautiful-dnd';
 
 export default class Task extends Component {
 	state = {
-		content: '',
-		displayEditModal: false,
-		newTitle: '',
 		title: '',
+		newTitle: '',
+		notes: '',
+		status: '',
+		assignedUsers: '',
+		displayEditModal: false,
 	};
 
 	componentDidMount = () => {
-		const { title, content, status } = this.props;
+		const { title, status, assignedUsers, notes } = this.props;
 		this.setState({
 			title: title,
+			notes: notes,
 			newTitle: title,
-			content: content,
 			status: status,
+			assignedUsers: assignedUsers,
 		});
 	};
 
@@ -32,10 +35,11 @@ export default class Task extends Component {
 	};
 
 	updateTask = async () => {
-		const { newTitle, status } = this.state;
+		const { newTitle, notes, status } = this.state;
 		const { id, list_id, created_at, created_by } = this.props;
 		const body = {
 			title: newTitle,
+			notes: notes,
 			status: status,
 			list_id: list_id,
 			created_at: created_at,
@@ -56,10 +60,9 @@ export default class Task extends Component {
 	};
 	
 	cancelUpdateTask = () => {
-		const { title, content } = this.props;
+		const { title } = this.props;
 		this.setState({
 			newTitle: title,
-			content: content,
 			displayEditModal: false,
 		});
 	};
@@ -74,10 +77,20 @@ export default class Task extends Component {
 	};
 
 	editModal = () => {
-		const { colorCode, formatColor, checkIsLight } = this.props;
-		const { title, newTitle } = this.state;
+		const { colorCode, formatColor, checkIsLight, assignedUsers, projectUsers } = this.props;
+		const { title, newTitle, notes } = this.state;
 		const currentColor = formatColor(colorCode);
 		const headerTextColor = checkIsLight(colorCode) === true ? 'black' : 'white';
+		const projectUserObj = {};
+		projectUsers.forEach(user => projectUserObj[user.user_id] = user);
+
+		const assignedUserList = assignedUsers.map(id => {
+			let user = projectUserObj[id];
+
+			return (
+				<p key={id}>{user.first_name} {user.last_name}</p>
+			)
+		});
 
 		return (
 			<div className='modal-wrapper' onClick={this.cancelUpdateTask}>
@@ -86,7 +99,7 @@ export default class Task extends Component {
 						<h4>{title}</h4>
 					</div>
 					<div className='edit-task-modal-body'>
-						<div className='edit-task-modal-body-item'>
+						<div className='edit-task-title'>
 							<h4>Title</h4>
 							<TextField
 								required
@@ -95,6 +108,22 @@ export default class Task extends Component {
 								value={newTitle}
 								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
+						</div>
+						<div className='task-assigned-users-container'>
+							<h4>Assigned User(s)</h4>
+							<div className='task-assigned-users'>
+								{ assignedUserList }
+							</div>
+						</div>
+						<div className='task-notes-container'>
+							<h4>Notes</h4>
+							<textarea
+								name="task-notes"
+								id="task-notes"
+								maxLength='250'
+								defaultValue={notes}
+								onChange={e => this.handleInput('notes', e.target.value )}
+							></textarea>
 						</div>
 						<div className='edit-modal-buttons'>
 							<div className='edit-modal-delete-container'>
@@ -120,7 +149,7 @@ export default class Task extends Component {
 	};
 	
 	render() {
-		const { title, content } = this.state;
+		const { title } = this.state;
 		const { id, index, colorCode, highlightTasksOfUser, assignedUsers } = this.props;
 
 		let highlight = false;
@@ -161,7 +190,6 @@ export default class Task extends Component {
 										<i className={highlight ? 'fas fa-pencil-alt cursor-pointer' : 'fas fa-pencil-alt cursor-pointer unselected-task'} onClick={() => this.setState({ displayEditModal: true })}></i>
 									</Tooltip>
 								</div>
-								<p>{content}</p>
 							</div>
 						)
 					}}

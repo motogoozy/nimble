@@ -73,15 +73,70 @@
 		justify-content: flex-start;
 		align-items: center;
 
-		.edit-task-modal-body-item {
+		.edit-task-title{
 			width: 100%;
 			height: auto;
+			max-height: 4rem;
 			margin-bottom: 1rem;
 			display: flex;
 			flex-direction: column;
 			flex-wrap: nowrap;
 			justify-content: flex-start;
 			align-items: flex-start;
+		}
+
+		.task-assigned-users-container {
+			width: 100%;
+			height: 50%;
+			max-height: 15rem;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+			margin-bottom: .5rem;
+
+			h4 {
+				margin-bottom: 6px;
+			}
+
+			.task-assigned-users {
+				height: 100%;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				flex-wrap: nowrap;
+				justify-content: flex-start;
+				align-items: flex-start;
+				border: 1px solid lightgray;
+				padding: .5rem;
+				overflow-x: hidden;
+				overflow-y: auto;
+			}
+
+			p {
+				text-align: left;
+				margin: .5rem;
+			}
+		}
+
+		.task-notes-container {
+			width: 100%;
+			height: 50%;
+			max-height: 15rem;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+			margin-bottom: .5rem;
+
+			h4 {
+				margin-bottom: 6px;
+			}
+
+			textarea {
+				width: 100%;
+				height: 100%;
+			}
 		}
 		
 		.edit-modal-buttons {

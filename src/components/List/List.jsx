@@ -176,7 +176,7 @@ export default class List extends Component {
 	};
 
 	displayTasks = () => {
-		const { tasks, highlightTasksOfUser } = this.props;
+		const { tasks, highlightTasksOfUser, projectUsers } = this.props;
 		const { listColorCode } = this.state;
 		return tasks.map((task, index) => {
 			return (
@@ -185,7 +185,7 @@ export default class List extends Component {
 					id={task.id}
 					index={index}
 					title={task.title}
-					content={task.content}
+					notes={task.notes}
 					colorCode={listColorCode}
 					list_id={task.list_id}
 					created_at={task.created_at}
@@ -197,6 +197,7 @@ export default class List extends Component {
 					getLists={this.props.getLists}
 					highlightTasksOfUser={highlightTasksOfUser}
 					assignedUsers={task.assignedUsers}
+					projectUsers={projectUsers}
 				/>
 			)
 		});

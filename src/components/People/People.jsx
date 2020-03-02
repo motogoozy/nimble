@@ -15,21 +15,21 @@ export default class PeoplePage extends Component {
 		connectionRequests: '',
 		pendingConnections: '',
 		users: '',
-		projectCollaborators: '',
+		projectUsers: '',
 		newUserEmail: '',
 		displayAddCollaboratorModal: false,
 		displayAddConnectionModal: false,
+		addingUser: '',
 	};
 
 	componentDidMount = async () => {
 		await this.getUserConnections();
 		await this.categorizeConnections();
-		await this.getProjectUsers();
 	};
 
 	componentDidUpdate = async (prevProps) => {
 		if (prevProps.projectId !== this.props.projectId) {
-			await this.getProjectUsers();
+			await this.props.getProjectUsers();
 			await this.getUserConnections();
 			await this.categorizeConnections();
 		}
@@ -99,26 +99,22 @@ export default class PeoplePage extends Component {
 	
 	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
 
-	getProjectUsers = async () => {
-		const { projectId } = this.props;
-
-		let res = await axios.get(`/project/${projectId}/users`);
-		this.setState({ projectCollaborators: res.data });
-	};
-
 	addProjectUser = async (userId) => {
 		const { projectId } = this.props;
-		
-		try {
-			await axios.post(`/project/${projectId}/user/${userId}`);
-			await this.getUserConnections();
-			await this.categorizeConnections();
-			await this.getProjectUsers();
-		} catch (err) {
-			if (err.response.data.message) {
-				console.log(err.response.data.message);
+
+		this.setState({ addingUser: userId }, async () => {
+			try {
+				await axios.post(`/project/${projectId}/user/${userId}`);
+				await this.getUserConnections();
+				await this.categorizeConnections();
+				await this.props.getProjectUsers();
+				this.setState({ addingUser: '' });
+			} catch (err) {
+				if (err.response.data.message) {
+					console.log(err.response.data.message);
+				}
 			}
-		}
+		})
 	};
 
 	addUserConnection = async () => {
@@ -170,7 +166,7 @@ export default class PeoplePage extends Component {
 			}, async () => {
 				await this.getUserConnections();
 				await this.categorizeConnections();
-				await this.getProjectUsers();
+				await this.props.getProjectUsers();
 			})
 		} catch (err) {
 			if (err.response.data.message) {
@@ -192,7 +188,7 @@ export default class PeoplePage extends Component {
 			}, async () => {
 				await this.getUserConnections();
 				await this.categorizeConnections();
-				await this.getProjectUsers();
+				await this.props.getProjectUsers();
 			});
 		} catch (err) {
 			if (err.response.data.message) {
@@ -206,7 +202,7 @@ export default class PeoplePage extends Component {
 
 		try {
 			await axios.delete(`/project/${projectId}/${userId}`);
-			await this.getProjectUsers();
+			await this.props.getProjectUsers();
 			await this.getUserConnections();
 			await this.categorizeConnections();
 		} catch (err) {
@@ -216,11 +212,10 @@ export default class PeoplePage extends Component {
 		}
 	};
 
-	displayProjectCollaborators = () => {
-		const { projectCollaborators } = this.state;
-		const { loggedInUser } = this.props;
+	displayProjectUsers = () => {
+		const { loggedInUser, projectUsers } = this.props;
 
-		if (projectCollaborators.length === 0) {
+		if (projectUsers.length === 0) {
 			return (
 				<div>
 					<i className='no-connections-text'>No users assigned to this project.</i>
@@ -228,9 +223,9 @@ export default class PeoplePage extends Component {
 			)
 		}
 
-		projectCollaborators.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
+		projectUsers.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
 
-		return projectCollaborators.map(user => {
+		return projectUsers.map(user => {
 			let avatarColor = this.formatColor(user.color);
 			return (
 				<div className='user-connection-container' key={`projectCollaborator: ${user.user_id}`}>
@@ -400,8 +395,8 @@ export default class PeoplePage extends Component {
 
 
 	addCollaboratorModal = () => {
-		const { currentConnections, projectCollaborators, users } = this.state;
-		const { loggedInUser } = this.props;
+		const { currentConnections, users, addingUser } = this.state;
+		const { loggedInUser, projectUsers } = this.props;
 
 		const displayAvailableConnections = (list) => {
 			if (list.length === 0) {
@@ -420,9 +415,17 @@ export default class PeoplePage extends Component {
 								tooltipTitles={[]}
 								avatarColor={avatarColor}
 							/>
-							<div onClick={() => this.addProjectUser(user.user_id)}>
-								<SmallAddButton title={'Add Person'}/>
-							</div>
+							{
+								addingUser === user.user_id
+								?
+								<div className='adding-user-progress'>
+									<CircularProgress size={25} />
+								</div>
+								:
+								<div onClick={() => this.addProjectUser(user.user_id)}>
+									<SmallAddButton title={'Add Person'}/>
+								</div>
+							}
 						</div>
 					)
 				} else return null;
@@ -431,14 +434,14 @@ export default class PeoplePage extends Component {
 
 		let remainingConnections = currentConnections.filter(connection => {
 			let isAvailable = true;
-			for (let i = 0; i < projectCollaborators.length; i++) {
+			for (let i = 0; i < projectUsers.length; i++) {
 				if (connection.send_id === loggedInUser.user_id) {
-					if (connection.receive_id === projectCollaborators[i].user_id) {
+					if (connection.receive_id === projectUsers[i].user_id) {
 						isAvailable = false;
 						break;
 					}
 				} else {
-					if (connection.send_id === projectCollaborators[i].user_id) {
+					if (connection.send_id === projectUsers[i].user_id) {
 						isAvailable = false;
 						break;
 					}
@@ -498,7 +501,8 @@ export default class PeoplePage extends Component {
 	};
 
 	render() {
-		const { currentConnections, connectionRequests, pendingConnections, users, projectCollaborators } = this.state;
+		const { currentConnections, connectionRequests, pendingConnections, users } = this.state;
+		const { projectUsers } = this.props;
 
 		return (
 			<div className='people-main'>
@@ -516,9 +520,9 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='collaborators-column-body'>
 							{
-								projectCollaborators
+								projectUsers
 								?
-								this.displayProjectCollaborators()
+								this.displayProjectUsers()
 								:
 								<div className='progress-container'>
 									<CircularProgress />

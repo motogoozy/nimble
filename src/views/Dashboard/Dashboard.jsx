@@ -26,7 +26,8 @@ export default class Dashboard extends Component {
       newColorCode: [96, 125, 139, 1],
       project: {},
       projectId: null,
-      tasks: {}, // tasks to be displayed
+      projectUsers: '',
+      tasks: {},
       taskUsers: {},
       title: '',
       highlightTasksOfUser: 'all',
@@ -55,6 +56,7 @@ export default class Dashboard extends Component {
          displayAddButton: false,
       }, async () => {
          try {
+            await this.getProjectUsers();
             await this.getTaskUsers();
             await this.getAllTasks();
             await this.getLists();
@@ -65,6 +67,13 @@ export default class Dashboard extends Component {
          }
       })
    };
+
+   getProjectUsers = async () => {
+		const { projectId } = this.state;
+
+		let res = await axios.get(`/project/${projectId}/users`);
+		this.setState({ projectUsers: res.data });
+	};
 
    getProjectDetails = async () => {
       const { projectId } = this.state;
@@ -112,8 +121,10 @@ export default class Dashboard extends Component {
          }
          task.databaseId = task.task_id;
          task.id = task.task_id.toString();
-         task.content = '';
          tasks[task.id] = task;
+         if (task.notes === null) {
+            task.notes = '';
+         }
       });
 
       this.setState({
@@ -129,7 +140,6 @@ export default class Dashboard extends Component {
       res.data.forEach(task => {
          task.databaseId = task.task_id;
          task.id = task.task_id.toString();
-         task.content = '';
          userTasks[task.id] = task;
       });
 
@@ -457,7 +467,7 @@ export default class Dashboard extends Component {
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
    displayLists = () => {
-      const { tasks, lists, listOrder, projectId, loggedInUser, highlightTasksOfUser } = this.state;
+      const { tasks, lists, listOrder, projectId, projectUsers, loggedInUser, highlightTasksOfUser } = this.state;
       let listArr = listOrder.map((listId, index) => {
          const list = lists[listId];
          const taskArr = list.taskIds.map(taskId => tasks[taskId]);
@@ -469,6 +479,7 @@ export default class Dashboard extends Component {
                index={index}
                colorCode={list.colorCode}
                projectId={projectId}
+               projectUsers={projectUsers}
                updateList={this.updateList}
                deleteList={this.deleteList}
                loggedInUser={loggedInUser}
@@ -589,6 +600,8 @@ export default class Dashboard extends Component {
                      <People
                         loggedInUser={this.state.loggedInUser}
                         projectId={this.state.projectId}
+                        projectUsers={this.state.projectUsers}
+                        getProjectUsers={this.getProjectUsers}
                      />
                   </>
                }
