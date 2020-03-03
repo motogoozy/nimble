@@ -59,7 +59,11 @@ class Header extends Component {
       let res = await axios.get(`/projects/${loggedInUser.user_id}`);
       let projectsArr = res.data.map(project => {
          project.value = project.project_id;
-         project.label = project.title;
+         if (project.created_by === loggedInUser.user_id) {
+            project.label = `* ${project.title}`
+         } else {
+            project.label = project.title;
+         }
          return project;
       });
       projectsArr.sort((a, b) => (a.label > b.label) ? 1 : -1); // sorting alphabetically descending

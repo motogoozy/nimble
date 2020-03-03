@@ -86,7 +86,7 @@ export default class Task extends Component {
 						}
 						if (idToRemove) {
 							return axios.delete(`/task_users/${idToRemove}`);
-						}
+						} else return null;
 					});
 					await Promise.all(addPromises, removePromises);
 					await this.props.getTaskUsers();
