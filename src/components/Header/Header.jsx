@@ -56,11 +56,11 @@ class Header extends Component {
 
    getUserProjects = async () => {
       const { loggedInUser } = this.props;
-      let res = await axios.get(`/projects/${loggedInUser.user_id}`);
+      let res = await axios.get(`/user/${loggedInUser.user_id}/projects`);
       let projectsArr = res.data.map(project => {
          project.value = project.project_id;
          if (project.created_by === loggedInUser.user_id) {
-            project.label = `* ${project.title}`
+            project.label = `${project.title} *`
          } else {
             project.label = project.title;
          }
