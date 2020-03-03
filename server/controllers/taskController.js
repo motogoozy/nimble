@@ -48,6 +48,29 @@ module.exports = {
          console.log(err);
       }
    },
+   addTaskUser: async (req, res) => {
+      const { project_id } = req.params;
+      const { task_id, user_id } = req.body;
+      const db = req.app.get('db');
+
+      try {
+         let added = await db.task_users.add_task_user({ task_id, user_id, project_id });
+         res.status(200).send(added[0]);
+      } catch (err) {
+         console.log(err);
+      }
+   },
+   deleteTaskUser: async (req, res) => {
+      const { tu_id } = req.params;
+      const db = req.app.get('db');
+
+      try {
+         let deleted = await db.task_users.delete_task_user({ tu_id });
+         res.status(200).send(deleted[0]);
+      } catch (err) {
+         console.log(err);
+      }
+   },
    createTask: async (req, res) => {
       const { project_id } = req.params;
       const { title, created_by, list_id } = req.body;
@@ -76,7 +99,7 @@ module.exports = {
       const { task_id } = req.params;
       const db = req.app.get('db');
       try {
-         await db.task_users.delete_task_users({ task_id });
+         await db.task_users.delete_all_task_users_by_task({ task_id });
          let deletedTask = await db.task.delete_task({ task_id });
          res.status(200).send(deletedTask[0]);
       } catch (err) {

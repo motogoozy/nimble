@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
 import { Draggable } from 'react-beautiful-dnd';
 
 export default class Task extends Component {
@@ -35,9 +36,10 @@ export default class Task extends Component {
 	};
 
 	updateTask = async () => {
-		const { newTitle, notes, status } = this.state;
-		const { id, list_id, created_at, created_by } = this.props;
-		const body = {
+		this.setState({ displayEditModal: false });
+		const { newTitle, notes, status, assignedUsers } = this.state;
+		const { id, list_id, created_at, created_by, projectId, taskUsers } = this.props;
+		const taskBody = {
 			title: newTitle,
 			notes: notes,
 			status: status,
@@ -46,13 +48,60 @@ export default class Task extends Component {
 			created_by: created_by,
 		};
 		try {
-			let res = await axios.put(`/task/${parseInt(id)}`, body);
+			let previouslyAssigned = this.props.assignedUsers;
+			let usersToAdd = [];
+			let usersToRemove = [];
+
+			assignedUsers.forEach(user => {
+				if (!previouslyAssigned.includes(user)) {
+					usersToAdd.push(user);
+				}
+			});
+			previouslyAssigned.forEach(user => {
+				if (!assignedUsers.includes(user)) {
+					usersToRemove.push(user);
+				}
+			});
+
+			if (usersToAdd.length > 0 || usersToRemove.length > 0) {
+				try {
+					let addPromises = usersToAdd.map(userId => {
+						const body = {
+							user_id: userId,
+							task_id: id,
+						};
+						return axios.post(`/task_users/${projectId}`, body);
+					});
+					let removePromises = usersToRemove.map(userId => {
+						let idToRemove;
+						for (let key in taskUsers) {
+							let tu = taskUsers[key];
+							if (
+								tu.task_id === parseInt(id) &&
+								tu.user_id === userId &&
+								tu.project_id === projectId
+							) {
+								idToRemove = tu.tu_id;
+							}
+						}
+						if (idToRemove) {
+							return axios.delete(`/task_users/${idToRemove}`);
+						}
+					});
+					await Promise.all(addPromises, removePromises);
+					await this.props.getTaskUsers();
+					await this.props.getAllTasks();
+				} catch (err) {
+					console.log(err);
+				}
+			}
+
+			let edited = await axios.put(`/task/${parseInt(id)}`, taskBody);
 			await this.props.getAllTasks();
 			this.props.getLists();
 			this.setState({
-				displayEditModal: false,
-				title: res.data.title,
-				newTitle: res.data.title,
+				title: edited.data.title,
+				newTitle: edited.data.title,
 			});
 		} catch (err) {
 			console.log(err);
@@ -60,10 +109,11 @@ export default class Task extends Component {
 	};
 	
 	cancelUpdateTask = () => {
-		const { title } = this.props;
+		const { title, assignedUsers } = this.props;
 		this.setState({
 			newTitle: title,
 			displayEditModal: false,
+			assignedUsers: assignedUsers,
 		});
 	};
 
@@ -76,19 +126,39 @@ export default class Task extends Component {
 		}
 	};
 
+	handleCheckUser = event => {
+		const { assignedUsers } = this.state;
+		const userId = parseInt(event.target.value)
+		let newAssignedUsers = Array.from(assignedUsers);
+
+		if (event.target.checked) {
+			newAssignedUsers.push(userId);
+		} else {
+			newAssignedUsers.splice(newAssignedUsers.indexOf(userId), 1);
+		}
+
+		this.setState({ assignedUsers: newAssignedUsers });
+	};
+
 	editModal = () => {
-		const { colorCode, formatColor, checkIsLight, assignedUsers, projectUsers } = this.props;
-		const { title, newTitle, notes } = this.state;
+		const { colorCode, formatColor, checkIsLight, projectUsers } = this.props;
+		const { title, newTitle, notes, assignedUsers } = this.state;
 		const currentColor = formatColor(colorCode);
 		const headerTextColor = checkIsLight(colorCode) === true ? 'black' : 'white';
-		const projectUserObj = {};
-		projectUsers.forEach(user => projectUserObj[user.user_id] = user);
-
-		const assignedUserList = assignedUsers.map(id => {
-			let user = projectUserObj[id];
-
+		
+		projectUsers.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
+		
+		const availableUserList = projectUsers.map(user => {
 			return (
-				<p key={id}>{user.first_name} {user.last_name}</p>
+				<div key={user.user_id} className='task-assigned-user'>
+					<Checkbox
+						color='primary'
+						value={user.user_id}
+						onChange={event => this.handleCheckUser(event)}
+						checked={assignedUsers.includes(user.user_id)}
+					/>
+					<p>{user.first_name} {user.last_name}</p>
+				</div>
 			)
 		});
 
@@ -112,7 +182,7 @@ export default class Task extends Component {
 						<div className='task-assigned-users-container'>
 							<h4>Assigned User(s)</h4>
 							<div className='task-assigned-users'>
-								{ assignedUserList }
+								{ availableUserList }
 							</div>
 						</div>
 						<div className='task-notes-container'>

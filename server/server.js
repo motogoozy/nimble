@@ -58,6 +58,8 @@ app.get('/project/:project_id/tasks', taskController.getAllTasks); // Get all pr
 app.get('/project/:project_id/tasks/:user_id', taskController.getTasksByUserId); // Get all tasks assigned to a specific user
 app.get('/tasks/unassigned/:project_id', taskController.getUnassignedTasks); // Get all unassigned project tasks (no user_id's)
 app.get('/task_users/:project_id', taskController.getTaskUsers); // Get all task-user relationships from task_users table
+app.post('/task_users/:project_id', taskController.addTaskUser) // Assign user to task
+app.delete('/task_users/:tu_id', taskController.deleteTaskUser) // Remove user from task
 app.post('/project/:project_id/task', taskController.createTask); // Create new task
 app.put('/task/:task_id', taskController.updateTask); // Update task
 app.delete('/task/:task_id', taskController.deleteTask); // Delete task

@@ -113,9 +113,19 @@ export default class Dashboard extends Component {
       const { projectId, taskUsers } = this.state;
       let res = await axios.get(`/project/${projectId}/tasks`)
       let tasks = {};
+
+      let taskUserObj = {};
+      for (let key in taskUsers) {
+         let tu = taskUsers[key];
+         if (!taskUserObj[tu.task_id]) {
+            taskUserObj[tu.task_id] = [];
+         }
+         taskUserObj[tu.task_id].push(tu.user_id);
+      }
+
       res.data.forEach(task => {
-         if (taskUsers[task.task_id]) {
-            task.assignedUsers = taskUsers[task.task_id];
+         if (taskUserObj[task.task_id]) {
+            task.assignedUsers = taskUserObj[task.task_id];
          } else {
             task.assignedUsers = [];
          }
@@ -164,10 +174,7 @@ export default class Dashboard extends Component {
       let res = await axios.get(`/task_users/${projectId}`);
       let taskUserObj = {};
       res.data.forEach(tu => {
-         if (!taskUserObj[tu.task_id]) {
-            taskUserObj[tu.task_id] = [];
-         }
-         taskUserObj[tu.task_id].push(tu.user_id);
+         taskUserObj[tu.tu_id] = tu;
       })
       this.setState({
          taskUsers: taskUserObj
@@ -467,7 +474,7 @@ export default class Dashboard extends Component {
    convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
    
    displayLists = () => {
-      const { tasks, lists, listOrder, projectId, projectUsers, loggedInUser, highlightTasksOfUser } = this.state;
+      const { tasks, lists, listOrder, projectId, projectUsers, loggedInUser, taskUsers, highlightTasksOfUser } = this.state;
       let listArr = listOrder.map((listId, index) => {
          const list = lists[listId];
          const taskArr = list.taskIds.map(taskId => tasks[taskId]);
@@ -483,7 +490,9 @@ export default class Dashboard extends Component {
                updateList={this.updateList}
                deleteList={this.deleteList}
                loggedInUser={loggedInUser}
+               taskUsers={taskUsers}
                getAllTasks={this.getAllTasks}
+               getTaskUsers={this.getTaskUsers}
                getLists={this.getLists}
                convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}
                highlightTasksOfUser={highlightTasksOfUser}

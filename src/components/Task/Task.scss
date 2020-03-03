@@ -111,12 +111,23 @@
 				padding: .5rem;
 				overflow-x: hidden;
 				overflow-y: auto;
+
+				.task-assigned-user {
+					width: 100%;
+					height: auto;
+					max-height: 3rem;
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-start;
+					align-items: center;
+
+					p {
+						text-align: left;
+						margin: .5rem;
+					}
+				}
 			}
 
-			p {
-				text-align: left;
-				margin: .5rem;
-			}
 		}
 
 		.task-notes-container {
