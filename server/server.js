@@ -33,7 +33,6 @@ massive(CONNECTION_STRING).then(db => {
 
 // ENDPOINTS
 // Project
-app.get('/projects/:user_id', projectController.getProjectsByUserId); // Get all user's projects
 app.get('/project/:project_id', projectController.getProjectById); // Get project by Id
 app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
 app.post('/project', projectController.createProject);
@@ -44,6 +43,7 @@ app.delete('/project/:project_id/:user_id', projectController.removeProjectUser)
 // User
 app.get('/user/:user_id', userController.getUserById) // Get user by id
 app.get('/find-user', userController.getUserByEmail) // Get user by email
+app.get('/user/:user_id/projects', projectController.getProjectsByUserId) // Get all user's projects
 app.post(`/user`, userController.createUser); // Add user
 
 // List
@@ -56,7 +56,6 @@ app.delete('/project/:project_id/list/:list_id', listController.deleteList); // 
 // Task
 app.get('/project/:project_id/tasks', taskController.getAllTasks); // Get all project tasks
 app.get('/project/:project_id/tasks/:user_id', taskController.getTasksByUserId); // Get all tasks assigned to a specific user
-app.get('/tasks/unassigned/:project_id', taskController.getUnassignedTasks); // Get all unassigned project tasks (no user_id's)
 app.get('/task_users/:project_id', taskController.getTaskUsers); // Get all task-user relationships from task_users table
 app.post('/task_users/:project_id', taskController.addTaskUser) // Assign user to task
 app.delete('/task_users/:tu_id', taskController.deleteTaskUser) // Remove user from task
