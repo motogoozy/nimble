@@ -400,7 +400,7 @@ export default class PeoplePage extends Component {
 
 		const displayAvailableConnections = (list) => {
 			if (list.length === 0) {
-				return <i style={{ color: 'gray' }}>No connections available.</i>
+				return <i style={{ color: 'gray', textAlign: 'left' }}>No connections available. Connect with a user to add them to the project.</i>
 			}
 
 			return list.map(user => {
