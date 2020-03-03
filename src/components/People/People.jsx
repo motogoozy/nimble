@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './People.scss';
 import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import UserConnection from './UserConnection/UserConnection';
-import Avatar from '../Avatar/Avatar';
 
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';

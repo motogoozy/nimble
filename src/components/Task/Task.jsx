@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import './Task.scss';
+// import Avatar from '../Avatar/Avatar';
 
 import axios from 'axios';
+import { Draggable } from 'react-beautiful-dnd';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Draggable } from 'react-beautiful-dnd';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import Avatar from '@material-ui/core/Avatar';
+import { makeStyles } from '@material-ui/core/styles';
 
 export default class Task extends Component {
 	state = {
@@ -140,6 +144,79 @@ export default class Task extends Component {
 		this.setState({ assignedUsers: newAssignedUsers });
 	};
 
+	getUserInitials = (user) => `${user.first_name.split('')[0]}${user.last_name.split('')[0]}`;
+
+	formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
+
+	displayTaskUserAvatars = () => {
+		const { projectUsers, highlightTasksOfUser } = this.props;
+		const projectUserMap = {};
+		projectUsers.forEach(projectUser => {
+			projectUserMap[projectUser.user_id] = projectUser;
+		});
+		const { assignedUsers } = this.state;
+		let displayUsers = [];
+		let remainingUsers = [];
+		if (assignedUsers.length > 3) {
+			displayUsers = assignedUsers.slice(0, 3);
+			remainingUsers = assignedUsers.slice(3);
+		} 
+		else {
+			displayUsers = [...assignedUsers];
+		}
+
+		// Styling for user avatars
+		let styleObj = {
+			default: {
+				backgroundColor: 'rgba(150, 150, 150, 1)',
+				border: 'none',
+			}
+		};
+		displayUsers.forEach(userId => {
+			const user = projectUserMap[userId];
+			const userColor = this.formatColor(user.color);
+			styleObj[userId] = {
+				backgroundColor: userColor,
+				border: 'none',
+			}
+		})
+		const useStyles = makeStyles(styleObj);
+		const classes = useStyles();
+
+		let avatarList = displayUsers.map(userId => {
+			const user = projectUserMap[userId];
+			const userInitials = this.getUserInitials(user);
+
+			if (highlightTasksOfUser === 'all') {
+				return (
+					<Tooltip key={userId} title={`${user.first_name} ${user.last_name}`}>
+						<Avatar className={classes[userId]}>{userInitials}</Avatar>
+					</Tooltip>
+				)
+			} else if (highlightTasksOfUser === userId) {
+				return (
+					<Tooltip key={userId} title={`${user.first_name} ${user.last_name}`}>
+						<Avatar className={classes[userId]}>{userInitials}</Avatar>
+					</Tooltip>
+				)
+			} else return null;
+		});
+
+		if (remainingUsers.length > 0 && highlightTasksOfUser === 'all') {
+			avatarList.push(
+				<Tooltip key={'remaining-users-avatar'} title={`${remainingUsers.length} more...`}>
+					<Avatar className={classes.default}>{`+${remainingUsers.length}`}</Avatar>
+				</Tooltip>
+			)
+		}
+
+		return (
+			<AvatarGroup>
+				{ avatarList }
+			</AvatarGroup>
+		);
+	};
+
 	editModal = () => {
 		const { colorCode, formatColor, checkIsLight, projectUsers } = this.props;
 		const { title, newTitle, notes, assignedUsers } = this.state;
@@ -166,11 +243,11 @@ export default class Task extends Component {
 			<div className='modal-wrapper' onClick={this.cancelUpdateTask}>
 				<div className='edit-task-modal' onClick={e => e.stopPropagation()}>
 					<div className='edit-task-modal-header' style={{ backgroundColor: currentColor, color: headerTextColor }}>
-						<h4>{title}</h4>
+						<p style={{ fontSize: '1.2rem' }}>{title}</p>
 					</div>
 					<div className='edit-task-modal-body'>
 						<div className='edit-task-title'>
-							<h4>Title</h4>
+							<p style={{ fontWeight: '500' }}>Title</p>
 							<TextField
 								required
 								id="standard-required"
@@ -180,13 +257,13 @@ export default class Task extends Component {
 							/>
 						</div>
 						<div className='task-assigned-users-container'>
-							<h4>Assigned User(s)</h4>
+							<p style={{ fontWeight: '500', marginBottom: '.2rem' }}>Assigned User(s)</p>
 							<div className='task-assigned-users'>
 								{ availableUserList }
 							</div>
 						</div>
 						<div className='task-notes-container'>
-							<h4>Notes</h4>
+							<p style={{ fontWeight: '500', marginBottom: '.2rem' }}>Notes</p>
 							<textarea
 								name="task-notes"
 								id="task-notes"
@@ -259,6 +336,9 @@ export default class Task extends Component {
 									<Tooltip title={'Edit Task'}>
 										<i className={highlight ? 'fas fa-pencil-alt cursor-pointer' : 'fas fa-pencil-alt cursor-pointer unselected-task'} onClick={() => this.setState({ displayEditModal: true })}></i>
 									</Tooltip>
+								</div>
+								<div className='assigned-user-avatars' onClick={() => this.setState({ displayEditModal: true })}>
+									{ this.displayTaskUserAvatars() }
 								</div>
 							</div>
 						)
