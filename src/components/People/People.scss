@@ -169,7 +169,7 @@
 	width: 500px;
 	height: 500px;
 	background-color: white;
-	border-radius: 5px;
+	border-radius: 7px 7px 5px 5px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -185,6 +185,7 @@
 		align-items: center;
 		padding: 0 1rem;
 		color: white;
+		border-radius: 5px 5px 0 0;
 
 		i:hover {
 			color: $accent-orange;
