@@ -8,6 +8,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const massive = require('massive');
+const path = require('path');
 
 const { PORT, DATABASE_URL, SECRET } = process.env;
 const serverPort = PORT || 4000;
@@ -69,3 +70,7 @@ app.get('/connection/user/:user_id', connectionController.getUserConnections); /
 app.post('/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
 app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
 app.delete('/connection/:connection_id/user/:user_id', connectionController.removeUserConnection); // Remove, ignore, and cancel user connection,
+
+app.get('/*', (req, res) => {
+   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
