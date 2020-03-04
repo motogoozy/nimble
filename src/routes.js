@@ -3,7 +3,6 @@ import { Switch, Route } from 'react-router-dom';
 import LandingPage from './views/LandingPage/LandingPage';
 import Dashboard from './views/Dashboard/Dashboard';
 import ProfilePage from './views/ProfilePage/ProfilePage';
-import SettingsPage from './views/SettingsPage/SettingsPage';
 
 export default (
    <Switch>e
@@ -11,6 +10,5 @@ export default (
       <Route component={Dashboard} exact path='/dashboard' />
       <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
       <Route component={ProfilePage} path='/profile' />
-      <Route component={SettingsPage} path='/settings' />
    </Switch>
 )

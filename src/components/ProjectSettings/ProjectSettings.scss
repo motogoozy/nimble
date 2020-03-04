@@ -1,0 +1,69 @@
+@import '../../styles.scss';
+
+.project-settings-main {
+   height: 100%;
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-start;
+   align-items: flex-start;
+   padding: 1rem;
+
+   .project-settings-header {
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      p {
+         font-size: 1.25rem;
+      }
+   }
+   
+   .project-settings-body {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      .project-settings-container {
+         height: 50%;
+         width: 50%;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+         align-items: flex-start;
+         margin-top: 2rem;
+
+         .project-setting-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+         }
+
+         .delete-project-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-end;
+            width: auto;
+
+            p {
+               padding: .25rem;
+            }
+
+            button {
+               padding: .25rem;
+            }
+
+            p, button {
+               color: rgba(183, 28, 28, 1);
+            }
+         }
+      }
+   }
+}

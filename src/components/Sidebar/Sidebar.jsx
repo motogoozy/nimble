@@ -20,6 +20,8 @@ class Sidebar extends Component {
          this.props.handleSidebarSelection('none');
       } else if (selected === 'people') {
          this.props.handleSidebarSelection('people');
+      } else if (selected === 'settings') {
+         this.props.handleSidebarSelection('settings')
       } else if (selected === 'nimble') {
          this.props.history.push('/dashboard');
          window.location.reload();
@@ -84,30 +86,11 @@ class Sidebar extends Component {
                      <p>PEOPLE</p>
                   </div>
                </Tooltip>
-               {/* <Tooltip title={'All Tasks In Progress'} enterDelay={300}>
-                  <div
-                     onClick={() => this.handleButtonClick('in-progress')}
-                     className={selectedButton === 'in-progress' ? 'sidebar-button active-button' : 'sidebar-button'}
-                  >
-                     <i className="fas fa-spinner"></i>
-                     <p>IN PROGRESS</p>
-                  </div>
-               </Tooltip>
-               <Tooltip title={'All Completed Tasks'} enterDelay={300}>
-                  <div
-                     onClick={() => this.handleButtonClick('completed')}
-                     className={selectedButton === 'completed' ? 'sidebar-button active-button' : 'sidebar-button'}
-                  >
-                     <i className="far fa-check-square"></i>
-                     <p>COMPLETED</p>
-                  </div>
-               </Tooltip> */}
                <Tooltip title={'Project Settings'} enterDelay={300}>
                   <div
                      onClick={() => this.handleButtonClick('settings')}
                      className={selectedButton === 'settings' ? 'sidebar-button active-button' : 'sidebar-button'}
                   >
-                     {/* <i class="fas fa-cog"></i> */}
                      <i className="fas fa-sliders-h"></i>
                      <p>SETTINGS</p>
                   </div>

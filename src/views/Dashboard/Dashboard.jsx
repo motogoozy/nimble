@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import './Dashboard.scss';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Header from '../../components/Header/Header';
-import People from '../../components/People/People';
 import List from '../../components/List/List';
+import People from '../../components/People/People';
+import ProjectSettings from '../../components/ProjectSettings/ProjectSettings';
 import AddButton from '../../components/AddButton/AddButton';
 import ColorPicker from '../../components/ColorPicker/ColorPicker';
 
@@ -608,6 +609,17 @@ export default class Dashboard extends Component {
                         projectId={this.state.projectId}
                         projectUsers={this.state.projectUsers}
                         getProjectUsers={this.getProjectUsers}
+                     />
+                  </>
+               }
+               {
+                  this.state.displaySettings && this.state.projectId
+                  &&
+                  <>
+                     <ProjectSettings
+                        loggedInUser={this.state.loggedInUser}
+                        projectId={this.state.projectId}
+                        project={this.state.project}
                      />
                   </>
                }

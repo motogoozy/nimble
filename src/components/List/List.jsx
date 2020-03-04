@@ -46,6 +46,7 @@ export default class List extends Component {
 	handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
+		console.log(codeArr)
 		this.setState({ newListColorCode: codeArr });
 	};
 
@@ -153,12 +154,12 @@ export default class List extends Component {
 	};
 
 	deleteTask = async (task_id) => {
+		this.setState({ displayEditModal: false });
 		const { list } = this.props;
 		let removedIndex = list.taskIds.indexOf(task_id.toString());
 		let taskOrder = list.taskIds;
 		taskOrder.splice(removedIndex, 1);
 		let newTaskOrder = taskOrder.map(task => parseInt(task));
-		this.setState({ displayEditModal: false });
 		const body = {
 			title: list.title,
 			color_code: list.colorCode,
@@ -242,21 +243,21 @@ export default class List extends Component {
 			<div className='modal-wrapper' onClick={this.cancelChanges}>
 				<div className='edit-list-modal' onClick={e => e.stopPropagation()}>
 					<div className='edit-modal-header' style={{ backgroundColor: currentColor, color: headerTextColor }}>
-						<h4>{title}</h4>
+						<p style={{ fontSize: '1.2rem' }}>{title}</p>
 					</div>
 					<div className='edit-modal-body' onClick={() => this.setState({ displayColorPicker: false })}>
 						<div className='edit-modal-body-item'>
-							<h4>Title</h4>
+							<p style={{ fontWeight: '500' }}>Title</p>
 							<TextField
 								required
 								id="standard-required"
 								fullWidth={true}
-								defaultValue={title}
+								value={this.state.newTitle}
 								onChange={e => this.handleInput('newTitle', e.target.value)}
 							/>
 						</div>
 						<div className='edit-modal-body-item'>
-							<h4>List Color:</h4>
+							<p style={{ fontWeight: '500' }}>List Color:</p>
 							<div
 								onClick={e => {
 									this.setState({ displayColorPicker: !this.state.displayColorPicker });
@@ -325,7 +326,7 @@ export default class List extends Component {
 							style={listStyle}
 							>
 							<div className='list-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
-								<p>{title}</p>
+								<p style={{ fontSize: '1.2rem' }}>{title}</p>
 								<Tooltip title={'Edit List'}>
 									<i style={{ padding: '.25rem .5rem' }} onClick={() => this.setState({ displayEditModal: true })} className="fas fa-ellipsis-v cursor-pointer"></i>
 								</Tooltip>

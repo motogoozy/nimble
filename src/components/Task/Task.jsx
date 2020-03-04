@@ -268,7 +268,7 @@ export default class Task extends Component {
 								name="task-notes"
 								id="task-notes"
 								maxLength='250'
-								defaultValue={notes}
+								value={notes}
 								onChange={e => this.handleInput('notes', e.target.value )}
 							></textarea>
 						</div>

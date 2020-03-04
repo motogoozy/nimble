@@ -75,6 +75,7 @@ export default class PeoplePage extends Component {
 	}
 
 	getUserDetails = async (list) => {
+		if (!list) return;
 		const { loggedInUser } = this.props;
 		let userMap = {};
 
