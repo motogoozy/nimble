@@ -14,14 +14,7 @@ const { PORT, DATABASE_URL, SECRET } = process.env;
 const serverPort = PORT || 4000;
 
 const app = express();
-if (process.env.NODE_ENV === 'production') {
-   // Serve any static files
-   app.use(express.static( `${__dirname}/../build` ));
- // Handle React routing, return all requests to React app
-   app.get('*', function(req, res) {
-      res.sendFile(path.join(__dirname, '/build', 'index.html'));
-   });
-}
+app.use(express.static( `${__dirname}/../build` ));
 
 // MIDDLEWARE
 app.use(express.json());
@@ -78,6 +71,6 @@ app.post('/connection/user/:user_id', connectionController.addUserConnection); /
 app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
 app.delete('/connection/:connection_id/user/:user_id', connectionController.removeUserConnection); // Remove, ignore, and cancel user connection,
 
-app.get('*', (req, res)=>{
-   res.sendFile(path.join(__dirname, '../build/index.html'));
+app.get('/*', (req, res) => {
+   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
