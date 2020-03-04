@@ -9,7 +9,8 @@ const express = require('express');
 const session = require('express-session');
 const massive = require('massive');
 
-const { SERVER_PORT, CONNECTION_STRING, SECRET } = process.env;
+const { PORT, DATABASE_URL, SECRET } = process.env;
+const serverPort = PORT || 4000;
 
 const app = express();
 app.use(express.static( `${__dirname}/../build` ));
@@ -23,11 +24,11 @@ app.use(session({
 }));
 
 // DATABASE CONNECTION
-massive(CONNECTION_STRING).then(db => {
+massive(DATABASE_URL).then(db => {
    app.set('db', db)
 		console.log(('Connected to database'))
-   app.listen(SERVER_PORT, () => {
-      console.log(`Listening on port: ${SERVER_PORT}`)
+   app.listen(serverPort, () => {
+      console.log(`Listening on port: ${serverPort}`)
    })
 });
 
