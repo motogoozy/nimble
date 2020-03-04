@@ -39,9 +39,6 @@ export default class Dashboard extends Component {
       this.setState({ loggedInUser: user });
    };
 
-   componentDidUpdate = async (prevProps) => {
-   };
-
    getUserById = async (userId) => {
       let res = await axios.get(`/user/${userId}`);
       return res.data;
