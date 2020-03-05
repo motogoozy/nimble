@@ -54,6 +54,17 @@ module.exports = {
          console.log(err);
       }
    },
+   deleteTasksByListId: async (req, res) => {
+      const { list_id } = req.params;
+      const db = req.app.get('db');
+
+      try {
+         let deleted = await db.task.delete_all_tasks_by_list({ list_id });
+         res.status(200).send(deleted);
+      } catch (err) {
+         console.log(err);
+      }
+   },
    getUnassignedTasks: async (req, res) => {
       const { project_id } = req.params;
       const db = req.app.get('db');
@@ -102,6 +113,31 @@ module.exports = {
       try {
          let deleted = await db.task_users.delete_task_user({ tu_id });
          res.status(200).send(deleted[0]);
+      } catch (err) {
+         console.log(err);
+      }
+   },
+   deleteTaskUsersByProjectAndUser: async (req, res) => {
+      const { project_id, user_id } = req.params;
+      const db = req.app.get('db');
+
+      try {
+         let deleted = await db.task_users.delete_all_task_users_by_project_and_user({
+            project_id: project_id,
+            user_id: user_id,
+         });
+         res.status(200).send(deleted)
+      } catch (err) {
+         console.log(err);
+      }
+   },
+   deleteTaskUsersByTask: async (req, res) => {
+      const { task_id } = req.params;
+      const db = req.app.get('db');
+
+      try {
+         let deleted = await db.task_users.delete_all_task_users_by_task({ task_id });
+         res.status(200).send(deleted[0])
       } catch (err) {
          console.log(err);
       }

@@ -71,12 +71,12 @@ module.exports = {
          })
       }
    },
-   removeProjectUser: async (req, res) => {
+   deleteProjectUser: async (req, res) => {
       const { project_id, user_id } = req.params;
       const db = req.app.get('db');
       try {
-         let removedUser = await db.project.remove_project_user({ project_id, user_id });
-         res.status(200).send(removedUser[0]);
+         let deletedUser = await db.project.delete_project_user({ project_id, user_id });
+         res.status(200).send(deletedUser[0]);
       } catch(err) {
          console.log(err);
          res.status(400).send({

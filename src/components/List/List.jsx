@@ -168,8 +168,10 @@ export default class List extends Component {
 		};
 		try {
 			await axios.delete(`/task/${task_id}`);
+			await axios.delete(`/task_users/task/${task_id}`);
 			await this.props.updateList(list.id, body);
 			await this.props.getAllTasks();
+			await this.props.getTaskUsers();
 			this.props.getLists();
 		} catch (err) {
 			console.log(err);

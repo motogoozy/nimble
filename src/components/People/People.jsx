@@ -118,6 +118,24 @@ export default class PeoplePage extends Component {
 		})
 	};
 
+	removeProjectUser = async (userId) => {
+		const { projectId } = this.props;
+
+		try {
+			await axios.delete(`/project/${projectId}/user/${userId}`);
+			await axios.delete(`/task_users/project/${projectId}/user/${userId}`)
+			await this.props.getProjectUsers();
+			await this.props.getTaskUsers();
+			await this.props.getAllTasks();
+			await this.getUserConnections();
+			await this.categorizeConnections();
+		} catch (err) {
+			if (err.response.data.message) {
+				console.log(err.response.data.message);
+			}
+		}
+	};
+
 	addUserConnection = async () => {
 		const { newUserEmail } = this.state;
 		const { loggedInUser } = this.props;
@@ -161,7 +179,10 @@ export default class PeoplePage extends Component {
 
 		try {
 			await axios.delete(`/connection/${connection.connection_id}/user/${loggedInUser.user_id}`);
-			await axios.delete(`/project/${projectId}/${userId}`)
+			await axios.delete(`/project/${projectId}/user/${userId}`);
+			await axios.delete(`/task_users/project/${projectId}/user/${userId}`);
+			await this.props.getTaskUsers();
+			await this.props.getAllTasks();
 			this.setState({
 				users: ''
 			}, async () => {
@@ -191,21 +212,6 @@ export default class PeoplePage extends Component {
 				await this.categorizeConnections();
 				await this.props.getProjectUsers();
 			});
-		} catch (err) {
-			if (err.response.data.message) {
-				console.log(err.response.data.message);
-			}
-		}
-	};
-
-	removeProjectUser = async (userId) => {
-		const { projectId } = this.props;
-
-		try {
-			await axios.delete(`/project/${projectId}/${userId}`);
-			await this.props.getProjectUsers();
-			await this.getUserConnections();
-			await this.categorizeConnections();
 		} catch (err) {
 			if (err.response.data.message) {
 				console.log(err.response.data.message);

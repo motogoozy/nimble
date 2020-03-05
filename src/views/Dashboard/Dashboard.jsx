@@ -281,6 +281,12 @@ export default class Dashboard extends Component {
       const { project_id, listOrder, lists } = this.state;
 
       try {
+         let tasksToRemove = lists[databaseId].taskIds;
+         let removedTaskPromises = tasksToRemove.map(id => {
+            return axios.delete(`/task_users/task/${id}`);
+         })
+         await Promise.all(removedTaskPromises);
+         await axios.delete(`/tasks/list/${databaseId}`);
          await axios.delete(`/project/${project_id}/list/${databaseId}`);
          const indexToRemove = listOrder.indexOf(id);
          let newOrder = Array.from(listOrder);
@@ -609,6 +615,8 @@ export default class Dashboard extends Component {
                         projectId={this.state.projectId}
                         projectUsers={this.state.projectUsers}
                         getProjectUsers={this.getProjectUsers}
+                        getTaskUsers={this.getTaskUsers}
+                        getAllTasks={this.getAllTasks}
                      />
                   </>
                }

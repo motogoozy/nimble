@@ -56,7 +56,7 @@ module.exports = {
          console.log(err);
       }
    },
-   removeUserConnection: async (req, res) => {
+   deleteUserConnection: async (req, res) => {
       const { connection_id, user_id } = req.params;
       const db = req.app.get('db');
 
@@ -64,8 +64,8 @@ module.exports = {
          let foundConnection = await db.connection.get_connection_by_id({ connection_id });
          if (foundConnection[0]) {
             if (foundConnection[0].send_id === parseInt(user_id) || foundConnection[0].receive_id === parseInt(user_id)) {
-               let removed = await db.connection.remove_user_connection({ connection_id });
-               res.status(200).send(removed[0]);
+               let deleted = await db.connection.delete_user_connection({ connection_id });
+               res.status(200).send(deleted[0]);
             } else {
                res.status(403).send({
                   message: 'You do not have permission to perform this action.'
