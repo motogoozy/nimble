@@ -16,6 +16,7 @@
       flex-direction: row;
       justify-content: flex-start;
       align-items: center;
+      margin-bottom: 2rem;
       p {
          font-size: 1.25rem;
       }
@@ -26,43 +27,63 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: flex-start;
 
-      .project-settings-container {
-         height: 50%;
+      .project-setting {
+         display: flex;
+         margin-left: 1rem;
+      }
+
+      .project-title-input-container {
+         flex-direction: column;
+         justify-content: flex-start;
+         align-items: flex-start;
+         margin-bottom: 2rem;
+
+         input {
+            color: rgb(75, 75, 75);
+         }
+      }
+
+      .project-permissions-container {
+         height: 100%;
          width: 50%;
          display: flex;
          flex-direction: column;
-         justify-content: space-between;
+         justify-content: flx-start;
          align-items: flex-start;
-         margin-top: 2rem;
+         margin-bottom: 2rem;
 
-         .project-setting-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-         }
-
-         .delete-project-container {
-            display: flex;
+         .permission-switch {
+            width: 50%;
             flex-direction: row;
-            justify-content: flex-start;
-            align-items: flex-end;
-            width: auto;
+            justify-content: space-between;
+            align-items: center;
 
             p {
-               padding: .25rem;
+               color: rgb(75, 75, 75);
             }
+         }
+      }
 
-            button {
-               padding: .25rem;
-            }
+      .delete-project-container {
+         display: flex;
+         flex-direction: row;
+         justify-content: flex-start;
+         align-items: flex-end;
+         width: auto;
 
-            p, button {
-               color: rgba(183, 28, 28, 1);
-            }
+         p {
+            padding: .25rem;
+         }
+
+         button {
+            padding: .25rem;
+         }
+
+         p, button {
+            color: rgba(183, 28, 28, 1);
          }
       }
    }
