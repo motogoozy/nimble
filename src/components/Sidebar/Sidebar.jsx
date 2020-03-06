@@ -46,7 +46,7 @@ class Sidebar extends Component {
             </Link>
             <div className='sidebar-buttons-container'>
                <Link 
-                  to={`/dashboard/project/${this.props.projectId}`}
+                  to={this.props.projectId ? `/dashboard/project/${this.props.projectId}` : '/dashboard'}
                   onClick={() => this.handleButtonClick('overview')}
                   className={selectedButton === 'overview' ? 'link active-button' : 'link'}
                   style={{ textDecoration: 'none' }}
