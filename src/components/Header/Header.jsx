@@ -11,8 +11,6 @@ import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Badge from '@material-ui/core/Badge';
-
 
 class Header extends Component {
    state = {
@@ -190,9 +188,6 @@ class Header extends Component {
                   &&
                   <Input type='search' placeholder='Search name or task'/>
                }
-               <Badge classes={{ colorPrimary: 'badge-style' }} color="primary" badgeContent={3} overlap='circle'>
-                  <i className="far fa-bell cursor-pointer"></i>
-               </Badge>
                <div className='header-avatar-container cursor-pointer'>
                   <Button
                      aria-controls='simple-menu'
