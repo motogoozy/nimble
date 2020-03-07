@@ -24,14 +24,14 @@ export default class PeoplePage extends Component {
 
 	componentDidMount = async () => {
 		await this.getUserConnections();
-		await this.categorizeConnections();
+		await this.getUserConnectionDetails();
 	};
 
 	componentDidUpdate = async (prevProps) => {
 		if (prevProps.projectId !== this.props.projectId) {
 			await this.props.getProjectUsers();
 			await this.getUserConnections();
-			await this.categorizeConnections();
+			await this.getUserConnectionDetails();
 		}
 	};
 
@@ -59,7 +59,7 @@ export default class PeoplePage extends Component {
 
 	getUserById = (userId) => axios.get(`user/${userId}`);
 
-	categorizeConnections = async () => {
+	getUserConnectionDetails = async () => {
 		const { currentConnections, connectionRequests, pendingConnections } = this.state;
 		let connected = await this.getUserDetails(currentConnections);
 		let requests = await this.getUserDetails(connectionRequests);
@@ -107,7 +107,7 @@ export default class PeoplePage extends Component {
 			try {
 				await axios.post(`/project/${projectId}/user/${userId}`);
 				await this.getUserConnections();
-				await this.categorizeConnections();
+				await this.getUserConnectionDetails();
 				await this.props.getProjectUsers();
 				this.setState({ addingUser: '' });
 			} catch (err) {
@@ -128,7 +128,7 @@ export default class PeoplePage extends Component {
 			await this.props.getTaskUsers();
 			await this.props.getAllTasks();
 			await this.getUserConnections();
-			await this.categorizeConnections();
+			await this.getUserConnectionDetails();
 		} catch (err) {
 			if (err.response.data.message) {
 				console.log(err.response.data.message);
@@ -151,7 +151,7 @@ export default class PeoplePage extends Component {
 				newUserEmail: '',
 			}, async () => {
 				await this.getUserConnections();
-				await this.categorizeConnections();
+				await this.getUserConnectionDetails();
 			});
 		} catch (err) {
 			if (err.response.data.message) {
@@ -187,7 +187,7 @@ export default class PeoplePage extends Component {
 				users: ''
 			}, async () => {
 				await this.getUserConnections();
-				await this.categorizeConnections();
+				await this.getUserConnectionDetails();
 				await this.props.getProjectUsers();
 			})
 		} catch (err) {
@@ -198,7 +198,7 @@ export default class PeoplePage extends Component {
 	};
 
 	acceptUserConnection = async (connectionId) => {
-		const { loggedInUser } = this.props;
+		const { loggedInUser, projectId } = this.props;
 		const body = {
 			user_id: loggedInUser.user_id,
 		};
@@ -209,8 +209,11 @@ export default class PeoplePage extends Component {
 				users: '',
 			}, async () => {
 				await this.getUserConnections();
-				await this.categorizeConnections();
-				await this.props.getProjectUsers();
+				await this.getUserConnectionDetails();
+				await this.props.getConnectionRequests();
+				if (projectId) {
+					await this.props.getProjectUsers();
+				}
 			});
 		} catch (err) {
 			if (err.response.data.message) {
@@ -508,7 +511,7 @@ export default class PeoplePage extends Component {
 
 	render() {
 		const { currentConnections, connectionRequests, pendingConnections, users } = this.state;
-		const { projectUsers } = this.props;
+		const { projectId, projectUsers } = this.props;
 
 		return (
 			<div className='people-main'>
@@ -526,12 +529,22 @@ export default class PeoplePage extends Component {
 						</div>
 						<div className='collaborators-column-body'>
 							{
-								projectUsers
+								projectId
 								?
-								this.displayProjectUsers()
+								<>
+								{
+									projectUsers
+									?
+									this.displayProjectUsers()
+									:
+									<div className='progress-container'>
+										<CircularProgress />
+									</div>
+								}
+								</>
 								:
-								<div className='progress-container'>
-									<CircularProgress />
+								<div>
+									<i style={{ color: 'gray' }}>Select a Project to see Collaborators.</i>
 								</div>
 							}
 						</div>

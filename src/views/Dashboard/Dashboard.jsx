@@ -16,6 +16,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 export default class Dashboard extends Component {
    state = {
+      connectionRequests: [],
       displayAddButton: false,
       displayAddListModal: false,
       displayLists: true,
@@ -37,7 +38,9 @@ export default class Dashboard extends Component {
    componentDidMount = async () => {
       let userId = 1;
       let user = await this.getUserById(userId);
-      this.setState({ loggedInUser: user });
+      this.setState({ loggedInUser: user }, () => {
+         this.getConnectionRequests();
+      });
    };
 
    getUserById = async (userId) => {
@@ -177,6 +180,20 @@ export default class Dashboard extends Component {
       this.setState({
          taskUsers: taskUserObj
       });
+   };
+
+   getConnectionRequests = async () => {
+      const { loggedInUser } = this.state;
+		let res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
+		let requests = [];
+		res.data.forEach(connection => {
+			if (connection.status === 1) {
+				if (connection.receive_id === loggedInUser.user_id) {
+					requests.push(connection);
+				}
+			}
+      });
+      this.setState({ connectionRequests: requests });
    };
 
    handleSidebarSelection = async (selection) => {
@@ -566,6 +583,7 @@ export default class Dashboard extends Component {
                   loggedInUser={this.state.loggedInUser}
                   getProjectData={this.getProjectData}
                   handleSidebarSelection={this.handleSidebarSelection}
+                  connectionRequests={this.state.connectionRequests}
                />
             }
             <div className='main-content-container'>
@@ -607,7 +625,7 @@ export default class Dashboard extends Component {
                   </>
                }
                {
-                  this.state.displayPeople && this.state.projectId
+                  this.state.displayPeople
                   &&
                   <>
                      <People
@@ -617,6 +635,7 @@ export default class Dashboard extends Component {
                         getProjectUsers={this.getProjectUsers}
                         getTaskUsers={this.getTaskUsers}
                         getAllTasks={this.getAllTasks}
+                        getConnectionRequests={this.getConnectionRequests}
                      />
                   </>
                }
@@ -632,7 +651,7 @@ export default class Dashboard extends Component {
                   </>
                }
                {
-                  !this.state.projectId && this.state.loggedInUser
+                  !this.state.projectId && this.state.loggedInUser && !this.state.displayPeople
                   &&
                   <div className='no-project-prompt-container'>
                      <div className='bounce'>
