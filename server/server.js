@@ -73,7 +73,3 @@ app.get('/connection/user/:user_id', connectionController.getUserConnections); /
 app.post('/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
 app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
 app.delete('/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
-
-app.get('/*', (req, res) => {
-   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
