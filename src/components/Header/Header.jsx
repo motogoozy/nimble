@@ -222,7 +222,7 @@ class Header extends Component {
                         <MenuItem>Profile</MenuItem>
                      {/* </Link> */}
                      {/* <Link to='/settings' className='header-link' onClick={this.closeMenu}> */}
-                        <MenuItem>Settings</MenuItem>
+                        {/* <MenuItem>Settings</MenuItem> */}
                      {/* </Link> */}
                      <MenuItem className='header-link' onClick={this.logout}>Logout</MenuItem>
                   </Menu>
