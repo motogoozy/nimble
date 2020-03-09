@@ -10,8 +10,8 @@ const session = require('express-session');
 const massive = require('massive');
 const path = require('path');
 
-const { PORT, DATABASE_URL, SECRET } = process.env;
-const serverPort = PORT || 4000;
+const { SERVER_PORT, DATABASE_URL, SECRET } = process.env;
+const serverPort = SERVER_PORT || 4000;
 
 const app = express();
 app.use(express.static( `${__dirname}/../build` ));
