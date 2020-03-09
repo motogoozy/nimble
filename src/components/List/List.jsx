@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './List.scss';
 import Task from '../Task/Task';
 import ColorPicker from '../ColorPicker/ColorPicker';
-import { lightColors } from './colors.js';
+import { lightColors } from '../../assets/colors';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
