@@ -46,7 +46,6 @@ export default class List extends Component {
 	handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
-		console.log(codeArr)
 		this.setState({ newListColorCode: codeArr });
 	};
 
