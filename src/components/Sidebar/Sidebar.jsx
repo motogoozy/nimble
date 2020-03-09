@@ -32,7 +32,6 @@ function Sidebar(props) {
       <div className='sidebar'>
          <Link
             to='/dashboard'
-            style={{ textDecoration: 'none' }}
             onClick={() => handleButtonClick('nimble')}
          >
             <div className='sidebar-logo-container logo-text'>
@@ -45,7 +44,6 @@ function Sidebar(props) {
                to={props.projectId ? `/dashboard/project/${props.projectId}` : '/dashboard'}
                onClick={() => handleButtonClick('overview')}
                className={selectedButton === 'overview' ? 'link active-button' : 'link'}
-               style={{ textDecoration: 'none' }}
             >
                <Tooltip title={'All Project Tasks'} enterDelay={300}>
                   <div className='sidebar-button'>
@@ -58,7 +56,6 @@ function Sidebar(props) {
                <div
                   onClick={() => handleButtonClick('my-tasks')}
                   className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
-                  style={{ textDecoration: 'none' }}
                >
                   <i className="far fa-user"></i>
                   <p>MY TASKS</p>
