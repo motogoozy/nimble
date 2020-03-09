@@ -108,6 +108,9 @@ export default function RegisterPage(props) {
       <div className='register-page-main'>
          <div className='register-page-left'>
             <div className='register-left-grid-container'>
+               <Link href='#'>
+                  <i className="far fa-arrow-alt-circle-left cursor-pointer" ></i>
+               </Link>
                <img src={NimbleLogo} alt="Nimble Logo" />
                <p>NIMBLE</p>
             </div>

@@ -114,6 +114,9 @@ export default function LoginPage(props) {
          <CssBaseline />
          <Grid item xs={false} sm={4} md={7} className={classes.left}>
             <div className='login-left-grid-container'>
+               <Link href='#'>
+                  <i className="far fa-arrow-alt-circle-left cursor-pointer" ></i>
+               </Link>
                <img src={NimbleLogo} alt="Nimble Logo" />
                <p>NIMBLE</p>
             </div>

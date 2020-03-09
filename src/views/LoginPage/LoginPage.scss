@@ -11,4 +11,18 @@
       letter-spacing: 3px;
       color: $accent-orange;
    }
+
+   i {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      color: white;
+      font-size: 2rem;
+      transition: .15s;
+
+      &:hover {
+         color: gray;
+         transition: .15s;
+      }
+   }
 }
