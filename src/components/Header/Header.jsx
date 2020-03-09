@@ -97,6 +97,7 @@ class Header extends Component {
       };
       try {
          let res = await axios.post('/project', body);
+         await axios.post(`/project/${res.data.project_id}/user/${loggedInUser.user_id}`);
          await this.getUserProjects();
          this.props.getProjectData(res.data.project_id);
          res.data.value = res.data.project_id;
@@ -116,6 +117,16 @@ class Header extends Component {
          newProjectName: '',
          displayAddProjectModal: false,
       });
+   };
+
+   logout = async () => {
+      try {
+         let res = await axios.get('/auth/logout');
+         this.props.history.push('/')
+         console.log(res.data);
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    addProjectModal = () => {
@@ -213,7 +224,7 @@ class Header extends Component {
                      {/* <Link to='/settings' className='header-link' onClick={this.closeMenu}> */}
                         <MenuItem>Settings</MenuItem>
                      {/* </Link> */}
-                     <MenuItem className='header-link'>Logout</MenuItem>
+                     <MenuItem className='header-link' onClick={this.logout}>Logout</MenuItem>
                   </Menu>
                </div>
             </div>
