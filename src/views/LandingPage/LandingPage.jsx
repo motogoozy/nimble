@@ -32,8 +32,12 @@ export default class LandingPage extends Component {
 						</div>
 						<p>A Simple Approach to Project Management</p>
 						<div className='landing-button-container'>
-							<Button variant='outlined'>Get Started</Button>
-							<p>Already have an account? <span>Sign In</span></p>
+							<Link to='/register'>
+								<Button variant='outlined'>Get Started</Button>
+							</Link>
+							<Link to='/login'>
+								<p>Already have an account? <span>Sign In</span></p>
+							</Link>
 						</div>
 					</div>
 					<div className='landing-top-right'>
