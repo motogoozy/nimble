@@ -1,0 +1,14 @@
+@import '../../styles.scss';
+
+.login-left-grid-container {
+   img {
+      width: 80%;
+      height: auto;
+   }
+
+   p {
+      font-size: 2.5rem;
+      letter-spacing: 3px;
+      color: $accent-orange;
+   }
+}

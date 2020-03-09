@@ -36,11 +36,21 @@ export default class Dashboard extends Component {
    };
 
    componentDidMount = async () => {
-      let userId = 1;
-      let user = await this.getUserById(userId);
-      this.setState({ loggedInUser: user }, () => {
-         this.getConnectionRequests();
-      });
+      await this.authenticate();
+   };
+
+   authenticate = async () => {
+      try {
+         let loggedInUser = await axios.get('/auth/user_session');
+         this.setState({ loggedInUser: loggedInUser.data }, () => {
+            this.getConnectionRequests();
+         });
+      } catch (err) {
+         if (err.response.data) {
+            console.log(err.response.data);
+            this.props.history.push('/login');
+         }
+      }
    };
 
    getUserById = async (userId) => {

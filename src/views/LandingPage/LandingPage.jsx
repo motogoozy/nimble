@@ -4,6 +4,7 @@ import NimbleLogo from '../../assets/nimble-logo.png';
 import DashboardScreenshot from '../../assets/dashboard-screenshot.png';
 
 import { Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 export default class LandingPage extends Component {
 	render() {
@@ -16,7 +17,9 @@ export default class LandingPage extends Component {
 					</div>
 					<div className='landing-header-button-container'>
 						<Button variant='outlined'>Sign Up</Button>
-						<Button variant='outlined'>Login</Button>
+						<Link to='/login'>
+							<Button variant='outlined'>Login</Button>
+						</Link>
 					</div>
 				</div>
 				<div className='landing-top-container'>

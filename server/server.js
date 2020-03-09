@@ -3,6 +3,7 @@ const projectController = require('./controllers/projectController');
 const listController = require('./controllers/listController');
 const taskController = require('./controllers/taskController');
 const connectionController = require('./controllers/connectionController');
+const authController = require('./controllers/authController');
 
 require('dotenv').config();
 const express = require('express');
@@ -73,3 +74,9 @@ app.get('/connection/user/:user_id', connectionController.getUserConnections); /
 app.post('/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
 app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
 app.delete('/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
+
+// Auth
+app.post('/auth/register', authController.register); // Register/Create new user
+app.post('/auth/login', authController.login); // Login
+app.get('/auth/logout', authController.logout) // Logout
+app.get('/auth/user_session', authController.getUserSession) // Get user session (logged in user)
