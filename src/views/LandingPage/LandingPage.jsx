@@ -16,7 +16,9 @@ export default class LandingPage extends Component {
 						{/* <p>NIMBLE</p> */}
 					</div>
 					<div className='landing-header-button-container'>
-						<Button variant='outlined'>Sign Up</Button>
+						<Link to='/register'>
+							<Button variant='outlined'>Sign Up</Button>
+						</Link>
 						<Link to='/login'>
 							<Button variant='outlined'>Login</Button>
 						</Link>

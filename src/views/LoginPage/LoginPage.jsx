@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import NimbleLogo from '../../assets/nimble-logo.png';
 import './LoginPage.scss';
+import NimbleLogo from '../../assets/nimble-logo.png';
 
 import axios from 'axios';
 import Avatar from '@material-ui/core/Avatar';
@@ -21,7 +21,7 @@ function Copyright() {
    return (
       <Typography variant="body2" color="textSecondary" align="center">
          {'Copyright © '}
-         <Link color="inherit" href="https://material-ui.com/">
+         <Link color="inherit" href="#">
          Nimble
          </Link>{' '}
          {new Date().getFullYear()}
@@ -41,7 +41,8 @@ const useStyles = makeStyles(theme => ({
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      background: 'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)'
+      background: 'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)',
+      paddingBottom: '5rem',
    },
    paper: {
       margin: theme.spacing(8, 4),
@@ -75,10 +76,6 @@ export default function LoginPage(props) {
       }
    }, []);
 
-   // useEffect(() => {
-   //    console.log(password)
-   // }, [password])
-
    const login = async () => {
       let body = {
          email: email,
@@ -90,6 +87,10 @@ export default function LoginPage(props) {
          if (res.data.user_id) {
             if (rememberMe) {
                localStorage.setItem('nimbleEmail', `${res.data.email}`)
+            } else {
+               if (localStorage.getItem('nimbleEmail')) {
+                  localStorage.removeItem('nimbleEmail');
+               }
             }
             props.history.push('/dashboard');
          }
@@ -137,6 +138,7 @@ export default function LoginPage(props) {
                      name="email"
                      autoComplete="email"
                      autoFocus
+                     value={email}
                      onChange={event => setEmail(event.target.value)}
                      // onKeyPress={onKeyPress}
                   />
@@ -175,7 +177,7 @@ export default function LoginPage(props) {
                      </Link>
                   </Grid>
                   <Grid item>
-                     <Link href="#" variant="body2">
+                     <Link href="#/register" variant="body2">
                         {"Don't have an account? Sign Up"}
                      </Link>
                   </Grid>
