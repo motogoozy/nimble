@@ -13,6 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import IdleTimer from 'react-idle-timer';
 
 export default class Dashboard extends Component {
    state = {
@@ -50,6 +51,16 @@ export default class Dashboard extends Component {
             console.log(err.response.data);
             this.props.history.push('/login');
          }
+      }
+   };
+
+   logout = async () => {
+      try {
+         let res = await axios.get('/auth/logout');
+         this.props.history.push('/')
+         console.log(res.data);
+      } catch (err) {
+         console.log(err);
       }
    };
 
@@ -605,6 +616,7 @@ export default class Dashboard extends Component {
                      getProjectData={this.getProjectData}
                      loggedInUser={this.state.loggedInUser}
                      project={this.state.project}
+                     logout={this.logout}
                   />
                }
                {
@@ -678,6 +690,11 @@ export default class Dashboard extends Component {
                   </div>
                }
             </div>
+            <IdleTimer
+               ref={ref => { this.idleTimer = ref }}
+               onIdle={this.logout}
+               timeout={1000 * 60 * 30} // Logout after 30 min of inactivity
+            />
 			</div>
 		)
 	}

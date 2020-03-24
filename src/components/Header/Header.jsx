@@ -124,16 +124,6 @@ class Header extends Component {
       });
    };
 
-   logout = async () => {
-      try {
-         let res = await axios.get('/auth/logout');
-         this.props.history.push('/')
-         console.log(res.data);
-      } catch (err) {
-         console.log(err);
-      }
-   };
-
    addProjectModal = () => {
       return (
          <div className='modal-wrapper' onClick={this.cancelAddProject}>
@@ -229,7 +219,7 @@ class Header extends Component {
                      {/* <Link to='/settings' className='header-link' onClick={this.closeMenu}> */}
                         {/* <MenuItem>Settings</MenuItem> */}
                      {/* </Link> */}
-                     <MenuItem className='header-link' onClick={this.logout}>Logout</MenuItem>
+                     <MenuItem className='header-link' onClick={this.props.logout}>Logout</MenuItem>
                   </Menu>
                </div>
             </div>
