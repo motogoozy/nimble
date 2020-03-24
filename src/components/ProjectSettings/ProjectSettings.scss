@@ -41,6 +41,29 @@
          align-items: flex-start;
          margin-bottom: 2rem;
 
+         .edit-project-title-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            .save-new-project-title {
+               margin-left: .5rem;
+               color: green;
+            }
+
+            p, i {
+               margin: .5rem 1rem 0 0;
+            }
+
+            i {
+               color: rgb(180, 180, 180);
+               &:hover {
+                  color: rgb(75, 75, 75);
+               }
+            }
+         }
+
          input {
             color: rgb(75, 75, 75);
          }

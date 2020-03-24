@@ -36,7 +36,7 @@ class Header extends Component {
       this.setState({ currentPage: window.location.hash });
    };
 
-   componentDidUpdate = (prevProps) => {
+   componentDidUpdate = async (prevProps) => {
       if (this.state.currentPage !== window.location.hash) {
          this.setState({ currentPage: window.location.hash });
       };
@@ -49,6 +49,11 @@ class Header extends Component {
       };
       if (!prevProps.loggedInUser.user_id && this.props.loggedInUser.user_id) {
          this.getUserProjects();
+      }
+      if (prevProps.project.title !== this.props.project.title) {
+         await this.getUserProjects();
+         const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
+         this.handleSelection(project)
       }
    };
 

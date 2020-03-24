@@ -351,14 +351,15 @@ export default class Dashboard extends Component {
       });
    };
 
-   updateProject = async () => {
+   updateProject = async (idToUpdate, title, order) => {
       const { projectId, project, listOrder } = this.state;
+      const id = idToUpdate || projectId;
       const body = {
-         title: project.title,
-         list_order: listOrder
+         title: title || project.title,
+         list_order: order || listOrder
       };
       try {
-         await axios.put(`/project/${projectId}`, body);
+         await axios.put(`/project/${id}`, body);
          this.setState({
             title: ''
          });
@@ -600,7 +601,11 @@ export default class Dashboard extends Component {
                {
                   this.state.loggedInUser
                   &&
-                  <Header getProjectData={this.getProjectData} loggedInUser={this.state.loggedInUser}/>
+                  <Header
+                     getProjectData={this.getProjectData}
+                     loggedInUser={this.state.loggedInUser}
+                     project={this.state.project}
+                  />
                }
                {
                   this.state.displayLists === true
@@ -657,6 +662,8 @@ export default class Dashboard extends Component {
                         loggedInUser={this.state.loggedInUser}
                         projectId={this.state.projectId}
                         project={this.state.project}
+                        getProjectDetails={this.getProjectDetails}
+                        updateProject={this.updateProject}
                      />
                   </>
                }

@@ -9,6 +9,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 export default function ProjectSettings(props) {
    const [projectTitle, setProjectTitle] = useState('');
+   const [newProjectTitle, setNewProjectTitle] = useState('');
+   const [editProjectTitle, setEditProjectTitle] = useState(false);
    const [permissions, setPermissions] = useState({
       editLists: false,
       deleteLists: false,
@@ -16,13 +18,18 @@ export default function ProjectSettings(props) {
       deleteTasks: false,
    });
 
-   useEffect(() => setProjectTitle(props.project.title), [props.project.title]);
-   useEffect(() => console.log(permissions), [permissions]);
+   useEffect(() => {
+      setProjectTitle(props.project.title);
+      setNewProjectTitle(props.project.title);
+   }, [props.project.title]);
+   // useEffect(() => console.log(newProjectTitle), [newProjectTitle]);
 
 
    const handleSwitch = (key, event) => {
       setPermissions({ ...permissions, [key]: event.target.checked })
    };
+
+
 
    const CustomSwitch = withStyles({
       switchBase: {
@@ -46,13 +53,38 @@ export default function ProjectSettings(props) {
          <div className='project-settings-body'>
             <p style={{ fontWeight: '400' }}>Project Title:</p>
             <div className='project-setting project-title-input-container'>
-               <TextField
-                  required
-                  placeholder='Title (60 chars max)'
-                  id="standard-required"
-                  value={projectTitle}
-                  onChange={e => setProjectTitle(e.target.value)}
-               />
+               {
+                  editProjectTitle
+                  ?
+                  <div className='edit-project-title-container'>
+                     <TextField
+                        required
+                        placeholder='Title (60 chars max)'
+                        id="standard-required"
+                        value={newProjectTitle}
+                        onChange={e => setNewProjectTitle(e.target.value)}
+                     />
+                     <Tooltip title='Save changes'>
+                        <i
+                           className='cursor-pointer save-new-project-title fas fa-check'
+                           onClick={async () => {
+                              if (newProjectTitle !== projectTitle) {
+                                 await props.updateProject(props.projectId, newProjectTitle, props.project.listOrder);
+                                 props.getProjectDetails();
+                              }
+                              setEditProjectTitle(false);
+                           }}
+                        ></i>
+                     </Tooltip>
+                  </div>
+                  :
+                  <div className='edit-project-title-container'>
+                     <p>{projectTitle}</p>
+                     <Tooltip title='Edit Title'>
+                        <i className="fas fa-pencil-alt cursor-pointer" onClick={() => setEditProjectTitle(true)}></i>
+                     </Tooltip>
+                  </div>
+               }
             </div>
             <div className='project-permissions-container'>
                <p style={{ fontWeight: '400' }}>Allow Collaborators to:</p>
@@ -96,4 +128,4 @@ export default function ProjectSettings(props) {
          </div>
       </div>
    )
-}
+};
