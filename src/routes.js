@@ -7,7 +7,7 @@ import LoginPage from './views/LoginPage/LoginPage';
 import RegisterPage from './views/RegisterPage/RegisterPage';
 
 export default (
-   <Switch>e
+   <Switch>
       <Route component={LandingPage} exact path='/' />
       <Route component={Dashboard} exact path='/dashboard' />
       <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
