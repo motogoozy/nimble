@@ -66,12 +66,14 @@ export default function RegisterPage(props) {
    const [lastName, setLastName] = useState('');
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
-
-   // useEffect(() => {
-   //    console.log(password)
-   // }, [password])
+   const [loginErrMsg, setLoginErrMsg] = useState('');
 
    const register = async () => {
+      if (!firstName || !lastName || !email || !password) {
+         setLoginErrMsg('*Missing required field(s).');
+         return;
+      }
+      
       const avatarColor = avatarColors[Math.floor(Math.random() * avatarColors.length - 1)];
       const body = {
          first_name: firstName,
@@ -88,7 +90,7 @@ export default function RegisterPage(props) {
          }
       } catch (err) {
          if (err.response.data) {
-            console.log(err.response.data);
+            setLoginErrMsg(err.response.data);
          }
       }
    };
@@ -175,6 +177,9 @@ export default function RegisterPage(props) {
                            onChange={event => setPassword(event.target.value)}
                         />
                         </Grid>
+                        {
+                           loginErrMsg && <p style={{ color: 'crimson', marginLeft: '1rem' }}>{loginErrMsg}</p>
+                        }
                         {/* <Grid item xs={12}>
                            <FormControlLabel
                               control={<Checkbox value="allowExtraEmails" color="primary" />}

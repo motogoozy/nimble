@@ -67,6 +67,7 @@ export default function LoginPage(props) {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [rememberMe, setRememberMe] = useState(true);
+   const [loginErrMsg, setLoginErrMsg] = useState('');
 
    // Getting user's email from localStorage
    useEffect(() => {
@@ -77,6 +78,11 @@ export default function LoginPage(props) {
    }, []);
 
    const login = async () => {
+      if (!email || !password) {
+         setLoginErrMsg('*Missing required field(s).');
+         return;
+      }
+
       let body = {
          email: email,
          password: password
@@ -96,7 +102,7 @@ export default function LoginPage(props) {
          }
       } catch (err) {
          if (err.response.data) {
-            console.log(err.response.data);
+            setLoginErrMsg(err.response.data);
          }
       }
    };
@@ -158,6 +164,9 @@ export default function LoginPage(props) {
                      onChange={event => setPassword(event.target.value)}
                      // onKeyPress={onKeyPress}
                   />
+                  {
+                     loginErrMsg && <p style={{ color: 'crimson' }}>{loginErrMsg}</p>
+                  }
                   <FormControlLabel
                      control={<Checkbox value="remember" color="primary" />}
                      label="Remember me"
