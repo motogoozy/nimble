@@ -8,8 +8,8 @@ import Switch from '@material-ui/core/Switch';
 import { withStyles } from '@material-ui/core/styles';
 
 export default function ProjectSettings(props) {
-   const [projectTitle, setProjectTitle] = useState('');
-   const [newProjectTitle, setNewProjectTitle] = useState('');
+   const [projectTitle, setProjectTitle] = useState(props.project.title);
+   const [newProjectTitle, setNewProjectTitle] = useState(props.project.title);
    const [editProjectTitle, setEditProjectTitle] = useState(false);
    const [permissions, setPermissions] = useState({
       editLists: false,
@@ -22,14 +22,10 @@ export default function ProjectSettings(props) {
       setProjectTitle(props.project.title);
       setNewProjectTitle(props.project.title);
    }, [props.project.title]);
-   // useEffect(() => console.log(newProjectTitle), [newProjectTitle]);
-
 
    const handleSwitch = (key, event) => {
       setPermissions({ ...permissions, [key]: event.target.checked })
    };
-
-
 
    const CustomSwitch = withStyles({
       switchBase: {
@@ -72,6 +68,16 @@ export default function ProjectSettings(props) {
                                  await props.updateProject(props.projectId, newProjectTitle, props.project.listOrder);
                                  props.getProjectDetails();
                               }
+                              setEditProjectTitle(false);
+                           }}
+                        ></i>
+                     </Tooltip>
+                     <Tooltip title='Cancel changes'>
+                        <i
+                           className='cursor-pointer fas fa-times'
+                           style={{ color: 'crimson' }}
+                           onClick={async () => {
+                              setNewProjectTitle(props.project.title);
                               setEditProjectTitle(false);
                            }}
                         ></i>
