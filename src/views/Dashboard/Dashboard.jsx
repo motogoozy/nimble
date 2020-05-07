@@ -20,15 +20,16 @@ export default class Dashboard extends Component {
       connectionRequests: [],
       displayAddButton: false,
       displayAddListModal: false,
-      displayLists: true,
+      displayLists: false,
       displayPeople: false,
-      displaySettings: false,
+      displaySettings: true,
       lists: {},
       listOrder: [], // array of strings of list_id's
       loggedInUser: '',
       newColorCode: [96, 125, 139, 1],
       project: {},
       projectId: null,
+      projectPermissions: '',
       projectUsers: '',
       tasks: {},
       taskUsers: {},
@@ -65,8 +66,12 @@ export default class Dashboard extends Component {
    };
 
    getUserById = async (userId) => {
-      let res = await axios.get(`/user/${userId}`);
-      return res.data;
+      try {
+         let res = await axios.get(`/user/${userId}`);
+         return res.data;
+      } catch (err) {
+         console.log(err);
+      }
    }
 
    getProjectData = async (id) => {
@@ -83,6 +88,7 @@ export default class Dashboard extends Component {
             await this.getAllTasks();
             await this.getLists();
             await this.getProjectDetails();
+            await this.getProjectPermissions();
          }
          catch(err) {
             console.log(err);
@@ -93,128 +99,172 @@ export default class Dashboard extends Component {
    getProjectUsers = async () => {
 		const { projectId } = this.state;
 
-		let res = await axios.get(`/project/${projectId}/users`);
-		this.setState({ projectUsers: res.data });
+      try {
+         let res = await axios.get(`/project/${projectId}/users`);
+         this.setState({ projectUsers: res.data });
+      } catch (err) {
+         console.log(err);
+      }
 	};
 
    getProjectDetails = async () => {
       const { projectId } = this.state;
-      let res = await axios.get(`/project/${projectId}`);
-      const project = res.data[0];
-      document.title = `Nimble - ${project.title}`
-      let listOrder = project.list_order.map(item => item.toString());
-      this.setState({
-         listOrder: listOrder,
-         project: project,
-      });
+      try {
+         let res = await axios.get(`/project/${projectId}`);
+         const project = res.data[0];
+         document.title = `Nimble - ${project.title}`
+         let listOrder = project.list_order.map(item => item.toString());
+         this.setState({
+            listOrder: listOrder,
+            project: project,
+         });
+      } catch (err) {
+         console.log(err);
+      }
+   };
+
+   getProjectPermissions = async () => {
+      const { projectId } = this.state;
+
+      try {
+         let res = await axios.get(`/project/${projectId}/permissions`);
+         this.setState({ projectPermissions: res.data});
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    getLists = async () => {
       const { projectId } = this.state;
-      let res = await axios.get(`/project/${projectId}/lists`);
-      let lists = {};
-      res.data.forEach(list => {
-         let taskOrderStrings = this.convertTaskIdsToStrings(list.task_order);
-         let newList = {
-            id: list.list_id.toString(),
-            databaseId: list.list_id,
-            title: list.title,
-            colorCode: list.color_code,
-            taskIds: taskOrderStrings, // array of strings of task_id's
-            archived: list.archived,
-         };
-         lists[newList.id] = newList;
-      });
-      this.setState({
-         lists: lists,
-         displayAddButton: true,
-      });
+
+      try {
+         let res = await axios.get(`/project/${projectId}/lists`);
+         let lists = {};
+         res.data.forEach(list => {
+            let taskOrderStrings = this.convertTaskIdsToStrings(list.task_order);
+            let newList = {
+               id: list.list_id.toString(),
+               databaseId: list.list_id,
+               title: list.title,
+               colorCode: list.color_code,
+               taskIds: taskOrderStrings, // array of strings of task_id's
+               archived: list.archived,
+            };
+            lists[newList.id] = newList;
+         });
+         this.setState({
+            lists: lists,
+            displayAddButton: true,
+         });
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    getAllTasks = async () => {
       const { projectId, taskUsers } = this.state;
-      let res = await axios.get(`/project/${projectId}/tasks`)
-      let tasks = {};
 
-      let taskUserObj = {};
-      for (let key in taskUsers) {
-         let tu = taskUsers[key];
-         if (!taskUserObj[tu.task_id]) {
-            taskUserObj[tu.task_id] = [];
+      try {
+         let res = await axios.get(`/project/${projectId}/tasks`)
+         let tasks = {};
+   
+         let taskUserObj = {};
+         for (let key in taskUsers) {
+            let tu = taskUsers[key];
+            if (!taskUserObj[tu.task_id]) {
+               taskUserObj[tu.task_id] = [];
+            }
+            taskUserObj[tu.task_id].push(tu.user_id);
          }
-         taskUserObj[tu.task_id].push(tu.user_id);
+   
+         res.data.forEach(task => {
+            if (taskUserObj[task.task_id]) {
+               task.assignedUsers = taskUserObj[task.task_id];
+            } else {
+               task.assignedUsers = [];
+            }
+            task.databaseId = task.task_id;
+            task.id = task.task_id.toString();
+            tasks[task.id] = task;
+            if (task.notes === null) {
+               task.notes = '';
+            }
+         });
+   
+         this.setState({
+            tasks: tasks,
+         });
+      } catch (err) {
+         console.log(err);
       }
-
-      res.data.forEach(task => {
-         if (taskUserObj[task.task_id]) {
-            task.assignedUsers = taskUserObj[task.task_id];
-         } else {
-            task.assignedUsers = [];
-         }
-         task.databaseId = task.task_id;
-         task.id = task.task_id.toString();
-         tasks[task.id] = task;
-         if (task.notes === null) {
-            task.notes = '';
-         }
-      });
-
-      this.setState({
-         tasks: tasks,
-      });
    };
 
    getTasksByUserId = async (user_id) => {
       const { projectId, lists } = this.state;
-      let res = await axios.get(`/project/${projectId}/tasks/${user_id}`);
-      let userTasks = {};
-      let updatedLists = {};
-      res.data.forEach(task => {
-         task.databaseId = task.task_id;
-         task.id = task.task_id.toString();
-         userTasks[task.id] = task;
-      });
 
-      for (let key in lists) {
-         let list = lists[key];
-         let updatedTaskIds = list.taskIds.filter(taskId => {
-            if (userTasks[taskId]) return true;
-            else return false;
-         })
-         list.taskIds = updatedTaskIds;
-         updatedLists[list.id] = list;
+      try {
+         let res = await axios.get(`/project/${projectId}/tasks/${user_id}`);
+         let userTasks = {};
+         let updatedLists = {};
+         res.data.forEach(task => {
+            task.databaseId = task.task_id;
+            task.id = task.task_id.toString();
+            userTasks[task.id] = task;
+         });
+   
+         for (let key in lists) {
+            let list = lists[key];
+            let updatedTaskIds = list.taskIds.filter(taskId => {
+               if (userTasks[taskId]) return true;
+               else return false;
+            })
+            list.taskIds = updatedTaskIds;
+            updatedLists[list.id] = list;
+         }
+         
+         this.setState({
+            tasks: userTasks,
+            lists: updatedLists,
+         });
+      } catch (err) {
+         console.log(err);
       }
-      
-      this.setState({
-         tasks: userTasks,
-         lists: updatedLists,
-      });
    };
 
    getTaskUsers = async () => {
       const { projectId } = this.state;
-      let res = await axios.get(`/task_users/${projectId}`);
-      let taskUserObj = {};
-      res.data.forEach(tu => {
-         taskUserObj[tu.tu_id] = tu;
-      })
-      this.setState({
-         taskUsers: taskUserObj
-      });
+
+      try {
+         let res = await axios.get(`/task_users/${projectId}`);
+         let taskUserObj = {};
+         res.data.forEach(tu => {
+            taskUserObj[tu.tu_id] = tu;
+         })
+         this.setState({
+            taskUsers: taskUserObj
+         });
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    getConnectionRequests = async () => {
       const { loggedInUser } = this.state;
-		let res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
-		let requests = [];
-		res.data.forEach(connection => {
-			if (connection.status === 1) {
-				if (connection.receive_id === loggedInUser.user_id) {
-					requests.push(connection);
-				}
-			}
-      });
-      this.setState({ connectionRequests: requests });
+
+      try {
+         let res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
+         let requests = [];
+         res.data.forEach(connection => {
+            if (connection.status === 1) {
+               if (connection.receive_id === loggedInUser.user_id) {
+                  requests.push(connection);
+               }
+            }
+         });
+         this.setState({ connectionRequests: requests });
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    handleSidebarSelection = async (selection) => {
@@ -310,9 +360,14 @@ export default class Dashboard extends Component {
 
    updateList = async (id, body) => {
       const { projectId } = this.state;
-      let res = await axios.put(`/project/${projectId}/list/${id}`, body);
-      let updated = res.data[0];
-      return updated;
+
+      try {
+         let res = await axios.put(`/project/${projectId}/list/${id}`, body);
+         let updated = res.data[0];
+         return updated;
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    deleteList = async (databaseId, id) => {
@@ -354,12 +409,12 @@ export default class Dashboard extends Component {
          created_by: task.created_by,
       };
 
-      let res = await axios.put(`/task/${taskId}`, body);
-      let updated = res.data[0];
-
-      return new Promise((resolve, reject) => {
-         resolve(updated);
-      });
+      try {
+         let res = await axios.put(`/task/${taskId}`, body);
+         return res.data[0];
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    updateProject = async (idToUpdate, title, order) => {
@@ -676,6 +731,7 @@ export default class Dashboard extends Component {
                         project={this.state.project}
                         getProjectDetails={this.getProjectDetails}
                         updateProject={this.updateProject}
+                        projectPermissions={this.state.projectPermissions}
                      />
                   </>
                }
