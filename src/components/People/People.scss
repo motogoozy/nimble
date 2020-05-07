@@ -22,7 +22,7 @@
 			.collaborators-column-header {
 				height: 2rem;
 				width: 100%;
-				padding: 0 1rem;
+				padding: 0 .75rem;
 				border-bottom: 1px solid gray;
 				background-color: $accent-purple;
 				color: white;
@@ -70,63 +70,50 @@
 		align-items: center;
 		padding: 1rem 1rem 1rem .5rem;
 		flex: 1;
-	}
 
-	.connection-column {
-		height: calc(33.3% - .5rem);
-		width: 100%;
-
-		.connection-column-header {
-			height: 2rem;
+		.connection-column {
+			height: calc(33.3% - .5rem);
 			width: 100%;
-			padding: 0 1rem;
-			border-bottom: 1px solid gray;
-			background-color: $primary-blue;
-			color: white;
-			border-radius: 5px 5px 0 0;
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-
-			.add-button {
-				cursor: default;
-			}
-
-			i {
+	
+			.connection-column-header {
+				height: 2rem;
+				width: 100%;
+				padding: 0 .75rem;
+				border-bottom: 1px solid gray;
+				background-color: $primary-blue;
 				color: white;
-				&:hover {
-					color: $accent-orange;
-					cursor: pointer;
+				border-radius: 5px 5px 0 0;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+	
+				.add-button {
+					cursor: default;
+				}
+	
+				i {
+					color: white;
+					&:hover {
+						color: $accent-orange;
+						cursor: pointer;
+					}
 				}
 			}
-		}
-
-		.connection-column-body {
-			height: calc(100% - 2rem);
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: flex-start;
-			flex-wrap: nowrap;
-			overflow-x: hidden;
-			overflow-y: auto;
-			border: 1px solid lightgray;
-			border-radius: 0 0 5px 5px;
-			padding: 1rem;
-
-			.progress-container {
-				height: 100%;
+	
+			.connection-column-body {
+				height: calc(100% - 2rem);
 				width: 100%;
 				display: flex;
 				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-
-				div {
-					color: $accent-purple;
-				}
+				justify-content: flex-start;
+				align-items: flex-start;
+				flex-wrap: nowrap;
+				overflow-x: hidden;
+				overflow-y: auto;
+				border: 1px solid lightgray;
+				border-radius: 0 0 5px 5px;
+				padding: 1rem;
 			}
 		}
 	}
@@ -161,6 +148,19 @@
 					color: rgb(0, 94, 0);
 				}
 			}
+		}
+	}
+
+	.progress-container {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		div {
+			color: $accent-purple;
 		}
 	}
 }
