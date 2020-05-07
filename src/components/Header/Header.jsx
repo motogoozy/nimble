@@ -53,7 +53,7 @@ class Header extends Component {
       if (prevProps.project.title !== this.props.project.title) {
          await this.getUserProjects();
          const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
-         this.handleSelection(project)
+         this.setState({ selectedProject: project })
       }
    };
 
@@ -69,7 +69,11 @@ class Header extends Component {
          }
          return project;
       });
-      projectsArr.sort((a, b) => (a.label > b.label) ? 1 : -1); // sorting alphabetically descending
+      projectsArr.sort((a, b) => { // sorting alphabetically descending
+         if (a.label > b.label) return 1;
+         else if (a.label < b.label) return -1;
+         else return 0;
+      });
       this.setState({ projects: projectsArr });
    };
 
@@ -91,7 +95,7 @@ class Header extends Component {
       this.setState({
          selectedProject: project
       });
-   }
+   };
 
    addProject = async () => {
       const { newProjectName } = this.state;
