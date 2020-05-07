@@ -15,9 +15,9 @@ const { SERVER_PORT, DATABASE_URL, SECRET } = process.env;
 const serverPort = SERVER_PORT || 4000;
 
 const app = express();
-app.use(express.static( `${__dirname}/../build` ));
 
 // MIDDLEWARE
+app.use(express.static( `${__dirname}/../build` ));
 app.use(express.json());
 app.use(session({
    secret: SECRET,
