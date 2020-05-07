@@ -31,6 +31,16 @@ module.exports = {
          console.log(err);
       }
    },
+   getProjectPermissions: async (req, res) => {
+      const { project_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let permissions = await db.project.get_project_permissions({ project_id });
+         res.status(200).send(permissions[0]);
+      } catch (err) {
+         console.log(err);
+      }
+   },
    createProject: async (req, res) => {
       const { title, created_by } = req.body;
       const created_at = new Date();
@@ -54,6 +64,17 @@ module.exports = {
       try {
          let updatedProject = await db.project.update_project({ project_id, title, list_order });
          res.status(200).send(updatedProject);
+      } catch (err) {
+         console.log(err);
+      }
+   },
+   updateProjectPermissions: async (req, res) => {
+      const { project_id } = req.params;
+      const { permissions } = req.body;
+      const db = req.app.get('db');
+      try {
+         let updatedPermissions = await db.project.update_project_permissions({ ...permissions, project_id });
+         res.status(200).send(updatedPermissions[0]);
       } catch (err) {
          console.log(err);
       }

@@ -18,6 +18,16 @@ CREATE TABLE project (
 	archived boolean NOT NULL
 );
 
+CREATE TABLE project_permissions (
+	project_id SERIAL PRIMARY KEY REFERENCES project(project_id),
+	add_tasks boolean NOT NULL DEFAULT false,
+	edit_tasks boolean NOT NULL DEFAULT false,
+	delete_tasks boolean NOT NULL DEFAULT false,
+	add_lists boolean NOT NULL DEFAULT false,
+	edit_lists boolean NOT NULL DEFAULT false,
+	delete_lists boolean NOT NULL DEFAULT false
+);
+
 CREATE TABLE list (
 	list_id SERIAL PRIMARY KEY,
 	title character varying(50) NOT NULL,

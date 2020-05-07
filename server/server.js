@@ -38,8 +38,10 @@ massive(DATABASE_URL).then(db => {
 // Project
 app.get('/project/:project_id', projectController.getProjectById); // Get project by Id
 app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
-app.post('/project', projectController.createProject);
+app.get('/project/:project_id/permissions', projectController.getProjectPermissions) // Get Project Permissions
+app.post('/project', projectController.createProject); // Create Project
 app.put('/project/:project_id', projectController.updateProject); // Update Project
+app.put('/project/:project_id/permissions', projectController.updateProjectPermissions) // Update Project Permissions
 app.post('/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
 app.delete('/project/:project_id/user/:user_id', projectController.deleteProjectUser) // Remove User from Project (Collaborator)
 
