@@ -20,9 +20,9 @@ export default class Dashboard extends Component {
       connectionRequests: [],
       displayAddButton: false,
       displayAddListModal: false,
-      displayLists: false,
+      displayLists: true,
       displayPeople: false,
-      displaySettings: true,
+      displaySettings: false,
       lists: {},
       listOrder: [], // array of strings of list_id's
       loggedInUser: '',
