@@ -206,26 +206,16 @@ export default class List extends Component {
 		
 		return tasks.map((task, index) => {
 			let highlight = false;
-
-			// Overview & My Tasks
-			if (highlightTasksOfUser === 'all' || task.assignedUsers.includes(highlightTasksOfUser)) {
-				highlight = true;
-			}
-
-			// Unassigned
-			if (task.assignedUsers.length === 0 && highlightTasksOfUser === 'none') {
-				highlight = true;
-			}
-
+			
 			if (search) { //! add '&& highlight' in the if-statement if you only want to apply the search to highlighted tasks. Without the highlighted boolean check, all tasks are filtered by the search string and potentially highlighted, even if they were previously un-highlighted. Depending on the desired behavior you may wish to only filter currently highlighted tasks. Right now tasks are highlighted on an "or (||)" basis, meaning they will be highlighted if the task category matches what is selected on the left sidebar OR what was searched in the header searchbox. If you include '&& highlight' in the if-statement, it will highlight tasks on an "and (&&)" basis and will only highlight the tasks that match what is in the left sidebar AND the header searchbox.
-				let titleMatch = false;
+			let titleMatch = false;
 				let firstNameMatch = false;
 				let lastNameMatch = false;
 
 				if (task.title.toLowerCase().includes(search.toLowerCase())) {
 					titleMatch = true;
 				}
-
+				
 				task.assignedUsers.forEach(user_id => {
 					const firstName = projectUsersObj[user_id].first_name;
 					const lastName = projectUsersObj[user_id].last_name;
@@ -241,6 +231,16 @@ export default class List extends Component {
 					highlight = true;
 				} else if (!titleMatch && !firstNameMatch && !lastNameMatch) {
 					highlight = false;
+				}
+			} else {
+				// Overview & My Tasks
+				if (highlightTasksOfUser === 'all' || task.assignedUsers.includes(highlightTasksOfUser)) {
+					highlight = true;
+				}
+	
+				// Unassigned
+				if (task.assignedUsers.length === 0 && highlightTasksOfUser === 'none') {
+					highlight = true;
 				}
 			}
 

@@ -176,7 +176,7 @@ export default class Task extends Component {
 			const user = projectUserMap[userId];
 			const userColor = this.formatColor(user.color);
 			let backgroundColor = userColor;
-			if (this.props.highlightTasksOfUser === 'none' || !this.props.highlight) {
+			if ((this.props.highlightTasksOfUser === 'none' && !this.props.search) || !this.props.highlight) {
 				backgroundColor = 'gray';
 			}
 			styleObj[userId] = {
