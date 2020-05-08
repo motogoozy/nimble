@@ -25,7 +25,8 @@ CREATE TABLE project_permissions (
 	delete_tasks boolean NOT NULL DEFAULT false,
 	add_lists boolean NOT NULL DEFAULT false,
 	edit_lists boolean NOT NULL DEFAULT false,
-	delete_lists boolean NOT NULL DEFAULT false
+	delete_lists boolean NOT NULL DEFAULT false,
+	edit_project boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE list (
