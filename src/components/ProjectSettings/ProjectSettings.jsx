@@ -19,6 +19,7 @@ export default function ProjectSettings(props) {
       add_lists: false,
       edit_lists: false,
       delete_lists: false,
+      edit_project: false,
    });
 
    useEffect(() => {
@@ -173,6 +174,19 @@ export default function ProjectSettings(props) {
                            <CustomSwitch
                               checked={permissions.delete_lists}
                               onChange={event => handleSwitch('delete_lists', event)}
+                           />
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className='permissions-category-container'>
+                     <p className='permissions-category'>Project</p>
+                     <div className='permission-switch-container'>
+                        <div className='permission-switch'>
+                           <p><span style={{ color: 'orange' }}>Edit</span> Project</p>
+                           <CustomSwitch
+                              checked={permissions.edit_project}
+                              onChange={event => handleSwitch('edit_project', event)}
                            />
                         </div>
                      </div>

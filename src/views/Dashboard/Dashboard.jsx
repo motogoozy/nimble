@@ -31,6 +31,7 @@ export default class Dashboard extends Component {
       projectId: null,
       projectPermissions: '',
       projectUsers: '',
+      search: '',
       tasks: {},
       taskUsers: {},
       title: '',
@@ -297,10 +298,23 @@ export default class Dashboard extends Component {
       this.setState({ [key]: value });
    };
 
+   handleAddListClick = () => {
+      // Only allow adding list if loggedInUser is project owner or has permission to add lists
+      if (this.state.project.created_by === this.state.loggedInUser.user_id || this.state.projectPermissions.add_lists) {
+         this.setState({ displayAddListModal: true, displayColorPicker: true });
+      } else {
+         alert('You do not have permission to add lists for this project.');
+      }
+   };
+
    handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
 		let codeArr = [r, g, b, a];
 		this.setState({ newColorCode: codeArr });
+   };
+
+   handleSearch = str => {
+      this.setState({ search: str });
    };
    
    closeColorPicker = () => {
@@ -311,6 +325,7 @@ export default class Dashboard extends Component {
 
    addList = async () => {
       const { projectId, newColorCode, title, lists, listOrder } = this.state;
+
       const body = {
          title: title,
          color_code: newColorCode,
@@ -462,6 +477,13 @@ export default class Dashboard extends Component {
       }
 
       if (type === 'list') { // If dragged item is a list
+         // Only allow loggedInUser to move lists if they are the project owner or have permission to edit the project
+         if (this.state.project.created_by !== this.state.loggedInUser.user_id || !this.state.projectPermissions.edit_project) {
+            alert('You do not have permission to edit this project.');
+            this.setState({ displayAddButton: true });
+            return;
+         }
+
          const newListOrder = Array.from(this.state.listOrder);
          newListOrder.splice(source.index, 1); // removing list out of original position
          newListOrder.splice(destination.index, 0, draggableId); // putting list in new position
@@ -476,6 +498,12 @@ export default class Dashboard extends Component {
          });
          return;
       } else if (type === 'task') { // If dragged item is a task
+         // Only allow loggedInUser to move tasks if they are the project owner or have permissions to edit lists
+         if (this.state.project.created_by !== this.state.loggedInUser.user_id || !this.state.projectPermissions.edit_lists) {
+            alert('You do not have permission to edit this project.');
+            return;
+         }
+
          const start = this.state.lists[source.droppableId];
          const finish = this.state.lists[destination.droppableId];
    
@@ -583,8 +611,10 @@ export default class Dashboard extends Component {
                tasks={taskArr}
                index={index}
                colorCode={list.colorCode}
+               project={this.state.project}
                projectId={projectId}
                projectUsers={projectUsers}
+               projectPermissions={this.state.projectPermissions}
                updateList={this.updateList}
                deleteList={this.deleteList}
                loggedInUser={loggedInUser}
@@ -594,6 +624,7 @@ export default class Dashboard extends Component {
                getLists={this.getLists}
                convertTaskIdsToIntegers={this.convertTaskIdsToIntegers}
                highlightTasksOfUser={highlightTasksOfUser}
+               search={this.state.search}
             />
          );
       });
@@ -669,9 +700,11 @@ export default class Dashboard extends Component {
                   &&
                   <Header
                      getProjectData={this.getProjectData}
-                     loggedInUser={this.state.loggedInUser}
                      project={this.state.project}
+                     loggedInUser={this.state.loggedInUser}
                      logout={this.logout}
+                     handleSearch={this.handleSearch}
+                     search={this.state.search}
                   />
                }
                {
@@ -689,7 +722,7 @@ export default class Dashboard extends Component {
                                     </div>
                                     <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
                                        <Tooltip title={'Add New List'}>
-                                          <div className='add-list-button' style={{ width: '0px' }} onClick={() => this.setState({ displayAddListModal: true, displayColorPicker: true })}>
+                                          <div className='add-list-button' style={{ width: '0px' }} onClick={this.handleAddListClick}>
                                              <AddButton />
                                           </div>
                                        </Tooltip>

@@ -175,8 +175,12 @@ export default class Task extends Component {
 		displayUsers.forEach(userId => {
 			const user = projectUserMap[userId];
 			const userColor = this.formatColor(user.color);
+			let backgroundColor = userColor;
+			if (this.props.highlightTasksOfUser === 'none' || !this.props.highlight) {
+				backgroundColor = 'gray';
+			}
 			styleObj[userId] = {
-				backgroundColor: userColor,
+				backgroundColor: backgroundColor,
 				border: 'none',
 			}
 		})
@@ -187,19 +191,13 @@ export default class Task extends Component {
 			const user = projectUserMap[userId];
 			const userInitials = this.getUserInitials(user);
 
-			if (highlightTasksOfUser === 'all') {
+			if (highlightTasksOfUser === 'all' || highlightTasksOfUser === 'none' || highlightTasksOfUser === userId) {
 				return (
 					<Tooltip key={userId} title={`${user.first_name} ${user.last_name}`}>
 						<Avatar className={classes[userId]}>{userInitials}</Avatar>
 					</Tooltip>
 				)
-			} else if (highlightTasksOfUser === userId) {
-				return (
-					<Tooltip key={userId} title={`${user.first_name} ${user.last_name}`}>
-						<Avatar className={classes[userId]}>{userInitials}</Avatar>
-					</Tooltip>
-				)
-			} else return null;
+			}  else return null;
 		});
 
 		if (remainingUsers.length > 0 && highlightTasksOfUser === 'all') {
@@ -297,16 +295,7 @@ export default class Task extends Component {
 	
 	render() {
 		const { title } = this.state;
-		const { id, index, colorCode, highlightTasksOfUser, assignedUsers } = this.props;
-
-		let highlight = false;
-		if (
-			highlightTasksOfUser === 'all' || assignedUsers.includes(highlightTasksOfUser)
-		) {
-			highlight = true;
-		} else if (assignedUsers.length === 0 && highlightTasksOfUser === 'none') {
-			highlight = true;
-		}
+		const { id, index, colorCode, highlight } = this.props;
 
 		return (
 			<>

@@ -41,7 +41,25 @@ export default class List extends Component {
 
 	handleInput = (key, value) => {
       this.setState({ [key]: value });
-   };
+	};
+	
+	handleAddTaskClick = () => {
+		// Only allow add task if loggedInUser is project owner or has permission to add tasks
+		if (this.props.project.created_by === this.props.loggedInUser.user_id || this.props.projectPermissions.add_tasks) {
+			this.setState({ displayAddTaskModal: true });
+		} else {
+			alert('You do not have permission to add tasks for this project.');
+		}
+	};
+
+	handleEditListClick = () => {
+		// Only allow edit list if loggedInUser is project owner or has permission to edit lists
+		if (this.props.project.created_by === this.props.loggedInUser.user_id || this.props.projectPermissions.edit_lists) {
+			this.setState({ displayEditModal: true });
+		} else {
+			alert('You do not have permission to edit lists for this project.');
+		}
+	};
 
 	handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
@@ -178,9 +196,54 @@ export default class List extends Component {
 	};
 
 	displayTasks = () => {
-		const { tasks, highlightTasksOfUser, projectUsers, projectId, taskUsers, getAllTasks, getTaskUsers, getLists } = this.props;
+		const { tasks, highlightTasksOfUser, projectUsers, projectId, taskUsers, getAllTasks, getTaskUsers, getLists, search } = this.props;
 		const { listColorCode } = this.state;
+
+		const projectUsersObj = {};
+		projectUsers.forEach(user => {
+			projectUsersObj[user.user_id] = user;
+		});
+		
 		return tasks.map((task, index) => {
+			let highlight = false;
+
+			// Overview & My Tasks
+			if (highlightTasksOfUser === 'all' || task.assignedUsers.includes(highlightTasksOfUser)) {
+				highlight = true;
+			}
+
+			// Unassigned
+			if (task.assignedUsers.length === 0 && highlightTasksOfUser === 'none') {
+				highlight = true;
+			}
+
+			if (search) { //! add '&& highlight' in the if-statement if you only want to apply the search to highlighted tasks. Without the highlighted boolean check, all tasks are filtered by the search string and potentially highlighted, even if they were previously un-highlighted. Depending on the desired behavior you may wish to only filter currently highlighted tasks. Right now tasks are highlighted on an "or (||)" basis, meaning they will be highlighted if the task category matches what is selected on the left sidebar OR what was searched in the header searchbox. If you include '&& highlight' in the if-statement, it will highlight tasks on an "and (&&)" basis and will only highlight the tasks that match what is in the left sidebar AND the header searchbox.
+				let titleMatch = false;
+				let firstNameMatch = false;
+				let lastNameMatch = false;
+
+				if (task.title.toLowerCase().includes(search.toLowerCase())) {
+					titleMatch = true;
+				}
+
+				task.assignedUsers.forEach(user_id => {
+					const firstName = projectUsersObj[user_id].first_name;
+					const lastName = projectUsersObj[user_id].last_name;
+					if (firstName.toLowerCase().includes(search.toLowerCase())) {
+						firstNameMatch = true;
+					}
+					if (lastName.toLowerCase().includes(search.toLowerCase())) {
+						lastNameMatch = true;
+					}
+				})
+				
+				if (titleMatch || firstNameMatch || lastNameMatch) {
+					highlight = true;
+				} else if (!titleMatch && !firstNameMatch && !lastNameMatch) {
+					highlight = false;
+				}
+			}
+
 			return (
 				<Task
 					key={task.id}
@@ -203,6 +266,8 @@ export default class List extends Component {
 					projectUsers={projectUsers}
 					projectId={projectId}
 					taskUsers={taskUsers}
+					search={search}
+					highlight={highlight}
 				/>
 			)
 		});
@@ -329,7 +394,7 @@ export default class List extends Component {
 							<div className='list-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
 								<p style={{ fontSize: '1.2rem' }}>{title}</p>
 								<Tooltip title={'Edit List'}>
-									<i style={{ padding: '.25rem .5rem' }} onClick={() => this.setState({ displayEditModal: true })} className="fas fa-ellipsis-v cursor-pointer"></i>
+									<i style={{ padding: '.25rem .5rem' }} onClick={this.handleEditListClick} className="fas fa-ellipsis-v cursor-pointer"></i>
 								</Tooltip>
 							</div>
 							{
@@ -363,7 +428,7 @@ export default class List extends Component {
 								}}
 							</Droppable>
 							<div className='list-footer'>
-								<div className='list-add-button-container cursor-pointer' onClick={() => this.setState({ displayAddTaskModal: true })}>
+								<div className='list-add-button-container cursor-pointer' onClick={this.handleAddTaskClick}>
 									<i className="fas fa-plus"></i>
 									<p>ADD NEW TASK</p>
 								</div>

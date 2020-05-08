@@ -5,6 +5,7 @@ SET
 	delete_tasks = ${delete_tasks},
 	add_lists = ${add_lists},
 	edit_lists = ${edit_lists},
-	delete_lists = ${delete_lists}
+	delete_lists = ${delete_lists},
+	edit_project = ${edit_project}
 WHERE project_id = ${project_id}
 RETURNING *;

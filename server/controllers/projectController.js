@@ -57,6 +57,19 @@ module.exports = {
          console.log(err)
       }
    },
+   addProjectUser: async (req, res) => {
+      const { project_id, user_id } = req.params;
+      const db = req.app.get('db');
+      try {
+         let addedUser = await db.project.add_project_user({ project_id, user_id });
+         res.status(200).send(addedUser[0]);
+      } catch (err) {
+         console.log(err);
+         res.status(400).send({
+            message: 'Error adding user to project. Please try again.'
+         })
+      }
+   },
    updateProject: async (req, res) => {
       const { project_id } = req.params;
       const { title, list_order } = req.body;
@@ -77,19 +90,6 @@ module.exports = {
          res.status(200).send(updatedPermissions[0]);
       } catch (err) {
          console.log(err);
-      }
-   },
-   addProjectUser: async (req, res) => {
-      const { project_id, user_id } = req.params;
-      const db = req.app.get('db');
-      try {
-         let addedUser = await db.project.add_project_user({ project_id, user_id });
-         res.status(200).send(addedUser[0]);
-      } catch (err) {
-         console.log(err);
-         res.status(400).send({
-            message: 'Error adding user to project. Please try again.'
-         })
       }
    },
    deleteProjectUser: async (req, res) => {

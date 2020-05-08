@@ -12,7 +12,7 @@ const massive = require('massive');
 const path = require('path');
 
 const { SERVER_PORT, DATABASE_URL, SECRET } = process.env;
-const serverPort = SERVER_PORT || 4000;
+const port = SERVER_PORT || 4000;
 
 const app = express();
 
@@ -29,8 +29,8 @@ app.use(session({
 massive(DATABASE_URL).then(db => {
    app.set('db', db)
 		console.log(('Connected to database'))
-   app.listen(serverPort, () => {
-      console.log(`Listening on port: ${serverPort}`)
+   app.listen(port, () => {
+      console.log(`Listening on port: ${port}`)
    })
 });
 
@@ -40,9 +40,9 @@ app.get('/project/:project_id', projectController.getProjectById); // Get projec
 app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
 app.get('/project/:project_id/permissions', projectController.getProjectPermissions) // Get Project Permissions
 app.post('/project', projectController.createProject); // Create Project
+app.post('/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
 app.put('/project/:project_id', projectController.updateProject); // Update Project
 app.put('/project/:project_id/permissions', projectController.updateProjectPermissions) // Update Project Permissions
-app.post('/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
 app.delete('/project/:project_id/user/:user_id', projectController.deleteProjectUser) // Remove User from Project (Collaborator)
 
 // User
@@ -63,10 +63,10 @@ app.get('/project/:project_id/tasks', taskController.getAllTasks); // Get all pr
 app.get('/project/:project_id/tasks/:user_id', taskController.getTasksByUserId); // Get all tasks assigned to a specific user
 app.get('/task_users/:project_id', taskController.getTaskUsers); // Get all task-user relationships from task_users table
 app.post('/project/:project_id/task', taskController.createTask); // Create new task
+app.post('/task_users/:project_id', taskController.addTaskUser) // Assign user to task
 app.put('/task/:task_id', taskController.updateTask); // Update task
 app.delete('/task/:task_id', taskController.deleteTask); // Delete task
 app.delete('/tasks/list/:list_id', taskController.deleteTasksByListId)
-app.post('/task_users/:project_id', taskController.addTaskUser) // Assign user to task
 app.delete('/task_users/:tu_id', taskController.deleteTaskUser) // Remove user from task
 app.delete('/task_users/project/:project_id/user/:user_id', taskController.deleteTaskUsersByProjectAndUser) // Remove user from all tasks in project
 app.delete('/task_users/task/:task_id', taskController.deleteTaskUsersByTask) // Delete all task_users by task_id
@@ -78,7 +78,7 @@ app.put(`/connection/:connection_id`, connectionController.acceptUserConnection)
 app.delete('/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
 
 // Auth
-app.post('/auth/register', authController.register); // Register/Create new user
-app.post('/auth/login', authController.login); // Login
-app.get('/auth/logout', authController.logout) // Logout
 app.get('/auth/user_session', authController.getUserSession) // Get user session (logged in user)
+app.get('/auth/logout', authController.logout) // Logout
+app.post('/auth/login', authController.login); // Login
+app.post('/auth/register', authController.register); // Register/Create new user

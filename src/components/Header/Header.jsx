@@ -16,7 +16,6 @@ class Header extends Component {
    state = {
       anchorEl: null,
       currentPage: '',
-      search: '',
       newProjectName: '',
       displayAddProjectModal: false,
       loggedInUser: '',
@@ -28,9 +27,15 @@ class Header extends Component {
       let userId = this.props.loggedInUser.user_id;
       await this.getUserProjects(userId);
       if (this.props.match.params.project_id) {
+         // If logged in user isn't part of this project
+         if (!this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))) {
+            alert('You are not a collaborator on this project. Please select another project.');
+            return;
+         }
+
          const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
          if (project) {
-            this.handleSelection(project)
+            this.handleSelection(project);
          }
       }
       this.setState({ currentPage: window.location.hash });
@@ -41,6 +46,12 @@ class Header extends Component {
          this.setState({ currentPage: window.location.hash });
       };
       if (this.props.match.params.project_id !== prevProps.match.params.project_id) {
+         // If logged in user isn't part of this project
+         if (this.props.match.params.project_id && !this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))) {
+            alert('You are not a collaborator on this project. Please select another project.');
+            return;
+         }
+
          const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
          if (project) {
             this.handleSelection(project)
@@ -196,7 +207,7 @@ class Header extends Component {
                {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
-                  <Input type='search' placeholder='Search name or task'/>
+                  <Input type='search' placeholder='Search name or task' value={this.props.search} onChange={e => this.props.handleSearch(e.target.value)}/>
                }
                <div className='header-avatar-container cursor-pointer'>
                   <Button
