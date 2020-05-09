@@ -2,7 +2,8 @@
   "name": "nimble",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:4000",
+  "proxy": "http://192.168.86.120:8000",
+  "secure": false,
   "main": "./server/server.js",
   "author": "Kyle Payne",
   "dependencies": {
