@@ -20,13 +20,15 @@ CREATE TABLE project (
 
 CREATE TABLE project_permissions (
 	project_id SERIAL PRIMARY KEY REFERENCES project(project_id),
-	add_tasks boolean NOT NULL DEFAULT false,
-	edit_tasks boolean NOT NULL DEFAULT false,
-	delete_tasks boolean NOT NULL DEFAULT false,
-	add_lists boolean NOT NULL DEFAULT false,
-	edit_lists boolean NOT NULL DEFAULT false,
+	add_tasks boolean NOT NULL DEFAULT true,
+	edit_tasks boolean NOT NULL DEFAULT true,
+	delete_tasks boolean NOT NULL DEFAULT true,
+	add_lists boolean NOT NULL DEFAULT true,
+	edit_lists boolean NOT NULL DEFAULT true,
 	delete_lists boolean NOT NULL DEFAULT false,
-	edit_project boolean NOT NULL DEFAULT false
+	edit_project boolean NOT NULL DEFAULT false,
+	add_collaborators boolean NOT NULL DEFAULT false,
+	remove_collaborators boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE list (
