@@ -82,3 +82,7 @@ app.get('/auth/user_session', authController.getUserSession) // Get user session
 app.get('/auth/logout', authController.logout) // Logout
 app.post('/auth/login', authController.login); // Login
 app.post('/auth/register', authController.register); // Register/Create new user
+
+app.get('*', (req, res)=>{
+   res.sendFile(path.join(__dirname, '../build/index.html'));
+});
