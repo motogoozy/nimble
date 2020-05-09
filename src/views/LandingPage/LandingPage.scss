@@ -63,7 +63,7 @@
 		padding: 3rem 3rem 10vh 3rem;
 	
 		p {
-			font-size: 1.5rem;
+			font-size: 1.75vw;
 			color: white;
 		}
 
@@ -87,12 +87,12 @@
 				align-items: center;
 		
 				img {
-					width: 80%;
+					width: 75%;
 					height: auto;
 				}
 		
 				p {
-					font-size: 2.5rem;
+					font-size: 3vw;
 					letter-spacing: 3px;
 					color: $accent-orange;
 				}
@@ -188,13 +188,13 @@
 			padding: 1rem;
 
 			.info-box-header {
-				font-size: 1.15rem;
+				font-size: 1.25vw;
 				font-weight: 500;
 				margin-bottom: 1rem;
 			}
 
 			.info-box-body {
-				font-size: .9rem;
+				font-size: 1vw;
 				color: $primary-dk-gray;
 			}
 		}

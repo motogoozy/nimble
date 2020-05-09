@@ -121,6 +121,7 @@
 	.user-connection-container {
 		width: 100%;
 		height: auto;
+		min-height: 3rem;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
