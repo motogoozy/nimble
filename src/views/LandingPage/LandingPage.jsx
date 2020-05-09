@@ -12,7 +12,7 @@ export default class LandingPage extends Component {
 			<div className='landing-page'>
 				<div className='landing-page-header'>
 					<div className='landing-header-logo-container'>
-						<img src={NimbleLogo} alt="Nimble Logo"/>
+						{/* <img src={NimbleLogo} alt="Nimble Logo"/> */}
 						{/* <p>NIMBLE</p> */}
 					</div>
 					<div className='landing-header-button-container'>
