@@ -478,7 +478,7 @@ export default class Dashboard extends Component {
 
       if (type === 'list') { // If dragged item is a list
          // Only allow loggedInUser to move lists if they are the project owner or have permission to edit the project
-         if (this.state.project.created_by !== this.state.loggedInUser.user_id || !this.state.projectPermissions.edit_project) {
+         if (this.state.project.created_by !== this.state.loggedInUser.user_id && !this.state.projectPermissions.edit_project) {
             alert('You do not have permission to edit this project.');
             this.setState({ displayAddButton: true });
             return;
@@ -499,7 +499,8 @@ export default class Dashboard extends Component {
          return;
       } else if (type === 'task') { // If dragged item is a task
          // Only allow loggedInUser to move tasks if they are the project owner or have permissions to edit lists
-         if (this.state.project.created_by !== this.state.loggedInUser.user_id || !this.state.projectPermissions.edit_lists) {
+         if (this.state.project.created_by !== this.state.loggedInUser.user_id && !this.state.projectPermissions.edit_lists) {
+            console.log(this.state.project.created_by, this.state.loggedInUser.user_id)
             alert('You do not have permission to edit this project.');
             return;
          }
