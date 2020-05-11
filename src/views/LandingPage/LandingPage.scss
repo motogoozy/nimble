@@ -188,14 +188,16 @@
 			padding: 1rem;
 
 			.info-box-header {
-				font-size: 1.25vw;
+				font-size: calc(.4rem + 1vw);
 				font-weight: 500;
 				margin-bottom: 1rem;
 			}
 
 			.info-box-body {
-				font-size: 1vw;
-				color: $primary-dk-gray;
+				p {
+					font-size:calc(.15rem + 1vw);
+					color: $primary-dk-gray;
+				}
 			}
 		}
 
