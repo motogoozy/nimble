@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import PulseLoader from 'react-spinners/PulseLoader';
 
 export default function ProjectSettings(props) {
    const [projectTitle, setProjectTitle] = useState();
@@ -243,7 +243,7 @@ export default function ProjectSettings(props) {
             </>
             :
             <div className='progress-container'>
-               <CircularProgress />
+               <PulseLoader size={12} color={'#995D81'} />
             </div>
          }
       </div>

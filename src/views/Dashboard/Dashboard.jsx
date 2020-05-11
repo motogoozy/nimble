@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import IdleTimer from 'react-idle-timer';
-import { CircularProgress } from '@material-ui/core';
+import PulseLoader from 'react-spinners/PulseLoader';
 
 export default class Dashboard extends Component {
    state = {
@@ -752,7 +752,7 @@ export default class Dashboard extends Component {
                         </>
                         :
                         <div className='progress-container'>
-                           <CircularProgress />
+                           <PulseLoader size={15} color={'#995D81'} />
                         </div>
                      }
                      </>

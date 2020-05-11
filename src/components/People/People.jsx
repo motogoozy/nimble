@@ -4,12 +4,12 @@ import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import UserConnection from './UserConnection/UserConnection';
 
 import axios from 'axios';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import PulseLoader from 'react-spinners/PulseLoader';
 import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-export default class PeoplePage extends Component {
+export default class People extends Component {
 	state = {
 		currentConnections: '',
 		connectionRequests: '',
@@ -57,7 +57,7 @@ export default class PeoplePage extends Component {
 		});
 	};
 
-	getUserById = (userId) => axios.get(`user/${userId}`);
+	getUserById = userId => axios.get(`user/${userId}`);
 
 	getUserConnectionDetails = async () => {
 		const { currentConnections, connectionRequests, pendingConnections } = this.state;
@@ -85,7 +85,7 @@ export default class PeoplePage extends Component {
 			} else {
 				return this.getUserById(connection.receive_id);
 			}
-		})
+		});
 		let results = await Promise.all(promises);
 		results.forEach(result => {
 			let userData = result.data;
@@ -428,7 +428,7 @@ export default class PeoplePage extends Component {
 								addingUser === user.user_id
 								?
 								<div className='adding-user-progress'>
-									<CircularProgress size={25} />
+									<PulseLoader size={12} color={'#995D81'} />
 								</div>
 								:
 								<div onClick={() => this.addProjectUser(user.user_id)}>
@@ -538,7 +538,7 @@ export default class PeoplePage extends Component {
 									this.displayProjectUsers()
 									:
 									<div className='progress-container'>
-										<CircularProgress />
+										<PulseLoader size={12} color={'#995D81'} />
 									</div>
 								}
 								</>
@@ -569,7 +569,7 @@ export default class PeoplePage extends Component {
 								this.displayCurrentConnections()
 								:
 								<div className='progress-container'>
-									<CircularProgress />
+									<PulseLoader size={12} color={'#995D81'} />
 								</div>
 							}
 						</div>
@@ -585,7 +585,7 @@ export default class PeoplePage extends Component {
 								this.displayConnectionRequests()
 								:
 								<div className='progress-container'>
-									<CircularProgress />
+									<PulseLoader size={12} color={'#995D81'} />
 								</div>
 							}
 						</div>
@@ -601,7 +601,7 @@ export default class PeoplePage extends Component {
 								this.displayPendingConnections()
 								:
 								<div className='progress-container'>
-									<CircularProgress />
+									<PulseLoader size={12} color={'#995D81'} />
 								</div>
 							}
 						</div>
