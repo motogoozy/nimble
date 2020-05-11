@@ -211,6 +211,7 @@ export default class List extends Component {
 			let titleMatch = false;
 				let firstNameMatch = false;
 				let lastNameMatch = false;
+				let fullNameMatch = false;
 
 				if (task.title.toLowerCase().includes(search.toLowerCase())) {
 					titleMatch = true;
@@ -219,17 +220,21 @@ export default class List extends Component {
 				task.assignedUsers.forEach(user_id => {
 					const firstName = projectUsersObj[user_id].first_name;
 					const lastName = projectUsersObj[user_id].last_name;
+					const fullName = firstName + ' ' + lastName;
 					if (firstName.toLowerCase().includes(search.toLowerCase())) {
 						firstNameMatch = true;
 					}
 					if (lastName.toLowerCase().includes(search.toLowerCase())) {
 						lastNameMatch = true;
 					}
+					if (fullName.toLowerCase().includes(search.toLowerCase())) {
+						fullNameMatch = true;
+					}
 				})
 				
-				if (titleMatch || firstNameMatch || lastNameMatch) {
+				if (titleMatch || firstNameMatch || lastNameMatch || fullNameMatch) {
 					highlight = true;
-				} else if (!titleMatch && !firstNameMatch && !lastNameMatch) {
+				} else if (!titleMatch && !firstNameMatch && !lastNameMatch && fullNameMatch) {
 					highlight = false;
 				}
 			} else {
