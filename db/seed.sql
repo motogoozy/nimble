@@ -57,12 +57,6 @@ CREATE TABLE project_users (
 	user_id integer NOT NULL REFERENCES users(id)
 );
 
-CREATE TABLE project_lists (
-	id SERIAL PRIMARY KEY,
-	project_id integer NOT NULL REFERENCES project(id),
-	list_id integer NOT NULL REFERENCES list(id)
-);
-
 CREATE TABLE task_users (
 	tu_id SERIAL PRIMARY KEY,
 	task_id integer NOT NULL REFERENCES task(id),
