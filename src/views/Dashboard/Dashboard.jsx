@@ -14,6 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import IdleTimer from 'react-idle-timer';
+import { CircularProgress } from '@material-ui/core';
 
 export default class Dashboard extends Component {
    state = {
@@ -23,6 +24,7 @@ export default class Dashboard extends Component {
       displayLists: true,
       displayPeople: false,
       displaySettings: false,
+      isLoading: false,
       lists: {},
       listOrder: [], // array of strings of list_id's
       loggedInUser: '',
@@ -77,6 +79,7 @@ export default class Dashboard extends Component {
 
    getProjectData = async (id) => {
       this.setState({
+         isLoading: true,
          projectId: id,
          lists: {},
          tasks: {},
@@ -93,6 +96,9 @@ export default class Dashboard extends Component {
          }
          catch(err) {
             console.log(err);
+         }
+         finally {
+            this.setState({ isLoading: false });
          }
       })
    };
@@ -683,109 +689,123 @@ export default class Dashboard extends Component {
 
 	render() {
 		return (
-			<div className='dashboard'>
-            {
-               this.state.loggedInUser
-               &&
-               <Sidebar 
-                  projectId={this.state.projectId}
-                  loggedInUser={this.state.loggedInUser}
-                  getProjectData={this.getProjectData}
-                  handleSidebarSelection={this.handleSidebarSelection}
-                  connectionRequests={this.state.connectionRequests}
-               />
-            }
-            <div className='main-content-container'>
+            <div className='dashboard'>
                {
                   this.state.loggedInUser
                   &&
-                  <Header
-                     getProjectData={this.getProjectData}
-                     project={this.state.project}
+                  <Sidebar 
+                     projectId={this.state.projectId}
                      loggedInUser={this.state.loggedInUser}
-                     logout={this.logout}
-                     handleSearch={this.handleSearch}
-                     search={this.state.search}
+                     getProjectData={this.getProjectData}
+                     handleSidebarSelection={this.handleSidebarSelection}
+                     connectionRequests={this.state.connectionRequests}
                   />
                }
-               {
-                  this.state.displayLists === true
-                  &&
-                  <>
-                     <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
-                        <Droppable droppableId='all-lists' direction='horizontal' type='list' >
-                           {(provided) => {
-                              return (
-                                 <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
-                                    <div className='list-container'>
-                                       { this.displayLists() }
-                                       { provided.placeholder }
-                                    </div>
-                                    <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
-                                       <Tooltip title={'Add New List'}>
-                                          <div className='add-list-button' style={{ width: '0px' }} onClick={this.handleAddListClick}>
-                                             <AddButton />
-                                          </div>
-                                       </Tooltip>
-                                    </div>
-                                 </div>
-                              )
-                           }}
-                        </Droppable>
-                     </DragDropContext>
-                     {
-                        this.state.displayAddListModal
-                        &&
-                        this.addListModal()
-                     }
-                  </>
-               }
-               {
-                  this.state.displayPeople
-                  &&
-                  <>
-                     <People
-                        loggedInUser={this.state.loggedInUser}
-                        projectId={this.state.projectId}
-                        projectUsers={this.state.projectUsers}
-                        getProjectUsers={this.getProjectUsers}
-                        getTaskUsers={this.getTaskUsers}
-                        getAllTasks={this.getAllTasks}
-                        getConnectionRequests={this.getConnectionRequests}
-                     />
-                  </>
-               }
-               {
-                  this.state.displaySettings && this.state.projectId
-                  &&
-                  <>
-                     <ProjectSettings
-                        loggedInUser={this.state.loggedInUser}
-                        projectId={this.state.projectId}
+               <div className='main-content-container'>
+                  {
+                     this.state.loggedInUser
+                     &&
+                     <Header
+                        getProjectData={this.getProjectData}
                         project={this.state.project}
-                        getProjectDetails={this.getProjectDetails}
-                        updateProject={this.updateProject}
-                        projectPermissions={this.state.projectPermissions}
+                        loggedInUser={this.state.loggedInUser}
+                        logout={this.logout}
+                        handleSearch={this.handleSearch}
+                        search={this.state.search}
                      />
-                  </>
-               }
-               {
-                  !this.state.projectId && this.state.loggedInUser && !this.state.displayPeople
-                  &&
-                  <div className='no-project-prompt-container'>
-                     <div className='bounce'>
-                        <i className="fas fa-chevron-up"></i> 
-                        <p>Select or Add a Project to Begin</p>
+                  }
+
+                  {
+                     this.state.displayLists
+                     &&
+                     <>
+                     {
+                        !this.state.isLoading
+                        ?
+                        <>
+                        <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
+                           <Droppable droppableId='all-lists' direction='horizontal' type='list' >
+                              {(provided) => {
+                                 return (
+                                    <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
+                                       <div className='list-container'>
+                                          { this.displayLists() }
+                                          { provided.placeholder }
+                                       </div>
+                                       <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
+                                          <Tooltip title={'Add New List'}>
+                                             <div className='add-list-button' style={{ width: '0px' }} onClick={this.handleAddListClick}>
+                                                <AddButton />
+                                             </div>
+                                          </Tooltip>
+                                       </div>
+                                    </div>
+                                 )
+                              }}
+                           </Droppable>
+                        </DragDropContext>
+                        {
+                           this.state.displayAddListModal
+                           &&
+                           this.addListModal()
+                        }
+                        </>
+                        :
+                        <div className='progress-container'>
+                           <CircularProgress />
+                        </div>
+                     }
+                     </>
+                  }
+
+                  {
+                     this.state.displayPeople
+                     &&
+                     <>
+                        <People
+                           loggedInUser={this.state.loggedInUser}
+                           projectId={this.state.projectId}
+                           projectUsers={this.state.projectUsers}
+                           getProjectUsers={this.getProjectUsers}
+                           getTaskUsers={this.getTaskUsers}
+                           getAllTasks={this.getAllTasks}
+                           getConnectionRequests={this.getConnectionRequests}
+                        />
+                     </>
+                  }
+
+                  {
+                     this.state.displaySettings && this.state.projectId
+                     &&
+                     <>
+                        <ProjectSettings
+                           loggedInUser={this.state.loggedInUser}
+                           projectId={this.state.projectId}
+                           project={this.state.project}
+                           getProjectDetails={this.getProjectDetails}
+                           updateProject={this.updateProject}
+                           projectPermissions={this.state.projectPermissions}
+                        />
+                     </>
+                  }
+
+                  {
+                     !this.state.projectId && this.state.loggedInUser && !this.state.displayPeople && !this.state.isLoading
+                     &&
+                     <div className='no-project-prompt-container'>
+                        <div className='bounce'>
+                           <i className="fas fa-chevron-up"></i> 
+                           <p>Select or Add a Project to Begin</p>
+                        </div>
                      </div>
-                  </div>
-               }
+                  }
+               </div>
+               <IdleTimer
+                  ref={ref => { this.idleTimer = ref }}
+                  onIdle={this.logout}
+                  timeout={1000 * 60 * 30} // Logout after 30 min of inactivity
+               />
             </div>
-            <IdleTimer
-               ref={ref => { this.idleTimer = ref }}
-               onIdle={this.logout}
-               timeout={1000 * 60 * 30} // Logout after 30 min of inactivity
-            />
-			</div>
 		)
 	}
 }
