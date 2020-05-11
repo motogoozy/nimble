@@ -49,7 +49,6 @@ app.delete('/project/:project_id/user/:user_id', projectController.deleteProject
 app.get('/user/:user_id', userController.getUserById) // Get user by id
 app.get('/find-user', userController.getUserByEmail) // Get user by email
 app.get('/user/:user_id/projects', projectController.getProjectsByUserId) // Get all user's projects
-app.post(`/user`, userController.createUser); // Add user
 
 // List
 app.get('/project/:project_id/lists', listController.getLists); // Get all project lists
