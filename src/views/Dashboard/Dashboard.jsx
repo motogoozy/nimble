@@ -66,7 +66,6 @@ export default class Dashboard extends Component {
       } catch (err) {
          console.log(err.response.data);
       } finally {
-         this.setState({ loggedInUser: '' });
          this.props.history.push('/')
       }
    };
