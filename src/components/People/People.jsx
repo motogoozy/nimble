@@ -100,9 +100,9 @@ export default class People extends Component {
 
 		let promises = list.map(connection => {
 			if (connection.send_id !== loggedInUser.user_id) {
-				return this.getUserById(connection.send_id);
+				return this.props.getUserById(connection.send_id);
 			} else {
-				return this.getUserById(connection.receive_id);
+				return this.props.getUserById(connection.receive_id);
 			}
 		});
 
