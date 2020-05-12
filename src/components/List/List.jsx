@@ -127,7 +127,7 @@ export default class List extends Component {
 			});
 		}
 		catch (err) {
-			console.log(err);
+			console.log(err.response.data.message);
 		}
 	};
 
@@ -159,7 +159,7 @@ export default class List extends Component {
 				newTaskTitle: '',
 			});
 		} catch (err) {
-			console.log(err);
+			console.log(err.response.data.message);
 		}
 	};
 
@@ -184,14 +184,14 @@ export default class List extends Component {
 			task_order: newTaskOrder,
 		};
 		try {
-			await axios.delete(`/task/${task_id}`);
 			await axios.delete(`/task_users/task/${task_id}`);
+			await axios.delete(`/task/${task_id}`);
 			await this.props.updateList(list.id, body);
 			await this.props.getAllTasks();
 			await this.props.getTaskUsers();
 			this.props.getLists();
 		} catch (err) {
-			console.log(err);
+			console.log(err.response.data.message);
 		}
 	};
 
@@ -207,7 +207,7 @@ export default class List extends Component {
 		return tasks.map((task, index) => {
 			let highlight = false;
 			
-			if (search) { //! add '&& highlight' in the if-statement if you only want to apply the search to highlighted tasks. Without the highlighted boolean check, all tasks are filtered by the search string and potentially highlighted, even if they were previously un-highlighted. Depending on the desired behavior you may wish to only filter currently highlighted tasks. Right now tasks are highlighted on an "or (||)" basis, meaning they will be highlighted if the task category matches what is selected on the left sidebar OR what was searched in the header searchbox. If you include '&& highlight' in the if-statement, it will highlight tasks on an "and (&&)" basis and will only highlight the tasks that match what is in the left sidebar AND the header searchbox.
+			if (search) {
 			let titleMatch = false;
 				let firstNameMatch = false;
 				let lastNameMatch = false;
@@ -268,11 +268,14 @@ export default class List extends Component {
 					getLists={getLists}
 					highlightTasksOfUser={highlightTasksOfUser}
 					assignedUsers={task.assignedUsers}
-					projectUsers={projectUsers}
+					project={this.props.project}
 					projectId={projectId}
+					projectUsers={projectUsers}
 					taskUsers={taskUsers}
+					loggedInUser={this.props.loggedInUser}
 					search={search}
 					highlight={highlight}
+					projectPermissions={this.props.projectPermissions}
 				/>
 			)
 		});
@@ -395,23 +398,26 @@ export default class List extends Component {
 							ref={provided.innerRef}
 							{...provided.draggableProps}
 							style={listStyle}
-							>
+						>
 							<div className='list-header' style={{ backgroundColor: headerBackgroundColor, color: headerTextColor }} {...provided.dragHandleProps}>
 								<p style={{ fontSize: '1.2rem' }}>{title}</p>
 								<Tooltip title={'Edit List'}>
 									<i style={{ padding: '.25rem .5rem' }} onClick={this.handleEditListClick} className="fas fa-ellipsis-v cursor-pointer"></i>
 								</Tooltip>
 							</div>
+
 							{
 								this.state.displayEditModal
 								&&
 								this.editModal()
 							}
+
 							{
 								this.state.displayAddTaskModal
 								&&
 								this.addTaskModal()
 							}
+
 							<Droppable droppableId={list.id} type='task'>
 								{(provided, snapshot) => {
 									const style = {

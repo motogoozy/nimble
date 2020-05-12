@@ -39,6 +39,29 @@ export default class Task extends Component {
       this.setState({ [key]: value });
 	};
 
+	handleEditTaskClick = () => {
+		// Only allow add task if loggedInUser is project owner or has permission to add tasks
+		if (this.props.project.created_by === this.props.loggedInUser.user_id || this.props.projectPermissions.edit_tasks) {
+			this.setState({ displayEditModal: true });
+		} else {
+			alert('You do not have permission to edit tasks for this project.');
+		}
+	};
+
+	handleCheckUser = event => {
+		const { assignedUsers } = this.state;
+		const userId = parseInt(event.target.value)
+		let newAssignedUsers = Array.from(assignedUsers);
+
+		if (event.target.checked) {
+			newAssignedUsers.push(userId);
+		} else {
+			newAssignedUsers.splice(newAssignedUsers.indexOf(userId), 1);
+		}
+
+		this.setState({ assignedUsers: newAssignedUsers });
+	};
+
 	updateTask = async () => {
 		this.setState({ displayEditModal: false });
 		const { newTitle, notes, status, assignedUsers } = this.state;
@@ -51,6 +74,7 @@ export default class Task extends Component {
 			created_at: created_at,
 			created_by: created_by,
 		};
+
 		try {
 			let previouslyAssigned = this.props.assignedUsers;
 			let usersToAdd = [];
@@ -96,7 +120,7 @@ export default class Task extends Component {
 					await this.props.getTaskUsers();
 					await this.props.getAllTasks();
 				} catch (err) {
-					console.log(err);
+					console.log(err.response.data.message);
 				}
 			}
 
@@ -108,7 +132,7 @@ export default class Task extends Component {
 				newTitle: edited.data.title,
 			});
 		} catch (err) {
-			console.log(err);
+			console.log(err.response.data.message);
 		}
 	};
 	
@@ -119,29 +143,6 @@ export default class Task extends Component {
 			displayEditModal: false,
 			assignedUsers: assignedUsers,
 		});
-	};
-
-	deleteTask = async () => {
-		const { id } = this.props;
-		try {
-			await this.props.deleteTask(id);
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	handleCheckUser = event => {
-		const { assignedUsers } = this.state;
-		const userId = parseInt(event.target.value)
-		let newAssignedUsers = Array.from(assignedUsers);
-
-		if (event.target.checked) {
-			newAssignedUsers.push(userId);
-		} else {
-			newAssignedUsers.splice(newAssignedUsers.indexOf(userId), 1);
-		}
-
-		this.setState({ assignedUsers: newAssignedUsers });
 	};
 
 	getUserInitials = (user) => `${user.first_name.split('')[0]}${user.last_name.split('')[0]}`;
@@ -272,8 +273,8 @@ export default class Task extends Component {
 						</div>
 						<div className='edit-modal-buttons'>
 							<div className='edit-modal-delete-container'>
-								<Tooltip title={'Delete List'}>
-									<IconButton aria-label="delete" onClick={this.deleteTask}>
+								<Tooltip title={'Delete Task'}>
+									<IconButton aria-label="delete" onClick={() => this.props.deleteTask(this.props.id)}>
 										<DeleteIcon />
 									</IconButton>
 								</Tooltip>
@@ -323,10 +324,10 @@ export default class Task extends Component {
 								<div className='task-header'>
 									<p>{title}</p>
 									<Tooltip title={'Edit Task'}>
-										<i className={highlight ? 'fas fa-pencil-alt cursor-pointer' : 'fas fa-pencil-alt cursor-pointer unselected-task'} onClick={() => this.setState({ displayEditModal: true })}></i>
+										<i className={highlight ? 'fas fa-pencil-alt cursor-pointer' : 'fas fa-pencil-alt cursor-pointer unselected-task'} onClick={this.handleEditTaskClick}></i>
 									</Tooltip>
 								</div>
-								<div className='assigned-user-avatars' onClick={() => this.setState({ displayEditModal: true })}>
+								<div className='assigned-user-avatars' onClick={this.handleEditTaskClick}>
 									{ this.displayTaskUserAvatars() }
 								</div>
 							</div>

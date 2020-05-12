@@ -35,7 +35,7 @@ export default function ProjectSettings(props) {
       setPermissions(props.projectPermissions);
    }, [props.projectPermissions])
 
-   const handleSwitch = async (key, event) => {
+   const handleToggleSwitch = async (key, event) => {
       const body = {
          permissions: {...permissions, [key]: event.target.checked}
       }
@@ -43,7 +43,7 @@ export default function ProjectSettings(props) {
          let res = await axios.put(`/project/${props.project.project_id}/permissions`, body);
          setPermissions(res.data);
       } catch (err) {
-         console.log(err);
+         console.log(err.response.data.message)
       }
    };
 
@@ -71,7 +71,7 @@ export default function ProjectSettings(props) {
 
    return (
       <div className='project-settings-main'>
-         { projectTitle && permissions
+         { projectTitle && permissions &&!props.isLoading
             ? 
             <>
                <div className='project-settings-header'>
@@ -136,97 +136,107 @@ export default function ProjectSettings(props) {
                      <div className='project-settings-panel-header'>
                         <p>Permissions</p>
                      </div>
+
+                     {
+                        props.loggedInUser.user_id === props.project.created_by
+                        ?
+                        <>
+                           <p style={{ fontWeight: '400', marginBottom: '1rem' }}>Allow Collaborators to:</p>
       
-                     <p style={{ fontWeight: '400', marginBottom: '1rem' }}>Allow Collaborators to:</p>
-      
-                     <div className='project-permissions-container'>
-                        <div className='permissions-category-container'>
-                           <p className='permissions-category'>Tasks</p>
-                           <div className='permission-switch-container'>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'green' }}>Add</span> Tasks</p>
-                                 <CustomSwitch
-                                    checked={permissions.add_tasks}
-                                    onChange={event => handleSwitch('add_tasks', event)}
-                                 />
+                           <div className='project-permissions-container'>
+                              <div className='permissions-category-container'>
+                                 <p className='permissions-category'>Tasks</p>
+                                 <div className='permission-switch-container'>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'green' }}>Add</span> Tasks</p>
+                                       <CustomSwitch
+                                          checked={permissions.add_tasks}
+                                          onChange={event => handleToggleSwitch('add_tasks', event)}
+                                       />
+                                    </div>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'orange' }}>Edit</span> Tasks</p>
+                                       <CustomSwitch
+                                          checked={permissions.edit_tasks}
+                                          onChange={event => handleToggleSwitch('edit_tasks', event)}
+                                       />
+                                    </div>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'crimson' }}>Delete</span> Tasks</p>
+                                       <CustomSwitch
+                                          checked={permissions.delete_tasks}
+                                          onChange={event => handleToggleSwitch('delete_tasks', event)}
+                                       />
+                                    </div>
+                                 </div>
                               </div>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'orange' }}>Edit</span> Tasks</p>
-                                 <CustomSwitch
-                                    checked={permissions.edit_tasks}
-                                    onChange={event => handleSwitch('edit_tasks', event)}
-                                 />
+
+                              <div className='permissions-category-container'>
+                                 <p className='permissions-category'>Lists</p>
+                                 <div className='permission-switch-container'>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'green' }}>Add</span> Lists</p>
+                                       <CustomSwitch
+                                          checked={permissions.add_lists}
+                                          onChange={event => handleToggleSwitch('add_lists', event)}
+                                       />
+                                    </div>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'orange' }}>Edit</span> Lists</p>
+                                       <CustomSwitch
+                                          checked={permissions.edit_lists}
+                                          onChange={event => handleToggleSwitch('edit_lists', event)}
+                                       />
+                                    </div>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'crimson' }}>Delete</span> Lists</p>
+                                       <CustomSwitch
+                                          checked={permissions.delete_lists}
+                                          onChange={event => handleToggleSwitch('delete_lists', event)}
+                                       />
+                                    </div>
+                                 </div>
                               </div>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'crimson' }}>Delete</span> Tasks</p>
-                                 <CustomSwitch
-                                    checked={permissions.delete_tasks}
-                                    onChange={event => handleSwitch('delete_tasks', event)}
-                                 />
+
+                              <div className='permissions-category-container'>
+                                 <p className='permissions-category'>Collaborators</p>
+                                 <div className='permission-switch-container'>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'green' }}>Add</span> Collaborators</p>
+                                       <CustomSwitch
+                                          checked={permissions.add_collaborators}
+                                          onChange={event => handleToggleSwitch('add_collaborators', event)}
+                                       />
+                                    </div>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'crimson' }}>Remove</span> Collaborators</p>
+                                       <CustomSwitch
+                                          checked={permissions.remove_collaborators}
+                                          onChange={event => handleToggleSwitch('remove_collaborators', event)}
+                                       />
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div className='permissions-category-container'>
+                                 <p className='permissions-category'>Project</p>
+                                 <div className='permission-switch-container'>
+                                    <div className='permission-switch'>
+                                       <p><span style={{ color: 'orange' }}>Edit</span> Project / List Order</p>
+                                       <CustomSwitch
+                                          checked={permissions.edit_project}
+                                          onChange={event => handleToggleSwitch('edit_project', event)}
+                                       />
+                                    </div>
+                                 </div>
                               </div>
                            </div>
+                        </>
+                        :
+                        <div className='permissions-owner-message'>
+                           <p>Only Project Owners change permissions.</p>
                         </div>
-      
-                        <div className='permissions-category-container'>
-                           <p className='permissions-category'>Lists</p>
-                           <div className='permission-switch-container'>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'green' }}>Add</span> Lists</p>
-                                 <CustomSwitch
-                                    checked={permissions.add_lists}
-                                    onChange={event => handleSwitch('add_lists', event)}
-                                 />
-                              </div>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'orange' }}>Edit</span> Lists</p>
-                                 <CustomSwitch
-                                    checked={permissions.edit_lists}
-                                    onChange={event => handleSwitch('edit_lists', event)}
-                                 />
-                              </div>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'crimson' }}>Delete</span> Lists</p>
-                                 <CustomSwitch
-                                    checked={permissions.delete_lists}
-                                    onChange={event => handleSwitch('delete_lists', event)}
-                                 />
-                              </div>
-                           </div>
-                        </div>
-      
-                        <div className='permissions-category-container'>
-                           <p className='permissions-category'>Collaborators</p>
-                           <div className='permission-switch-container'>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'green' }}>Add</span> Collaborators</p>
-                                 <CustomSwitch
-                                    checked={permissions.add_collaborators}
-                                    onChange={event => handleSwitch('add_collaborators', event)}
-                                 />
-                              </div>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'crimson' }}>Remove</span> Collaborators</p>
-                                 <CustomSwitch
-                                    checked={permissions.remove_collaborators}
-                                    onChange={event => handleSwitch('remove_collaborators', event)}
-                                 />
-                              </div>
-                           </div>
-                        </div>
-      
-                        <div className='permissions-category-container'>
-                           <p className='permissions-category'>Project</p>
-                           <div className='permission-switch-container'>
-                              <div className='permission-switch'>
-                                 <p><span style={{ color: 'orange' }}>Edit</span> Project / List Order</p>
-                                 <CustomSwitch
-                                    checked={permissions.edit_project}
-                                    onChange={event => handleSwitch('edit_project', event)}
-                                 />
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+                     }
                   </div>
                </div>
       

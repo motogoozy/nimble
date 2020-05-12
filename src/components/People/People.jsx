@@ -5,6 +5,7 @@ import UserConnection from './UserConnection/UserConnection';
 
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -23,58 +24,76 @@ export default class People extends Component {
 	};
 
 	componentDidMount = async () => {
-		await this.getUserConnections();
-		await this.getUserConnectionDetails();
+		try {
+			await this.getUserConnections();
+			await this.getUserConnectionDetails();
+		} catch (err) {
+			console.log(err.response.data.message);
+		}
 	};
 
 	componentDidUpdate = async (prevProps) => {
 		if (prevProps.projectId !== this.props.projectId) {
-			await this.props.getProjectUsers();
-			await this.getUserConnections();
-			await this.getUserConnectionDetails();
+			try {
+				await this.props.getProjectUsers();
+				await this.getUserConnections();
+				await this.getUserConnectionDetails();
+			} catch (err) {
+				console.log(err.response.data.message);
+			}
 		}
 	};
 
-	getUserConnections = async () => {
+	getUserConnections = () => {
 		const { loggedInUser } = this.props;
-		let res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
-		let current = [], requests = [], pending = [];
-		res.data.forEach(connection => {
-			if (connection.status === 2) {
-				current.push(connection);
-			} else {
-				if (connection.receive_id === loggedInUser.user_id) {
-					requests.push(connection);
-				} else if (connection.send_id === loggedInUser.user_id) {
-					pending.push(connection);
-				}
-			}
-		});
-		this.setState({
-			currentConnections: current,
-			connectionRequests: requests,
-			pendingConnections: pending,
-		});
-	};
 
-	getUserById = userId => axios.get(`user/${userId}`);
+		return axios.get(`/connection//user/${loggedInUser.user_id}`).then(res => {
+			let current = [], requests = [], pending = [];
+			res.data.forEach(connection => {
+				if (connection.status === 2) {
+					current.push(connection);
+				}
+				else {
+					if (connection.receive_id === loggedInUser.user_id) {
+						requests.push(connection);
+					}
+					else if (connection.send_id === loggedInUser.user_id) {
+						pending.push(connection);
+					}
+				}
+			});
+	
+			this.setState({
+				currentConnections: current,
+				connectionRequests: requests,
+				pendingConnections: pending,
+			});
+
+			return res;
+		})
+	};
 
 	getUserConnectionDetails = async () => {
 		const { currentConnections, connectionRequests, pendingConnections } = this.state;
-		let connected = await this.getUserDetails(currentConnections);
-		let requests = await this.getUserDetails(connectionRequests);
-		let pending = await this.getUserDetails(pendingConnections);
-		
-		let allUsers = {
-			...connected,
-			...requests,
-			...pending
-		};
 
-		this.setState({ users: allUsers });
-	}
+		try {
+			let connected = await this.getUserDetails(currentConnections);
+			let requests = await this.getUserDetails(connectionRequests);
+			let pending = await this.getUserDetails(pendingConnections);
+			
+			let allUsers = {
+				...connected,
+				...requests,
+				...pending
+			};
+	
+			this.setState({ users: allUsers });
+		} catch (err) {
+			console.log(err.response.data.message);
+		}
+	};
 
-	getUserDetails = async (list) => {
+	getUserDetails = (list) => {
 		if (!list) return;
 		const { loggedInUser } = this.props;
 		let userMap = {};
@@ -86,16 +105,34 @@ export default class People extends Component {
 				return this.getUserById(connection.receive_id);
 			}
 		});
-		let results = await Promise.all(promises);
-		results.forEach(result => {
-			let userData = result.data;
-			userMap[userData.user_id] = userData;
+
+		return Promise.all(promises).then(results => {
+			results.forEach(result => {
+				let userData = result.data;
+				userMap[userData.user_id] = userData;
+			})
+			return userMap;
 		})
-		return userMap;
 	};
 
 	handleInput = (key, value) => {
       this.setState({ [key]: value });
+	};
+
+	handleAddProjectUserClick = () => {
+		if (this.props.loggedInUser.user_id === this.props.project.created_by || this.props.projectPermissions.add_collaborators) {
+			this.setState({ displayAddCollaboratorModal: true });
+		} else {
+			alert('You do not have permission to add collaborators to this project.')
+		}
+	};
+
+	handleRemoveProjectUserClick = (user) => {
+		if (this.props.loggedInUser.user_id === this.props.project.created_by || this.props.projectPermissions.add_collaborators) {
+			this.removeProjectUser(user.user_id)
+		} else {
+			alert('You do not have permission to remove collaborators from this project.')
+		}
 	};
 	
 	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
@@ -154,9 +191,7 @@ export default class People extends Component {
 				await this.getUserConnectionDetails();
 			});
 		} catch (err) {
-			if (err.response.data.message) {
-				console.log(err.response.data.message);
-			}
+			console.log(err.response.data.message);
 		}
 	};
 
@@ -216,9 +251,7 @@ export default class People extends Component {
 				}
 			});
 		} catch (err) {
-			if (err.response.data.message) {
-				console.log(err.response.data.message);
-			}
+			console.log(err.response.data.message);
 		}
 	};
 
@@ -246,11 +279,11 @@ export default class People extends Component {
 						avatarColor={avatarColor}
 					/>
 					{
-						user.user_id !== loggedInUser.user_id
+						user.user_id !== loggedInUser.user_id && user.user_id !== this.props.project.created_by
 						&&
 						<div className='user-connection-actions'>
 							<Tooltip title={'Remove User from Project'}>
-								<p onClick={() => this.removeProjectUser(user.user_id)}>Remove</p>
+								<p onClick={() => this.handleRemoveProjectUserClick(user)}>Remove</p>
 							</Tooltip>
 						</div>
 					}
@@ -428,7 +461,7 @@ export default class People extends Component {
 								addingUser === user.user_id
 								?
 								<div className='adding-user-progress'>
-									<PulseLoader size={12} color={'#995D81'} />
+									<CircularProgress size={25} />
 								</div>
 								:
 								<div onClick={() => this.addProjectUser(user.user_id)}>
@@ -522,7 +555,7 @@ export default class People extends Component {
 							{
 								currentConnections
 								&&
-								<div onClick={() => this.setState({ displayAddCollaboratorModal: true })}>
+								<div onClick={this.handleAddProjectUserClick}>
 									<SmallAddButton title={'Add User to Project'} />
 								</div>
 							}
@@ -533,7 +566,7 @@ export default class People extends Component {
 								?
 								<>
 								{
-									projectUsers
+									projectUsers && !this.props.isLoading
 									?
 									this.displayProjectUsers()
 									:
@@ -555,7 +588,7 @@ export default class People extends Component {
 						<div className="connection-column-header">
 							<p>Current Connections</p>
 							{
-								currentConnections
+								currentConnections && !this.props.isLoading
 								&&
 								<div onClick={() => this.setState({ displayAddConnectionModal: true })}>
 									<SmallAddButton title={'Add Connection'}/>
@@ -564,7 +597,7 @@ export default class People extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								users && currentConnections
+								users && currentConnections && !this.props.isLoading
 								?
 								this.displayCurrentConnections()
 								:
@@ -580,7 +613,7 @@ export default class People extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								users && connectionRequests
+								users && connectionRequests && !this.props.isLoading
 								?
 								this.displayConnectionRequests()
 								:
@@ -596,7 +629,7 @@ export default class People extends Component {
 						</div>
 						<div className='connection-column-body'>
 							{
-								users && pendingConnections
+								users && pendingConnections && !this.props.isLoading
 								?
 								this.displayPendingConnections()
 								:

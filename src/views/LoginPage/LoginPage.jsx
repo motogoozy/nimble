@@ -92,7 +92,7 @@ export default function LoginPage(props) {
          let res = await axios.post('/auth/login', body);
          if (res.data.user_id) {
             if (rememberMe) {
-               localStorage.setItem('nimbleEmail', `${res.data.email}`)
+               localStorage.setItem('nimbleEmail', `${res.data.email}`);
             } else {
                if (localStorage.getItem('nimbleEmail')) {
                   localStorage.removeItem('nimbleEmail');

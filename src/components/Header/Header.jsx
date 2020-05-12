@@ -25,20 +25,24 @@ class Header extends Component {
 
    componentDidMount = async () => {
       let userId = this.props.loggedInUser.user_id;
-      await this.getUserProjects(userId);
-      if (this.props.match.params.project_id) {
-         // If logged in user isn't part of this project
-         if (!this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))) {
-            alert('You are not a collaborator on this project. Please select another project.');
-            return;
+      try {
+         await this.getUserProjects(userId);
+         if (this.props.match.params.project_id) {
+            // If logged in user isn't part of this project
+            if (!this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))) {
+               alert('You are not a collaborator on this project. Please select another project.');
+               return;
+            }
+   
+            const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
+            if (project) {
+               this.handleSelection(project);
+            }
          }
-
-         const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
-         if (project) {
-            this.handleSelection(project);
-         }
+         this.setState({ currentPage: window.location.hash });
+      } catch (err) {
+         console.log(err.response.data.message);
       }
-      this.setState({ currentPage: window.location.hash });
    };
 
    componentDidUpdate = async (prevProps) => {
@@ -59,33 +63,48 @@ class Header extends Component {
          this.setState({ currentPage: window.location.hash });
       };
       if (!prevProps.loggedInUser.user_id && this.props.loggedInUser.user_id) {
-         this.getUserProjects();
+         try {
+            await this.getUserProjects();
+         } catch (err) {
+            console.log(err.response.data.message);
+         }
       }
       if (prevProps.project.title !== this.props.project.title) {
-         await this.getUserProjects();
-         const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
-         this.setState({ selectedProject: project })
+         try {
+            await this.getUserProjects();
+            const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
+            this.setState({ selectedProject: project })
+         } catch (err) {
+            console.log(err.response.data.message);
+         }
       }
    };
 
-   getUserProjects = async () => {
+   getUserProjects = () => {
       const { loggedInUser } = this.props;
-      let res = await axios.get(`/user/${loggedInUser.user_id}/projects`);
-      let projectsArr = res.data.map(project => {
-         project.value = project.project_id;
-         if (project.created_by === loggedInUser.user_id) {
-            project.label = `${project.title} *`
-         } else {
-            project.label = project.title;
-         }
-         return project;
-      });
-      projectsArr.sort((a, b) => { // sorting alphabetically descending
-         if (a.label > b.label) return 1;
-         else if (a.label < b.label) return -1;
-         else return 0;
-      });
-      this.setState({ projects: projectsArr });
+
+      return axios.get(`/user/${loggedInUser.user_id}/projects`).then(res => {
+         let projectsArr = res.data.map(project => {
+            project.value = project.project_id;
+            if (project.created_by === loggedInUser.user_id) {
+               project.label = `${project.title} *`;
+            }
+            else {
+               project.label = project.title;
+            }
+            return project;
+         });
+         projectsArr.sort((a, b) => {
+            if (a.label > b.label)
+               return 1;
+            else if (a.label < b.label)
+               return -1;
+            else
+               return 0;
+         });
+         
+         this.setState({ projects: projectsArr });
+      })
    };
 
    openMenu = (e) => {
@@ -126,9 +145,10 @@ class Header extends Component {
             selectedProject: res.data,
             displayAddProjectModal: false,
          });
+         this.handleSelection(res.data);
       }
       catch (err) {
-         console.log(err);
+         console.log(err.response.data.message);
       }
    };
 

@@ -40,42 +40,36 @@ export default class Dashboard extends Component {
       highlightTasksOfUser: 'all',
    };
 
-   componentDidMount = async () => {
-      await this.authenticate();
+   componentDidMount = () => {
+      this.authenticate()
+         .then(() => {
+            this.getConnectionRequests()
+               .catch(err => console.log(err.response.data.message));
+         })
+         .catch(err => {
+            console.log(err.response.data.message);
+            this.props.history.push('/login');
+         })
    };
 
    authenticate = async () => {
-      try {
-         let loggedInUser = await axios.get('/auth/user_session');
-         this.setState({ loggedInUser: loggedInUser.data }, () => {
-            this.getConnectionRequests();
-         });
-      } catch (err) {
-         if (err.response.data) {
-            console.log(err.response.data);
-            this.props.history.push('/login');
-         }
-      }
+      return axios.get('/auth/user_session').then(res => {
+         this.setState({ loggedInUser: res.data });
+         return res;
+      })
    };
 
    logout = async () => {
       try {
          let res = await axios.get('/auth/logout');
-         this.props.history.push('/')
          console.log(res.data);
       } catch (err) {
-         console.log(err);
+         console.log(err.response.data.message);
+      } finally {
+         this.setState({ loggedInUser: '' });
+         this.props.history.push('/')
       }
    };
-
-   getUserById = async (userId) => {
-      try {
-         let res = await axios.get(`/user/${userId}`);
-         return res.data;
-      } catch (err) {
-         console.log(err);
-      }
-   }
 
    getProjectData = async (id) => {
       this.setState({
@@ -95,7 +89,7 @@ export default class Dashboard extends Component {
             await this.getProjectPermissions();
          }
          catch(err) {
-            console.log(err);
+            console.log(err.response.data.message);
          }
          finally {
             this.setState({ isLoading: false });
@@ -103,76 +97,36 @@ export default class Dashboard extends Component {
       })
    };
 
-   getProjectUsers = async () => {
+   getProjectUsers = () => {
 		const { projectId } = this.state;
 
-      try {
-         let res = await axios.get(`/project/${projectId}/users`);
+      return axios.get(`/project/${projectId}/users`).then(res => {
          this.setState({ projectUsers: res.data });
-      } catch (err) {
-         console.log(err);
-      }
-	};
-
-   getProjectDetails = async () => {
+         return res;
+      });
+   };
+   
+   getTaskUsers = () => {
       const { projectId } = this.state;
-      try {
-         let res = await axios.get(`/project/${projectId}`);
-         const project = res.data[0];
-         document.title = `Nimble - ${project.title}`
-         let listOrder = project.list_order.map(item => item.toString());
+
+      return axios.get(`/task_users/${projectId}`).then(res => {
+         let taskUserObj = {};
+         res.data.forEach(tu => {
+            taskUserObj[tu.tu_id] = tu;
+         })
+
          this.setState({
-            listOrder: listOrder,
-            project: project,
+            taskUsers: taskUserObj
          });
-      } catch (err) {
-         console.log(err);
-      }
+
+         return res;
+      })
    };
-
-   getProjectPermissions = async () => {
-      const { projectId } = this.state;
-
-      try {
-         let res = await axios.get(`/project/${projectId}/permissions`);
-         this.setState({ projectPermissions: res.data});
-      } catch (err) {
-         console.log(err);
-      }
-   };
-
-   getLists = async () => {
-      const { projectId } = this.state;
-
-      try {
-         let res = await axios.get(`/project/${projectId}/lists`);
-         let lists = {};
-         res.data.forEach(list => {
-            let taskOrderStrings = this.convertTaskIdsToStrings(list.task_order);
-            let newList = {
-               id: list.list_id.toString(),
-               databaseId: list.list_id,
-               title: list.title,
-               colorCode: list.color_code,
-               taskIds: taskOrderStrings, // array of strings of task_id's
-               archived: list.archived,
-            };
-            lists[newList.id] = newList;
-         });
-         this.setState({
-            lists: lists,
-            displayAddButton: true,
-         });
-      } catch (err) {
-         console.log(err);
-      }
-   };
-
-   getAllTasks = async () => {
+   
+   getAllTasks = () => {
       const { projectId, taskUsers } = this.state;
 
-      try {
-         let res = await axios.get(`/project/${projectId}/tasks`)
+      return axios.get(`/project/${projectId}/tasks`).then(res => {
          let tasks = {};
    
          let taskUserObj = {};
@@ -198,19 +152,70 @@ export default class Dashboard extends Component {
             }
          });
    
-         this.setState({
-            tasks: tasks,
-         });
-      } catch (err) {
-         console.log(err);
-      }
+         this.setState({ tasks: tasks });
+
+         return res;
+      })
    };
 
-   getTasksByUserId = async (user_id) => {
-      const { projectId, lists } = this.state;
+   getLists = () => {
+      const { projectId } = this.state;
 
-      try {
-         let res = await axios.get(`/project/${projectId}/tasks/${user_id}`);
+      return axios.get(`/project/${projectId}/lists`).then(res => {
+         let lists = {};
+         res.data.forEach(list => {
+            let taskOrderStrings = this.convertTaskIdsToStrings(list.task_order);
+            let newList = {
+               id: list.list_id.toString(),
+               databaseId: list.list_id,
+               title: list.title,
+               colorCode: list.color_code,
+               taskIds: taskOrderStrings, // array of strings of task_id's
+               archived: list.archived,
+            };
+            lists[newList.id] = newList;
+         });
+
+         this.setState({
+            lists: lists,
+            displayAddButton: true,
+         });
+
+         return res;
+      })
+   };
+
+   getProjectDetails = () => {
+      const { projectId } = this.state;
+      return axios.get(`/project/${projectId}`).then(res => {
+         const project = res.data[0];
+         document.title = `Nimble - ${project.title}`
+         let listOrder = project.list_order.map(item => item.toString());
+
+         this.setState({
+            listOrder: listOrder,
+            project: project,
+         });
+
+         return res;
+      })
+   };
+
+   getProjectPermissions = () => {
+      const { projectId } = this.state;
+
+      return axios.get(`/project/${projectId}/permissions`).then(res => {
+         this.setState({ projectPermissions: res.data});
+
+         return res;
+      })
+   };
+
+	getUserById = userId => axios.get(`user/${userId}`);
+
+   getTasksByUserId = (user_id) => {
+      const { projectId, lists } = this.state;
+      return axios.get(`/project/${projectId}/tasks/${user_id}`).then(res => {
          let userTasks = {};
          let updatedLists = {};
          res.data.forEach(task => {
@@ -233,33 +238,15 @@ export default class Dashboard extends Component {
             tasks: userTasks,
             lists: updatedLists,
          });
-      } catch (err) {
-         console.log(err);
-      }
+
+         return res;
+      })
    };
 
-   getTaskUsers = async () => {
-      const { projectId } = this.state;
-
-      try {
-         let res = await axios.get(`/task_users/${projectId}`);
-         let taskUserObj = {};
-         res.data.forEach(tu => {
-            taskUserObj[tu.tu_id] = tu;
-         })
-         this.setState({
-            taskUsers: taskUserObj
-         });
-      } catch (err) {
-         console.log(err);
-      }
-   };
-
-   getConnectionRequests = async () => {
+   getConnectionRequests = () => {
       const { loggedInUser } = this.state;
 
-      try {
-         let res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
+      return axios.get(`/connection//user/${loggedInUser.user_id}`).then(res => {
          let requests = [];
          res.data.forEach(connection => {
             if (connection.status === 1) {
@@ -268,10 +255,11 @@ export default class Dashboard extends Component {
                }
             }
          });
+
          this.setState({ connectionRequests: requests });
-      } catch (err) {
-         console.log(err);
-      }
+
+         return res;
+      })
    };
 
    handleSidebarSelection = async (selection) => {
@@ -366,7 +354,7 @@ export default class Dashboard extends Component {
             this.updateProject()
          });
       } catch(err) {
-         console.log(err);
+         console.log(err.response.data.message);
       }
    };
 
@@ -382,13 +370,10 @@ export default class Dashboard extends Component {
    updateList = async (id, body) => {
       const { projectId } = this.state;
 
-      try {
-         let res = await axios.put(`/project/${projectId}/list/${id}`, body);
+      return axios.put(`/project/${projectId}/list/${id}`, body).then(res => {
          let updated = res.data[0];
          return updated;
-      } catch (err) {
-         console.log(err);
-      }
+      });
    };
 
    deleteList = async (databaseId, id) => {
@@ -415,7 +400,7 @@ export default class Dashboard extends Component {
             console.log('List and tasks successfully deleted.')
          });
       } catch(err) {
-         console.log(err)
+         console.log(err.response.data.message);
       }
    };
 
@@ -430,30 +415,23 @@ export default class Dashboard extends Component {
          created_by: task.created_by,
       };
 
-      try {
-         let res = await axios.put(`/task/${taskId}`, body);
+      return await axios.put(`/task/${taskId}`, body).then(res => {
          return res.data[0];
-      } catch (err) {
-         console.log(err);
-      }
+      })
    };
 
-   updateProject = async (idToUpdate, title, order) => {
+   updateProject = (idToUpdate, title, order) => {
       const { projectId, project, listOrder } = this.state;
       const id = idToUpdate || projectId;
       const body = {
          title: title || project.title,
          list_order: order || listOrder
       };
-      try {
-         await axios.put(`/project/${id}`, body);
-         this.setState({
-            title: ''
-         });
-      }
-      catch (err) {
-         console.log(err);
-      }
+      
+      return axios.put(`/project/${id}`, body).then(res => {
+         this.setState({ title: '' });
+         return res;
+      });
    };
 
    onDragStart = (result ) => {
@@ -499,9 +477,16 @@ export default class Dashboard extends Component {
             listOrder: newListOrder,
             displayAddButton: true,
          };
+
+         const oldState = {...this.state};
          this.setState(newState, () => {
-            this.updateProject();
+            this.updateProject()
+               .catch(err => {
+                  console.log(err.response.data.message);
+                  this.setState(oldState);
+               })
          });
+
          return;
       } else if (type === 'task') { // If dragged item is a task
          // Only allow loggedInUser to move tasks if they are the project owner or have permissions to edit lists
@@ -541,13 +526,14 @@ export default class Dashboard extends Component {
                task_order: taskIdIntegers,
             };
 
+            const oldState = {...this.state};
             this.setState(newState, () => {
                const listId = newList.id;
-               try {
-                  this.updateList(listId, newListBody);
-               } catch (err) {
-                  console.log(err);
-               }
+               this.updateList(listId, newListBody)
+                  .catch(err => {
+                     console.log(err.response.data.message);
+                     this.setState(oldState);
+                  })
             });
          } else { // If task is moved to another list
             const startTaskIds = Array.from(start.taskIds);
@@ -593,10 +579,19 @@ export default class Dashboard extends Component {
                task_order: finishOrder,
             }
 
+            const oldState = {...this.state};
             this.setState(newState, () => {
-               this.updateListIdOnTask(taskId, finishListId);
-               this.updateList(startListId, newStartBody); // Updating old list
-               this.updateList(finishListId, newFinishBody); // Updating new List
+               this.updateListIdOnTask(taskId, finishListId)
+                  .then(res => {
+                     this.updateList(startListId, newStartBody) // Updating old list
+                        .then(res => {
+                           this.updateList(finishListId, newFinishBody); // Updating new List
+                        })
+                        .catch(err => {
+                           console.log(err.response.data.message);
+                           this.setState(oldState);
+                        })
+                  })
             });
          }
       }
@@ -764,12 +759,16 @@ export default class Dashboard extends Component {
                      <>
                         <People
                            loggedInUser={this.state.loggedInUser}
+                           project={this.state.project}
                            projectId={this.state.projectId}
                            projectUsers={this.state.projectUsers}
+                           projectPermissions={this.state.projectPermissions}
                            getProjectUsers={this.getProjectUsers}
                            getTaskUsers={this.getTaskUsers}
                            getAllTasks={this.getAllTasks}
                            getConnectionRequests={this.getConnectionRequests}
+                           getUserById={this.getUserById}
+                           isLoading={this.state.isLoading}
                         />
                      </>
                   }
@@ -785,6 +784,7 @@ export default class Dashboard extends Component {
                            getProjectDetails={this.getProjectDetails}
                            updateProject={this.updateProject}
                            projectPermissions={this.state.projectPermissions}
+                           isLoading={this.state.isLoading}
                         />
                      </>
                   }
