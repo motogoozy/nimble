@@ -89,9 +89,7 @@ export default function RegisterPage(props) {
             props.history.push('/dashboard');
          }
       } catch (err) {
-         if (err.response.data) {
-            setLoginErrMsg(err.response.data);
-         }
+         setLoginErrMsg(err.response.data);
       }
    };
 

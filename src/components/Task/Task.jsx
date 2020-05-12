@@ -120,7 +120,7 @@ export default class Task extends Component {
 					await this.props.getTaskUsers();
 					await this.props.getAllTasks();
 				} catch (err) {
-					console.log(err.response.data.message);
+					console.log(err.response.data);
 				}
 			}
 
@@ -132,7 +132,7 @@ export default class Task extends Component {
 				newTitle: edited.data.title,
 			});
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 	

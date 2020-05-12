@@ -28,7 +28,7 @@ export default class People extends Component {
 			await this.getUserConnections();
 			await this.getUserConnectionDetails();
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 
@@ -39,7 +39,7 @@ export default class People extends Component {
 				await this.getUserConnections();
 				await this.getUserConnectionDetails();
 			} catch (err) {
-				console.log(err.response.data.message);
+				console.log(err.response.data);
 			}
 		}
 	};
@@ -89,7 +89,7 @@ export default class People extends Component {
 	
 			this.setState({ users: allUsers });
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 
@@ -148,8 +148,8 @@ export default class People extends Component {
 				await this.props.getProjectUsers();
 				this.setState({ addingUser: '' });
 			} catch (err) {
-				if (err.response.data.message) {
-					console.log(err.response.data.message);
+				if (err.response.data) {
+					console.log(err.response.data);
 				}
 			}
 		})
@@ -167,8 +167,8 @@ export default class People extends Component {
 			await this.getUserConnections();
 			await this.getUserConnectionDetails();
 		} catch (err) {
-			if (err.response.data.message) {
-				console.log(err.response.data.message);
+			if (err.response.data) {
+				console.log(err.response.data);
 			}
 		}
 	};
@@ -191,7 +191,7 @@ export default class People extends Component {
 				await this.getUserConnectionDetails();
 			});
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 
@@ -226,8 +226,8 @@ export default class People extends Component {
 				await this.props.getProjectUsers();
 			})
 		} catch (err) {
-			if (err.response.data.message) {
-				console.log(err.response.data.message);
+			if (err.response.data) {
+				console.log(err.response.data);
 			}
 		}
 	};
@@ -251,7 +251,7 @@ export default class People extends Component {
 				}
 			});
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 

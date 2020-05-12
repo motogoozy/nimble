@@ -8,7 +8,7 @@ module.exports = {
       }
       catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to get projects by user id.'});
+         res.status(500).send('Unable to get projects by user id.');
       }
    },
    getProjectById: async (req, res) => {
@@ -20,7 +20,7 @@ module.exports = {
       }
       catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to get project by id.'});
+         res.status(500).send('Unable to get project by id.');
       }
    },
    getProjectUsers: async (req, res) => {
@@ -31,7 +31,7 @@ module.exports = {
          res.status(200).send(users);
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to get project users.'});
+         res.status(500).send('Unable to get project users.');
       }
    },
    getProjectPermissions: async (req, res) => {
@@ -42,7 +42,7 @@ module.exports = {
          res.status(200).send(permissions[0]);
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to get project permissions.'});
+         res.status(500).send('Unable to get project permissions.');
       }
    },
    createProject: async (req, res) => {
@@ -60,7 +60,7 @@ module.exports = {
       }
       catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to create project.'});
+         res.status(500).send('Unable to create project.');
       }
    },
    addProjectUser: async (req, res) => {
@@ -71,7 +71,7 @@ module.exports = {
          res.status(200).send(addedUser[0]);
       } catch (err) {
          console.log(err);
-         res.status(400).send({ message: 'Error adding user to project. Please try again.' });
+         res.status(400).send('Error adding user to project. Please try again.');
       }
    },
    updateProject: async (req, res) => {
@@ -83,7 +83,7 @@ module.exports = {
          res.status(200).send(updatedProject);
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to update project.' });
+         res.status(500).send('Unable to update project.');
       }
    },
    updateProjectPermissions: async (req, res) => {
@@ -95,7 +95,7 @@ module.exports = {
          res.status(200).send(updatedPermissions[0]);
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to update project permissions.' });
+         res.status(500).send('Unable to update project permissions.');
       }
    },
    deleteProjectUser: async (req, res) => {

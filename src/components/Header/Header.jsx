@@ -7,7 +7,6 @@ import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -41,7 +40,7 @@ class Header extends Component {
          }
          this.setState({ currentPage: window.location.hash });
       } catch (err) {
-         console.log(err.response.data.message);
+         console.log(err.response.data);
       }
    };
 
@@ -66,7 +65,7 @@ class Header extends Component {
          try {
             await this.getUserProjects();
          } catch (err) {
-            console.log(err.response.data.message);
+            console.log(err.response.data);
          }
       }
       if (prevProps.project.title !== this.props.project.title) {
@@ -75,7 +74,7 @@ class Header extends Component {
             const project = this.state.projects.filter(project => project.project_id === parseInt(this.props.match.params.project_id))[0];
             this.setState({ selectedProject: project })
          } catch (err) {
-            console.log(err.response.data.message);
+            console.log(err.response.data);
          }
       }
    };
@@ -148,7 +147,7 @@ class Header extends Component {
          this.handleSelection(res.data);
       }
       catch (err) {
-         console.log(err.response.data.message);
+         console.log(err.response.data);
       }
    };
 
@@ -227,7 +226,7 @@ class Header extends Component {
                {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
-                  <Input type='search' placeholder='Search name or task' value={this.props.search} onChange={e => this.props.handleSearch(e.target.value)}/>
+                  <input type="search" placeholder='Search name or task' value={this.props.search} onChange={e => this.props.handleSearch(e.target.value)}/>
                }
                <div className='header-avatar-container cursor-pointer'>
                   <Button

@@ -12,7 +12,7 @@ const massive = require('massive');
 const path = require('path');
 
 const { SERVER_PORT, DATABASE_URL, SECRET } = process.env;
-const port = SERVER_PORT || 4000;
+const port = SERVER_PORT;
 
 const app = express();
 
@@ -26,13 +26,15 @@ app.use(session({
 }));
 
 // DATABASE CONNECTION
-massive(DATABASE_URL).then(db => {
-   app.set('db', db)
-		console.log(('Connected to database'))
-   app.listen(port, () => {
-      console.log(`Listening on port: ${port}`)
+massive(DATABASE_URL)
+   .then(db => {
+      app.set('db', db)
+      console.log(('Connected to database'));
+      app.listen(port, () => {
+         console.log(`Listening on port: ${port}`);
+      })
    })
-});
+   .catch(err => console.log(err))
 
 // ENDPOINTS
 // Project

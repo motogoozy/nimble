@@ -7,7 +7,7 @@ module.exports = {
          res.status(200).send(lists);
       } catch(err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to get lists.'})
+         res.status(500).send('Unable to get lists.')
       }
    },
    getListById: async (req, res) => {
@@ -18,7 +18,7 @@ module.exports = {
          res.status(200).send(list[0]);
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Unable to get list.' });
+         res.status(500).send('Unable to get list.');
       }
    },
    createList: async (req, res) => {
@@ -30,7 +30,7 @@ module.exports = {
 			res.status(200).send(newList);
 		} catch(err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not create list.' });
+         res.status(500).send('Could not create list.');
 		}
    },
    updateList: async (req, res) => {
@@ -48,7 +48,7 @@ module.exports = {
          res.status(200).send(updatedList);
       } catch(err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not update list.' });
+         res.status(500).send('Could not update list.');
       }
    },
    deleteList: async (req, res) => {
@@ -59,7 +59,7 @@ module.exports = {
 			res.status(200).send(deletedList);
 		} catch(err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not delete list.' });
+         res.status(500).send('Could not delete list.');
 		}
    },
 }

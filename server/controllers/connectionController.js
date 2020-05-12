@@ -7,7 +7,7 @@ module.exports = {
          res.status(200).send(connections);
       } catch(err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not get user connections.'});
+         res.status(500).send('Could not get user connections.');
       }
    },
    addUserConnection: async (req, res) => {
@@ -24,11 +24,11 @@ module.exports = {
             });
             res.status(200).send(inserted[0]);
          } else {
-            res.status(404).send({ message: 'User not found. Please try a different email.' });
+            res.status(404).send('User not found. Please try a different email.');
          }
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not add user connection.' });
+         res.status(500).send('Could not add user connection.');
       }
    },
    acceptUserConnection: async (req, res) => {
@@ -48,11 +48,11 @@ module.exports = {
                })
             }
          } else {
-            res.status(404).send({ message: 'Connection not found.' });
+            res.status(404).send('Connection not found.');
          }
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not accept user connection.'});
+         res.status(500).send('Could not accept user connection.');
       }
    },
    deleteUserConnection: async (req, res) => {
@@ -71,11 +71,11 @@ module.exports = {
                })
             }
          } else {
-            res.status(404).send({ message: 'Connection not found.' });
+            res.status(404).send('Connection not found.');
          }
       } catch (err) {
          console.log(err);
-         res.status(500).send({ message: 'Could not delete user connection' });
+         res.status(500).send('Could not delete user connection');
       }
    },
 };

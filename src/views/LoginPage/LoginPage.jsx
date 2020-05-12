@@ -21,11 +21,8 @@ function Copyright() {
    return (
       <Typography variant="body2" color="textSecondary" align="center">
          {'Copyright © '}
-         <Link color="inherit" href="#">
-         Nimble
-         </Link>{' '}
-         {new Date().getFullYear()}
-         {'.'}
+         <Link color="inherit" href="#">Nimble</Link>
+         {` ${new Date().getFullYear()}.`}
       </Typography>
    );
 };
@@ -89,7 +86,7 @@ export default function LoginPage(props) {
       };
 
       try {
-         let res = await axios.post('/auth/login', body);
+         let res = await axios.post('/auth/login', body)
          if (res.data.user_id) {
             if (rememberMe) {
                localStorage.setItem('nimbleEmail', `${res.data.email}`);
@@ -101,9 +98,8 @@ export default function LoginPage(props) {
             props.history.push('/dashboard');
          }
       } catch (err) {
-         if (err.response.data) {
-            setLoginErrMsg(err.response.data);
-         }
+         console.log(err.response.data);
+         setLoginErrMsg(err.response.data);
       }
    };
 

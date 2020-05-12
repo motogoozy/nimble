@@ -43,7 +43,7 @@ export default function ProjectSettings(props) {
          let res = await axios.put(`/project/${props.project.project_id}/permissions`, body);
          setPermissions(res.data);
       } catch (err) {
-         console.log(err.response.data.message)
+         console.log(err.response.data)
       }
    };
 

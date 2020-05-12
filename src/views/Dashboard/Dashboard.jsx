@@ -44,10 +44,10 @@ export default class Dashboard extends Component {
       this.authenticate()
          .then(() => {
             this.getConnectionRequests()
-               .catch(err => console.log(err.response.data.message));
+               .catch(err => console.log(err.response.data));
          })
          .catch(err => {
-            console.log(err.response.data.message);
+            console.log(err.response.data);
             this.props.history.push('/login');
          })
    };
@@ -64,7 +64,7 @@ export default class Dashboard extends Component {
          let res = await axios.get('/auth/logout');
          console.log(res.data);
       } catch (err) {
-         console.log(err.response.data.message);
+         console.log(err.response.data);
       } finally {
          this.setState({ loggedInUser: '' });
          this.props.history.push('/')
@@ -79,6 +79,7 @@ export default class Dashboard extends Component {
          tasks: {},
          listOrder: [],
          displayAddButton: false,
+         search: '',
       }, async () => {
          try {
             await this.getProjectUsers();
@@ -89,7 +90,7 @@ export default class Dashboard extends Component {
             await this.getProjectPermissions();
          }
          catch(err) {
-            console.log(err.response.data.message);
+            console.log(err.response.data);
          }
          finally {
             this.setState({ isLoading: false });
@@ -354,7 +355,7 @@ export default class Dashboard extends Component {
             this.updateProject()
          });
       } catch(err) {
-         console.log(err.response.data.message);
+         console.log(err.response.data);
       }
    };
 
@@ -400,7 +401,7 @@ export default class Dashboard extends Component {
             console.log('List and tasks successfully deleted.')
          });
       } catch(err) {
-         console.log(err.response.data.message);
+         console.log(err.response.data);
       }
    };
 
@@ -482,7 +483,7 @@ export default class Dashboard extends Component {
          this.setState(newState, () => {
             this.updateProject()
                .catch(err => {
-                  console.log(err.response.data.message);
+                  console.log(err.response.data);
                   this.setState(oldState);
                })
          });
@@ -531,7 +532,7 @@ export default class Dashboard extends Component {
                const listId = newList.id;
                this.updateList(listId, newListBody)
                   .catch(err => {
-                     console.log(err.response.data.message);
+                     console.log(err.response.data);
                      this.setState(oldState);
                   })
             });
@@ -588,7 +589,7 @@ export default class Dashboard extends Component {
                            this.updateList(finishListId, newFinishBody); // Updating new List
                         })
                         .catch(err => {
-                           console.log(err.response.data.message);
+                           console.log(err.response.data);
                            this.setState(oldState);
                         })
                   })

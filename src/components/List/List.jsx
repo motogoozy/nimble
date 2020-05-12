@@ -127,7 +127,7 @@ export default class List extends Component {
 			});
 		}
 		catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 
@@ -159,7 +159,7 @@ export default class List extends Component {
 				newTaskTitle: '',
 			});
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 
@@ -191,7 +191,7 @@ export default class List extends Component {
 			await this.props.getTaskUsers();
 			this.props.getLists();
 		} catch (err) {
-			console.log(err.response.data.message);
+			console.log(err.response.data);
 		}
 	};
 
