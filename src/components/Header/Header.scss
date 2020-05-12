@@ -49,18 +49,31 @@
       padding: 0 .5rem;
 
       input {
-         background-color: white;
+         width: 15rem;
+         height: 100%;
+         padding: .5rem;
+         font-size: 16px;
+         display: inline-block;
+         border: 2px solid white;
+         border-radius: 4px;
          color: black;
-         padding-left: .25rem;
-         padding-right: .25rem;
+         background-color: white;
+         margin: 0 0 0 1rem;
+         transition: border .25s;
+
+         &:hover {
+            // border: 1px solid $primary-accent;
+         }
+
+         &:focus {
+            outline: none;
+            border: 2px solid $accent-purple;
+            transition: border .25s;
+         }
       }
 
       div:nth-child(1) {
          margin: 0 .5rem;
-      }
-      
-      .MuiInput-underline::after {
-         border-bottom-color: $accent-purple;
       }
       
       i {
