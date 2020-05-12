@@ -7,6 +7,7 @@ module.exports = {
          res.status(200).send(tasks);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to get all tasks.' });
       }
    },
    getTasksByUserId: async (req, res) => {
@@ -17,6 +18,7 @@ module.exports = {
          res.status(200).send(tasks);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to get tasks.' });
       }
    },
    createTask: async (req, res) => {
@@ -30,6 +32,7 @@ module.exports = {
          res.status(200).send(added[0]);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to create task.' });
       }
    },
    updateTask: async (req, res) => {
@@ -40,7 +43,8 @@ module.exports = {
          let updatedTask = await db.task.update_task({ task_id, title, notes, status, list_id, created_at, created_by });
          res.status(200).send(updatedTask[0]);
       } catch (err) {
-         console.log(err)
+         console.log(err);
+         res.status(500).send({ message: 'Unable to update task.' });
       }
    },
    deleteTask: async (req, res) => {
@@ -52,6 +56,7 @@ module.exports = {
          res.status(200).send(deletedTask[0]);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to delete task.' });
       }
    },
    deleteTasksByListId: async (req, res) => {
@@ -63,6 +68,7 @@ module.exports = {
          res.status(200).send(deleted);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to delete tasks.' });
       }
    },
    getUnassignedTasks: async (req, res) => {
@@ -82,6 +88,7 @@ module.exports = {
          res.status(200).send(unassignedTasks);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to get tasks.' });
       }
    },
    getTaskUsers: async (req, res) => {
@@ -92,6 +99,7 @@ module.exports = {
          res.status(200).send(taskUsers)
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to get task users.' });
       }
    },
    addTaskUser: async (req, res) => {
@@ -104,6 +112,7 @@ module.exports = {
          res.status(200).send(added[0]);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to add task user.' });
       }
    },
    deleteTaskUser: async (req, res) => {
@@ -115,6 +124,7 @@ module.exports = {
          res.status(200).send(deleted[0]);
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'unable to delete task user.' });
       }
    },
    deleteTaskUsersByProjectAndUser: async (req, res) => {
@@ -129,6 +139,7 @@ module.exports = {
          res.status(200).send(deleted)
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to delete task users.' });
       }
    },
    deleteTaskUsersByTask: async (req, res) => {
@@ -140,6 +151,7 @@ module.exports = {
          res.status(200).send(deleted[0])
       } catch (err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to delete task users.' });
       }
    },
 };

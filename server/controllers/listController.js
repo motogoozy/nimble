@@ -7,6 +7,7 @@ module.exports = {
          res.status(200).send(lists);
       } catch(err) {
          console.log(err);
+         res.status(500).send({ message: 'Unable to get lists.'})
       }
    },
    getListById: async (req, res) => {
@@ -16,7 +17,8 @@ module.exports = {
          let list = await db.list.get_list_by_id({ list_id });
          res.status(200).send(list[0]);
       } catch (err) {
-
+         console.log(err);
+         res.status(500).send({ message: 'Unable to get list.' });
       }
    },
    createList: async (req, res) => {
@@ -27,7 +29,8 @@ module.exports = {
 			let newList = await db.list.create_list({ title, color_code, archived, project_id, task_order });
 			res.status(200).send(newList);
 		} catch(err) {
-			console.log(err);
+         console.log(err);
+         res.status(500).send({ message: 'Could not create list.' });
 		}
    },
    updateList: async (req, res) => {
@@ -45,6 +48,7 @@ module.exports = {
          res.status(200).send(updatedList);
       } catch(err) {
          console.log(err);
+         res.status(500).send({ message: 'Could not update list.' });
       }
    },
    deleteList: async (req, res) => {
@@ -54,7 +58,8 @@ module.exports = {
          let deletedList = await db.list.delete_list({ list_id });
 			res.status(200).send(deletedList);
 		} catch(err) {
-			console.log(err);
+         console.log(err);
+         res.status(500).send({ message: 'Could not delete list.' });
 		}
    },
 }

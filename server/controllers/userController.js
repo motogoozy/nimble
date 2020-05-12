@@ -7,6 +7,7 @@ module.exports = {
 			res.status(200).send(user[0]);
 		} catch (err) {
 			console.log(err);
+			res.status(500).send({ message: 'Unable to get user by id.'});
 		}
 	},
 	getUserByEmail: async (req, res) => {
@@ -17,6 +18,7 @@ module.exports = {
 			res.status(200).send(foundUser);
 		} catch(err) {
 			console.log(err);
+			res.status(500).send({ message: 'Unable to get user by email.'});
 		}
 	},
 }

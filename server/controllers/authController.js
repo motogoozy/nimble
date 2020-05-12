@@ -20,7 +20,7 @@ module.exports = {
          req.session.loggedInUser = newUser[0];
          res.status(200).send(newUser[0]);
       } catch (err) {
-         console.log(err);
+         res.status(500).send({ message: err });
       }
    },
    login: async (req, res) => {
@@ -31,13 +31,13 @@ module.exports = {
          const user = await db.auth.find_user({ email });
 
          if (!user[0]) {
-            res.status(404).send('Incorrect username or password. Please try again.');
+            res.status(404).send({ message: 'Incorrect username or password. Please try again.'});
             return;
          }
 
          const passwordMatch = bcrypt.compareSync(password, user[0].hash);
          if (!passwordMatch) {
-            res.status(401).send('Incorrect username or password. Please try again.');
+            res.status(401).send({ message: 'Incorrect username or password. Please try again.'});
          } else {
             const userObj = {
                user_id: user[0].user_id,
@@ -51,7 +51,7 @@ module.exports = {
          }
       } catch (err) {
          console.log(err);
-         res.status(500).send(err);
+         res.status(500).send({ message: err });
       }
    },
    logout: (req, res) => {
@@ -67,7 +67,7 @@ module.exports = {
       if (req.session.loggedInUser) {
          res.status(200).send(req.session.loggedInUser);
       } else {
-         res.status(404).send('Please log in.')
+         res.status(404).send({ message: 'Please log in.' })
       }
    },
 }
