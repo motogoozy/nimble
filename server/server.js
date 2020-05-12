@@ -11,8 +11,8 @@ const session = require('express-session');
 const massive = require('massive');
 const path = require('path');
 
-const { SERVER_PORT, DATABASE_URL, SECRET } = process.env;
-const port = SERVER_PORT;
+const { PORT, DEV_PORT, DATABASE_URL, SECRET } = process.env;
+const port = PORT || DEV_PORT;
 
 const app = express();
 
