@@ -82,6 +82,7 @@ export default class Dashboard extends Component {
          search: '',
       }, async () => {
          try {
+            // !Keep function calls in this order!
             await this.getProjectUsers();
             await this.getTaskUsers();
             await this.getAllTasks();
