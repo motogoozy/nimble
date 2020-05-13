@@ -5,15 +5,14 @@ const taskController = require('./controllers/taskController');
 const connectionController = require('./controllers/connectionController');
 const authController = require('./controllers/authController');
 
-require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
 const massive = require('massive');
+const session = require('express-session');
 const path = require('path');
+require('dotenv').config();
 
 const { PORT, DEV_PORT, DATABASE_URL, SECRET } = process.env;
 const port = PORT || DEV_PORT;
-
 const app = express();
 
 // MIDDLEWARE
