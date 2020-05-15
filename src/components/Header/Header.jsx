@@ -79,31 +79,31 @@ class Header extends Component {
       }
    };
 
-   getUserProjects = () => {
+   getUserProjects = async () => {
       const { loggedInUser } = this.props;
 
-      return axios.get(`/user/${loggedInUser.user_id}/projects`).then(res => {
-         let projectsArr = res.data.map(project => {
-            project.value = project.project_id;
-            if (project.created_by === loggedInUser.user_id) {
-               project.label = `${project.title} *`;
-            }
-            else {
-               project.label = project.title;
-            }
-            return project;
-         });
-         projectsArr.sort((a, b) => {
-            if (a.label > b.label)
-               return 1;
-            else if (a.label < b.label)
-               return -1;
-            else
-               return 0;
-         });
-         
-         this.setState({ projects: projectsArr });
-      })
+      const res = await axios.get(`/user/${loggedInUser.user_id}/projects`);
+      let projectsArr = res.data.map(project => {
+         project.value = project.project_id;
+         if (project.created_by === loggedInUser.user_id) {
+            project.label = `${project.title} *`;
+         }
+         else {
+            project.label = project.title;
+         }
+         return project;
+      });
+      projectsArr.sort((a, b) => {
+         if (a.label > b.label)
+            return 1;
+         else if (a.label < b.label)
+            return -1;
+         else
+            return 0;
+      });
+
+      this.setState({ projects: projectsArr });
+      return projectsArr;
    };
 
    openMenu = (e) => {
@@ -120,7 +120,7 @@ class Header extends Component {
 
    handleSelection = (project) => {
       this.props.history.push(`/dashboard/project/${project.project_id}`);
-      this.props.getProjectData(project.project_id);
+      this.props.getProjectData(project.project_id)
       this.setState({
          selectedProject: project
       });

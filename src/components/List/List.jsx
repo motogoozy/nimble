@@ -117,6 +117,7 @@ export default class List extends Component {
 			};
 
 			let updated = await this.props.updateList(list.databaseId, body);
+
 			this.setState({
 				title: updated.title,
 				newTitle: updated.title,
@@ -153,7 +154,7 @@ export default class List extends Component {
 				task_order: newTaskOrder,
 			};
 			await this.props.getAllTasks();
-			await updateList(added.list_id, listBody);
+			await updateList(added.list_id, listBody);			
 			await getLists();
 			this.setState({
 				newTaskTitle: '',

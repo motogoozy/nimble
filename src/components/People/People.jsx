@@ -44,33 +44,32 @@ export default class People extends Component {
 		}
 	};
 
-	getUserConnections = () => {
+	getUserConnections = async () => {
 		const { loggedInUser } = this.props;
 
-		return axios.get(`/connection//user/${loggedInUser.user_id}`).then(res => {
-			let current = [], requests = [], pending = [];
-			res.data.forEach(connection => {
-				if (connection.status === 2) {
-					current.push(connection);
+		const res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
+		let current = [], requests = [], pending = [];
+		res.data.forEach(connection => {
+			if (connection.status === 2) {
+				current.push(connection);
+			}
+			else {
+				if (connection.receive_id === loggedInUser.user_id) {
+					requests.push(connection);
 				}
-				else {
-					if (connection.receive_id === loggedInUser.user_id) {
-						requests.push(connection);
-					}
-					else if (connection.send_id === loggedInUser.user_id) {
-						pending.push(connection);
-					}
+				else if (connection.send_id === loggedInUser.user_id) {
+					pending.push(connection);
 				}
-			});
-	
-			this.setState({
-				currentConnections: current,
-				connectionRequests: requests,
-				pendingConnections: pending,
-			});
+			}
+		});
 
-			return res;
-		})
+		const connectionsObj = {
+			currentConnections: current,
+			connectionRequests: requests,
+			pendingConnections: pending,
+		};
+		this.setState(connectionsObj);
+		return connectionsObj;
 	};
 
 	getUserConnectionDetails = async () => {
@@ -93,7 +92,7 @@ export default class People extends Component {
 		}
 	};
 
-	getUserDetails = (list) => {
+	getUserDetails = async (list) => {
 		if (!list) return;
 		const { loggedInUser } = this.props;
 		let userMap = {};
@@ -106,13 +105,13 @@ export default class People extends Component {
 			}
 		});
 
-		return Promise.all(promises).then(results => {
-			results.forEach(result => {
-				let userData = result.data;
-				userMap[userData.user_id] = userData;
-			})
-			return userMap;
+		const results = await Promise.all(promises);
+		results.forEach(result => {
+			let userData = result.data;
+			userMap[userData.user_id] = userData;
 		})
+
+		return userMap;
 	};
 
 	handleInput = (key, value) => {
