@@ -106,6 +106,40 @@ class Header extends Component {
       return projectsArr;
    };
 
+   addProject = async () => {
+      const { newProjectName } = this.state;
+      const { loggedInUser } = this.props;
+      const body = {
+         title: newProjectName,
+         created_by: loggedInUser.user_id,
+      };
+      try {
+         let res = await axios.post('/project', body);
+         await axios.post(`/project/${res.data.project_id}/user/${loggedInUser.user_id}`);
+         await this.getUserProjects();
+         this.props.getCompleteProjectData(res.data.project_id);
+         res.data.value = res.data.project_id;
+         res.data.label = res.data.title;
+         this.setState({
+            selectedProject: res.data,
+            displayAddProjectModal: false,
+         });
+
+         this.handleSelection(res.data);
+         return res.data;
+      }
+      catch (err) {
+         console.log(err.response.data);
+      }
+   };
+
+   cancelAddProject = () => {
+      this.setState({
+         newProjectName: '',
+         displayAddProjectModal: false,
+      });
+   };
+
    openMenu = (e) => {
       this.setState({ anchorEl: e.currentTarget });
    };
@@ -120,41 +154,9 @@ class Header extends Component {
 
    handleSelection = (project) => {
       this.props.history.push(`/dashboard/project/${project.project_id}`);
-      this.props.getProjectData(project.project_id)
+      this.props.getCompleteProjectData(project.project_id)
       this.setState({
          selectedProject: project
-      });
-   };
-
-   addProject = async () => {
-      const { newProjectName } = this.state;
-      const { loggedInUser } = this.props;
-      const body = {
-         title: newProjectName,
-         created_by: loggedInUser.user_id,
-      };
-      try {
-         let res = await axios.post('/project', body);
-         await axios.post(`/project/${res.data.project_id}/user/${loggedInUser.user_id}`);
-         await this.getUserProjects();
-         this.props.getProjectData(res.data.project_id);
-         res.data.value = res.data.project_id;
-         res.data.label = res.data.title;
-         this.setState({
-            selectedProject: res.data,
-            displayAddProjectModal: false,
-         });
-         this.handleSelection(res.data);
-      }
-      catch (err) {
-         console.log(err.response.data);
-      }
-   };
-
-   cancelAddProject = () => {
-      this.setState({
-         newProjectName: '',
-         displayAddProjectModal: false,
       });
    };
 

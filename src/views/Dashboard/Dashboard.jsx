@@ -68,7 +68,7 @@ export default class Dashboard extends Component {
       }
    };
 
-   getProjectData = async (id) => {
+   getCompleteProjectData = async (id) => {
       this.setState({
          isLoading: true,
          projectId: id,
@@ -253,61 +253,6 @@ export default class Dashboard extends Component {
       return requests;
    };
 
-   handleSidebarSelection = async (selection) => {
-      if (selection === 'people') {
-         this.setState({
-            displayPeople: true,
-            displayLists: false,
-            displaySettings: false,
-         });
-         return;
-      }
-      if (selection === 'settings') {
-         this.setState({
-            displaySettings: true,
-            displayLists: false,
-            displayPeople: false,
-         });
-         return;
-      }
-
-      this.setState({
-         highlightTasksOfUser: selection,
-         displayLists: true,
-         displayPeople: false,
-         displaySettings: false,
-      });
-   };
-
-   handleInput = (key, value) => {
-      this.setState({ [key]: value });
-   };
-
-   handleAddListClick = () => {
-      // Only allow adding list if loggedInUser is project owner or has permission to add lists
-      if (this.state.project.created_by === this.state.loggedInUser.user_id || this.state.projectPermissions.add_lists) {
-         this.setState({ displayAddListModal: true, displayColorPicker: true });
-      } else {
-         alert('You do not have permission to add lists for this project.');
-      }
-   };
-
-   handleColorChange = (event) => {
-		const { r, g, b, a } = event.rgb;
-		let codeArr = [r, g, b, a];
-		this.setState({ newColorCode: codeArr });
-   };
-
-   handleSearch = str => {
-      this.setState({ search: str });
-   };
-   
-   closeColorPicker = () => {
-		this.setState({ 
-			displayColorPicker: false,
-		});
-	};
-
    addList = async () => {
       const { projectId, newColorCode, title, lists, listOrder } = this.state;
 
@@ -424,6 +369,61 @@ export default class Dashboard extends Component {
       
       return res;
    };
+
+   handleSidebarSelection = async (selection) => {
+      if (selection === 'people') {
+         this.setState({
+            displayPeople: true,
+            displayLists: false,
+            displaySettings: false,
+         });
+         return;
+      }
+      if (selection === 'settings') {
+         this.setState({
+            displaySettings: true,
+            displayLists: false,
+            displayPeople: false,
+         });
+         return;
+      }
+
+      this.setState({
+         highlightTasksOfUser: selection,
+         displayLists: true,
+         displayPeople: false,
+         displaySettings: false,
+      });
+   };
+
+   handleInput = (key, value) => {
+      this.setState({ [key]: value });
+   };
+
+   handleAddListClick = () => {
+      // Only allow adding list if loggedInUser is project owner or has permission to add lists
+      if (this.state.project.created_by === this.state.loggedInUser.user_id || this.state.projectPermissions.add_lists) {
+         this.setState({ displayAddListModal: true, displayColorPicker: true });
+      } else {
+         alert('You do not have permission to add lists for this project.');
+      }
+   };
+
+   handleColorChange = (event) => {
+		const { r, g, b, a } = event.rgb;
+		let codeArr = [r, g, b, a];
+		this.setState({ newColorCode: codeArr });
+   };
+
+   handleSearch = str => {
+      this.setState({ search: str });
+   };
+   
+   closeColorPicker = () => {
+		this.setState({ 
+			displayColorPicker: false,
+		});
+	};
 
    onDragStart = (result ) => {
       const { type } = result;
@@ -690,7 +690,7 @@ export default class Dashboard extends Component {
                      this.state.loggedInUser
                      &&
                      <Header
-                        getProjectData={this.getProjectData}
+                        getCompleteProjectData={this.getCompleteProjectData}
                         project={this.state.project}
                         loggedInUser={this.state.loggedInUser}
                         logout={this.logout}
