@@ -33,7 +33,7 @@ massive(DATABASE_URL)
          console.log(`Listening on port: ${port}`);
       })
    })
-   .catch(err => console.log(err))
+   .catch(err => console.log(`Error connecting to database: ${err}`));
 
 // ENDPOINTS
 // Project
