@@ -24,6 +24,37 @@
       .header-select-container {
          width: 15rem;
          margin: 0 1rem;
+
+         .header-select-container > div {
+            &:focus {
+               outline: none;
+               border: 1px solid green;
+            }
+         }
+
+         // selector arrow
+         div > div > div.css-1hb7zxy-IndicatorsContainer:hover {
+            cursor: pointer;
+         }
+
+         // text box
+         div > div > div.css-1hwfws3:hover {
+            cursor: text;
+         }
+
+         div > div.css-26l3qy-menu > div > div {
+            background-color: white;
+            color: black;
+            text-align: left;
+            &:hover {
+               cursor: pointer;
+               // background-color: rgba(153, 93, 129, 0.6);
+               background-color: $accent-purple;
+               color: white;
+            }
+            &:focus {
+            }
+         }
       }
 
       .header-back-container {

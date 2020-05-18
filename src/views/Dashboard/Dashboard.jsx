@@ -21,11 +21,11 @@ export default class Dashboard extends Component {
       connectionRequests: [],
       displayAddButton: false,
       displayAddListModal: false,
-      displayLists: true,
+      displayLists: false,
       displayPeople: false,
       displaySettings: false,
       isLoading: false,
-      lists: {},
+      lists: '',
       listOrder: [], // array of strings of list_id's
       loggedInUser: '',
       newColorCode: [96, 125, 139, 1],
@@ -34,8 +34,8 @@ export default class Dashboard extends Component {
       projectPermissions: '',
       projectUsers: '',
       search: '',
-      tasks: {},
-      taskUsers: {},
+      tasks: '',
+      taskUsers: '',
       title: '',
       highlightTasksOfUser: 'all',
    };
@@ -86,6 +86,7 @@ export default class Dashboard extends Component {
             await this.getLists();
             await this.getProjectDetails();
             await this.getProjectPermissions();
+            this.setState({ displayLists: true });
          }
          catch(err) {
             console.log(err.response.data);
@@ -696,11 +697,12 @@ export default class Dashboard extends Component {
                         logout={this.logout}
                         handleSearch={this.handleSearch}
                         search={this.state.search}
+                        isLoading={this.state.isLoading}
                      />
                   }
 
                   {
-                     this.state.displayLists
+                     this.state.displayLists && this.state.lists
                      &&
                      <>
                      {

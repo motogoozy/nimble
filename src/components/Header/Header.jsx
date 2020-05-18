@@ -154,7 +154,8 @@ class Header extends Component {
 
    handleSelection = (project) => {
       this.props.history.push(`/dashboard/project/${project.project_id}`);
-      this.props.getCompleteProjectData(project.project_id)
+      this.props.getCompleteProjectData(project.project_id);
+      this.projectSelectRef.select.state.isFocused = false;
       this.setState({
          selectedProject: project
       });
@@ -190,6 +191,20 @@ class Header extends Component {
       const avatarColor = this.formatColor(loggedInUser.color);
       const userInitials = this.getUserInitials(loggedInUser);
 
+      const brandColor = '#995D81';
+
+      const selectStyles = {
+      control: (base, state) => ({
+         ...base,
+         boxShadow: state.isFocused ? 0 : 0,
+         border: state.isFocused ? `2px solid ${brandColor}` : `2px solid ${base.borderColor}`,
+         outline: 'none',
+         '&:hover': {
+            border: state.isFocused ? `2px solid ${brandColor}` : `2px solid ${base.borderColor}`,
+         }
+      })
+      };
+
       return (
          <div className='header'>
             <div className='header-left-container'>
@@ -199,11 +214,16 @@ class Header extends Component {
                   <>
                      <div className='header-select-container'>
                         <Select
+                           ref={ref => {
+                              this.projectSelectRef = ref;
+                           }}
                            placeholder='Select Project'
                            options={projects}
                            value={this.state.selectedProject}
-                           styles={{ backgroundColor: 'green' }}
                            onChange={project => this.handleSelection(project)}
+                           onClick={() => this.projectSelectRef.select.state.isFocused = true}
+                           styles={selectStyles}
+                           isDisabled={this.props.isLoading}
                         />
                      </div>
                      <div onClick={() => this.setState({ displayAddProjectModal: true })}>
@@ -228,7 +248,13 @@ class Header extends Component {
                {
                   currentPage !== '#/profile' && currentPage !== '#/settings'
                   &&
-                  <input type="search" placeholder='Search name or task' value={this.props.search} onChange={e => this.props.handleSearch(e.target.value)}/>
+                  <input
+                     type="search"
+                     placeholder='Search name or task'
+                     value={this.props.search}
+                     onChange={e => this.props.handleSearch(e.target.value)}
+                     disabled={this.props.isLoading}
+                  />
                }
                <div className='header-avatar-container cursor-pointer'>
                   <Button
