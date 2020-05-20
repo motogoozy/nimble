@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Header.scss';
 import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import Avatar from '../Avatar/Avatar';
+import { formatColor, getUserInitials } from '../../utils';
 
 import axios from 'axios';
 import { Link, withRouter } from 'react-router-dom';
@@ -181,15 +182,11 @@ class Header extends Component {
       )
    };
 
-   formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
-
-   getUserInitials = (user) => `${user.first_name.split('')[0]}${user.last_name.split('')[0]}`;
-
    render() {
       const { currentPage, projects } = this.state;
       const { loggedInUser } = this.props;
-      const avatarColor = this.formatColor(loggedInUser.color);
-      const userInitials = this.getUserInitials(loggedInUser);
+      const avatarColor = formatColor(loggedInUser.color);
+      const userInitials = getUserInitials(loggedInUser);
 
       const brandColor = '#995D81';
 
@@ -209,7 +206,7 @@ class Header extends Component {
          <div className='header'>
             <div className='header-left-container'>
                {
-                  currentPage !== '#/profile' && currentPage !== '#/settings'
+                  currentPage !== '#/profile'
                   &&
                   <>
                      <div className='header-select-container'>
@@ -231,31 +228,15 @@ class Header extends Component {
                      </div>
                   </>
                }
-               {
-                  currentPage === '#/profile' || currentPage === '#/settings'
-                  ?
-                  // <Link to='/dashboard' className='header-link'>
-                     <div className='header-back-container cursor-pointer' onClick={this.props.history.goBack}>
-                        <i className="fas fa-undo" style={{ marginRight: '.5rem'}}></i>
-                        <span>Back To Dashboard</span>
-                     </div>
-                  // </Link>
-                  :
-                  null
-               }
             </div>
             <div className='header-right-container'>
-               {
-                  currentPage !== '#/profile' && currentPage !== '#/settings'
-                  &&
-                  <input
-                     type="search"
-                     placeholder='Search name or task'
-                     value={this.props.search}
-                     onChange={e => this.props.handleSearch(e.target.value)}
-                     disabled={this.props.isLoading}
-                  />
-               }
+               <input
+                  type="search"
+                  placeholder='Search name or task'
+                  value={this.props.search}
+                  onChange={e => this.props.handleSearch(e.target.value)}
+                  disabled={this.props.isLoading}
+               />
                <div className='header-avatar-container cursor-pointer'>
                   <Button
                      aria-controls='simple-menu'
@@ -275,12 +256,9 @@ class Header extends Component {
                      open={Boolean(this.state.anchorEl)}
                      onClose={this.closeMenu}
                   >
-                     {/* <Link to='/profile' className='header-link' onClick={this.closeMenu}> */}
-                        <MenuItem>Profile</MenuItem>
-                     {/* </Link> */}
-                     {/* <Link to='/settings' className='header-link' onClick={this.closeMenu}> */}
-                        {/* <MenuItem>Settings</MenuItem> */}
-                     {/* </Link> */}
+                     <Link to='/profile' style={{ textDecoration: 'none', color: 'black' }}>
+                        <MenuItem className='header-link'>Profile</MenuItem>
+                     </Link>
                      <MenuItem className='header-link' onClick={this.props.logout}>Logout</MenuItem>
                   </Menu>
                </div>

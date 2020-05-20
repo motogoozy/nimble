@@ -7,6 +7,7 @@ import People from '../../components/People/People';
 import ProjectSettings from '../../components/ProjectSettings/ProjectSettings';
 import AddButton from '../../components/AddButton/AddButton';
 import ColorPicker from '../../components/ColorPicker/ColorPicker';
+import { formatColor } from '../../utils';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -371,7 +372,7 @@ export default class Dashboard extends Component {
       return res;
    };
 
-   handleSidebarSelection = async (selection) => {
+   handleSidebarSelection = (selection) => {
       if (selection === 'people') {
          this.setState({
             displayPeople: true,
@@ -624,11 +625,9 @@ export default class Dashboard extends Component {
       return listArr;
    };
 
-   formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
-
    addListModal = () => {
       const { newColorCode } = this.state;
-      let defaultColor = this.formatColor(newColorCode);
+      let defaultColor = formatColor(newColorCode);
       
       return (
          <div className='modal-wrapper' onClick={this.cancelAddList}>
@@ -654,7 +653,6 @@ export default class Dashboard extends Component {
                               &&
                               <div className='color-picker-container'>   
                                  <ColorPicker
-                                    formatColor={this.formatColor}
                                     handleColorChange={this.handleColorChange}
                                     closeColorPicker={this.closeColorPicker}
                                  />
@@ -781,7 +779,10 @@ export default class Dashboard extends Component {
                   }
 
                   {
-                     !this.state.projectId && this.state.loggedInUser && !this.state.displayPeople && !this.state.isLoading
+                     this.state.loggedInUser &&
+                     !this.state.projectId &&
+                     !this.state.displayPeople &&
+                     !this.state.isLoading
                      &&
                      <div className='no-project-prompt-container'>
                         <div className='bounce'>

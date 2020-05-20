@@ -1,0 +1,44 @@
+@import '../../styles.scss';
+
+.profile-page {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+
+	.user-info-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+
+		.profile-avatar-container {
+			// margin-bottom: 3rem;
+		}
+
+		.change-color-button {
+			margin-top: .5rem;
+			color: $primary-blue;
+			&:hover {
+				text-decoration: underline;
+				cursor: pointer;
+			}
+		}
+
+		.profile-button-container {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+
+			.profile-button {
+				width: 25%;
+				margin: 1rem .5rem;
+			}
+
+		}
+	}
+}

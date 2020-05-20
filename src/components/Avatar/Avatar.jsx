@@ -7,8 +7,9 @@ export default function LetterAvatars(props) {
       avatar: {
          color: 'white',
          backgroundColor: props.color,
-         width: '2.5rem',
-         height: '2.5rem',
+         width: props.size || '2.5rem',
+         height: props.size || '2.5rem',
+         fontSize: props.fontSize || 'default',
       },
    });
    const classes = useStyles();

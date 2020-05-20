@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './People.scss';
 import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import UserConnection from './UserConnection/UserConnection';
+import { formatColor } from '../../utils';
 
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
@@ -133,8 +134,7 @@ export default class People extends Component {
 			alert('You do not have permission to remove collaborators from this project.')
 		}
 	};
-	
-	formatColor = (colorArr) => `rgba(${colorArr[0]}, ${colorArr[1]}, ${colorArr[2]}, ${colorArr[3]})`;
+
 
 	addProjectUser = async (userId) => {
 		const { projectId } = this.props;
@@ -268,7 +268,7 @@ export default class People extends Component {
 		projectUsers.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
 
 		return projectUsers.map(user => {
-			let avatarColor = this.formatColor(user.color);
+			let avatarColor = formatColor(user.color);
 			return (
 				<div className='user-connection-container' key={`projectCollaborator: ${user.user_id}`}>
 					<UserConnection
@@ -311,7 +311,7 @@ export default class People extends Component {
 				userId = connection.send_id;
 			}
 			let user = users[userId];
-			let avatarColor = this.formatColor(user.color);
+			let avatarColor = formatColor(user.color);
 			return {
 				connection: connection,
 				user: user,
@@ -358,7 +358,7 @@ export default class People extends Component {
 				userId = connection.send_id;
 			}
 			let user = users[userId];
-			let avatarColor = this.formatColor(user.color);
+			let avatarColor = formatColor(user.color);
 			return {
 				connection: connection,
 				user: user,
@@ -408,7 +408,7 @@ export default class People extends Component {
 				userId = connection.send_id;
 			}
 			let user = users[userId];
-			let avatarColor = this.formatColor(user.color);
+			let avatarColor = formatColor(user.color);
 			return {
 				connection: connection,
 				user: user,
@@ -446,7 +446,7 @@ export default class People extends Component {
 
 			return list.map(user => {
 				if (user) {
-					const avatarColor = this.formatColor(user.color);
+					const avatarColor = formatColor(user.color);
 					
 					return (
 						<div className='add-available-connection' key={`available: ${user.user_id}`}>

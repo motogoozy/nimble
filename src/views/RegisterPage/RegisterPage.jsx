@@ -151,29 +151,29 @@ export default function RegisterPage(props) {
                            />
                         </Grid>
                         <Grid item xs={12}>
-                        <TextField
-                           variant="outlined"
-                           required
-                           fullWidth
-                           id="email"
-                           label="Email Address"
-                           name="email"
-                           autoComplete="email"
-                           onChange={event => setEmail(event.target.value)}
-                        />
+                           <TextField
+                              variant="outlined"
+                              required
+                              fullWidth
+                              id="email"
+                              label="Email Address"
+                              name="email"
+                              autoComplete="email"
+                              onChange={event => setEmail(event.target.value)}
+                           />
                         </Grid>
                         <Grid item xs={12}>
-                        <TextField
-                           variant="outlined"
-                           required
-                           fullWidth
-                           name="password"
-                           label="Password"
-                           type="password"
-                           id="password"
-                           autoComplete="current-password"
-                           onChange={event => setPassword(event.target.value)}
-                        />
+                           <TextField
+                              variant="outlined"
+                              required
+                              fullWidth
+                              name="password"
+                              label="Password"
+                              type="password"
+                              id="password"
+                              autoComplete="current-password"
+                              onChange={event => setPassword(event.target.value)}
+                           />
                         </Grid>
                         {
                            loginErrMsg && <p style={{ color: 'crimson', marginLeft: '1rem' }}>{loginErrMsg}</p>

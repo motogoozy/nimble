@@ -3,6 +3,7 @@ import './List.scss';
 import Task from '../Task/Task';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import { lightColors } from '../../assets/colors';
+import { formatColor } from '../../utils';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -36,8 +37,6 @@ export default class List extends Component {
 			archived: list.archived,
 		});
 	};
-
-	formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
 
 	handleInput = (key, value) => {
       this.setState({ [key]: value });
@@ -261,7 +260,6 @@ export default class List extends Component {
 					list_id={task.list_id}
 					created_at={task.created_at}
 					created_by={task.created_by}
-					formatColor={this.formatColor}
 					checkIsLight={this.checkIsLight}
 					deleteTask={this.deleteTask}
 					getAllTasks={getAllTasks}
@@ -311,7 +309,7 @@ export default class List extends Component {
 	editModal = () => {
 		const { list } = this.props;
 		const { title, newListColorCode } = this.state;
-		const currentColor = this.formatColor(newListColorCode);
+		const currentColor = formatColor(newListColorCode);
 		const headerTextColor = this.checkIsLight(newListColorCode) === true ? 'black' : 'white';
 
 		return (
@@ -346,7 +344,6 @@ export default class List extends Component {
 								&&
 								<div className='color-picker-container'>   
 									<ColorPicker
-										formatColor={this.formatColor}
 										handleColorChange={e => this.handleColorChange(e)}
 										closeColorPicker={this.closeColorPicker}
 									/>
@@ -385,7 +382,7 @@ export default class List extends Component {
 		return (
 			<Draggable draggableId={list.id} index={index}>
 				{(provided, snapshot) => {
-					const headerBackgroundColor = this.formatColor(listColorCode);
+					const headerBackgroundColor = formatColor(listColorCode);
 					const headerTextColor = this.checkIsLight(listColorCode) === true ? 'black' : 'white';
 					const dragColor = `rgba(${listColorCode[0]}, ${listColorCode[1]}, ${listColorCode[2]}, .25)`;
 					const listStyle = {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Task.scss';
-// import Avatar from '../Avatar/Avatar';
+import { formatColor, getUserInitials } from '../../utils';
 
 import axios from 'axios';
 import { Draggable } from 'react-beautiful-dnd';
@@ -145,10 +145,6 @@ export default class Task extends Component {
 		});
 	};
 
-	getUserInitials = (user) => `${user.first_name.split('')[0]}${user.last_name.split('')[0]}`;
-
-	formatColor = (arr) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`;
-
 	displayTaskUserAvatars = () => {
 		const { projectUsers, highlightTasksOfUser } = this.props;
 		const projectUserMap = {};
@@ -175,7 +171,7 @@ export default class Task extends Component {
 		};
 		displayUsers.forEach(userId => {
 			const user = projectUserMap[userId];
-			const userColor = this.formatColor(user.color);
+			const userColor = formatColor(user.color);
 			let backgroundColor = userColor;
 			if ((this.props.highlightTasksOfUser === 'none' && !this.props.search) || !this.props.highlight) {
 				backgroundColor = 'gray';
@@ -190,7 +186,7 @@ export default class Task extends Component {
 
 		let avatarList = displayUsers.map(userId => {
 			const user = projectUserMap[userId];
-			const userInitials = this.getUserInitials(user);
+			const userInitials = getUserInitials(user);
 
 			if (highlightTasksOfUser === 'all' || highlightTasksOfUser === 'none' || highlightTasksOfUser === userId) {
 				return (
