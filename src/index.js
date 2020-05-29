@@ -4,8 +4,22 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// import 'normalize.css';
+import 'normalize.css';
 import { HashRouter } from 'react-router-dom';
+import axios from 'axios';
+
+axios.interceptors.response.use(response => {
+	return response;
+}, (err) => {
+	if (err.response && !err.config.skipErrorHandler) {
+		if (err.response.status === 401) {
+			console.log(err)
+			window.location.hash = '/login';
+			return Promise.reject(err);
+		}
+	}
+	return err;
+});
 
 ReactDOM.render(
 	<HashRouter>

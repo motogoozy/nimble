@@ -43,15 +43,14 @@ export default class Dashboard extends Component {
 
    componentDidMount = async () => {
       try {
-         await this.authenticate();
+         await this.getLoggedInUser();
          await this.getConnectionRequests().catch(err => console.log(err.response.data));
       } catch (err) {
          console.log(err.response.data);
-         this.props.history.push('/login');
       }
    };
 
-   authenticate = async () => {
+   getLoggedInUser = async () => {
       const res = await axios.get('/auth/user_session');
       this.setState({ loggedInUser: res.data });
       
@@ -92,6 +91,7 @@ export default class Dashboard extends Component {
             await this.getProjectPermissions();
          }
          catch(err) {
+            // console.log(JSON.parse(err))
             console.log(err.response.data);
          }
          finally {

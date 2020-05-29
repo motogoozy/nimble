@@ -18,6 +18,7 @@ module.exports = {
 
          const newUser = await db.auth.create_user({ first_name, last_name, email, hash, color });
          req.session.loggedInUser = newUser[0];
+         req.session.cookie.maxAge = 1000 * 60 * 30;
          res.status(200).send(newUser[0]);
       } catch (err) {
          res.status(500).send('Error creating user.');
@@ -47,6 +48,7 @@ module.exports = {
                color: user[0].color,
             }
             req.session.loggedInUser = userObj;
+            req.session.cookie.maxAge = 1000 * 60 * 30;
             res.status(200).send(userObj);
          }
       } catch (err) {
@@ -67,7 +69,7 @@ module.exports = {
       if (req.session.loggedInUser) {
          res.status(200).send(req.session.loggedInUser);
       } else {
-         res.status(404).send('Please log in.')
+         res.status(401).send('Please log in.');
       }
    },
 }
