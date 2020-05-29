@@ -70,13 +70,16 @@ export default class Dashboard extends Component {
    };
 
    getCompleteProjectData = async (id) => {
+      if (!this.state.displayPeople && !this.state.displaySettings) {
+         this.setState({ displayLists: true });
+      }
       this.setState({
          isLoading: true,
+         displayAddButton: false,
          projectId: id,
          lists: {},
          tasks: {},
          listOrder: [],
-         displayAddButton: false,
          search: '',
       }, async () => {
          try {
@@ -87,7 +90,6 @@ export default class Dashboard extends Component {
             await this.getLists();
             await this.getProjectDetails();
             await this.getProjectPermissions();
-            this.setState({ displayLists: true });
          }
          catch(err) {
             console.log(err.response.data);
@@ -700,11 +702,11 @@ export default class Dashboard extends Component {
                   }
 
                   {
-                     this.state.displayLists && this.state.lists
+                     this.state.displayLists
                      &&
                      <>
                      {
-                        !this.state.isLoading
+                        this.state.lists && !this.state.isLoading
                         ?
                         <>
                         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
