@@ -16,6 +16,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Swal from 'sweetalert2';
 
 function Copyright() {
    return (
@@ -95,7 +96,17 @@ export default function LoginPage(props) {
                   localStorage.removeItem('nimbleEmail');
                }
             }
-            props.history.push('/dashboard');
+            Swal.fire({
+               type: 'success',
+               title: 'Logged In',
+               text: `Welcome back, ${res.data.first_name}`,
+               // position: 'top-end',
+               showConfirmButton: false,
+               timer: 1000
+            }).then(() => {
+               props.history.push('/dashboard');
+
+            })
          }
       } catch (err) {
          console.log(err.response.data);

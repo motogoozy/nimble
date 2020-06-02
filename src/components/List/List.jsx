@@ -12,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
+import Swal from 'sweetalert2/src/sweetalert2.js'
 
 
 export default class List extends Component {
@@ -47,7 +48,11 @@ export default class List extends Component {
 		if (this.props.project.created_by === this.props.loggedInUser.user_id || this.props.projectPermissions.add_tasks) {
 			this.setState({ displayAddTaskModal: true });
 		} else {
-			alert('You do not have permission to add tasks for this project.');
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to add tasks for this project.',
+			})
 		}
 	};
 
@@ -56,7 +61,11 @@ export default class List extends Component {
 		if (this.props.project.created_by === this.props.loggedInUser.user_id || this.props.projectPermissions.edit_lists) {
 			this.setState({ displayEditModal: true });
 		} else {
-			alert('You do not have permission to edit lists for this project.');
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to edit lists for this project.',
+			})
 		}
 	};
 

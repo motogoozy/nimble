@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Swal from 'sweetalert2';
 
 class Header extends Component {
    state = {
@@ -30,7 +31,11 @@ class Header extends Component {
          if (this.props.match.params.project_id) {
             // If logged in user isn't part of this project
             if (!this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))) {
-               alert('You are not a collaborator on this project. Please select another project.');
+               Swal.fire({
+                  type: 'warning',
+                  title: 'Oops!',
+                  text: 'You are not a collaborator on this project. Please select another project.',
+               })
                return;
             }
    
@@ -52,7 +57,11 @@ class Header extends Component {
       if (this.props.match.params.project_id !== prevProps.match.params.project_id) {
          // If logged in user isn't part of this project
          if (this.props.match.params.project_id && !this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))) {
-            alert('You are not a collaborator on this project. Please select another project.');
+            Swal.fire({
+               type: 'warning',
+               title: 'Oops!',
+               text: 'You are not a collaborator on this project. Please select another project.',
+            })
             return;
          }
 

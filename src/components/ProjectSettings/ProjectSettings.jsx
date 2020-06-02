@@ -9,6 +9,7 @@ import Switch from '@material-ui/core/Switch';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
+import Swal from 'sweetalert2';
 
 export default function ProjectSettings(props) {
    const [projectTitle, setProjectTitle] = useState();
@@ -51,7 +52,11 @@ export default function ProjectSettings(props) {
       if (props.loggedInUser.user_id === props.project.created_by || permissions.edit_project) {
          setEditProjectTitle(true);
       } else {
-         alert('You do not have permission to edit this project.');
+         Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to edit this project.',
+			})
       }
    };
 

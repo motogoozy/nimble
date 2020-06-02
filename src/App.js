@@ -1,16 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.scss';
 import './styles.scss';
 import Routes from './routes';
 
-class App extends Component {
-   render() {
-      return (
-         <div className="App">
-            { Routes }
-         </div>
-      );
-   }
-};
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
-export default App;
+export default function App() {
+   axios.interceptors.response.use(response => {
+      return response;
+   }, (err) => {
+      if (err.response && !err.config.skipErrorHandler) {
+         if (err.response.status === 401) {
+            window.location.hash = '/login';
+         }
+         if (err.response.status === 500) {
+            Swal.fire({
+               type: 'error',
+               title: 'Internal Server Error',
+               text: err.response.data,
+            })
+         }
+      }
+      return Promise.reject(err);
+   });
+
+   return (
+      <div className="App">
+         { Routes }
+      </div>
+   );
+};

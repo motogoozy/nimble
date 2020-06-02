@@ -16,6 +16,7 @@ import Button from '@material-ui/core/Button';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import IdleTimer from 'react-idle-timer';
 import PulseLoader from 'react-spinners/PulseLoader';
+import Swal from 'sweetalert2';
 
 export default class Dashboard extends Component {
    state = {
@@ -58,13 +59,23 @@ export default class Dashboard extends Component {
    };
 
    logout = async () => {
+      const { loggedInUser } = this.state;
       try {
          let res = await axios.get('/auth/logout');
+         Swal.fire({
+            position: 'top-end',
+            type: 'success',
+            title: `${res.data}`,
+            text: `See you next time, ${loggedInUser.first_name}`,
+            showConfirmButton: false,
+            timer: 1500
+         }).then(() => {
+            this.props.history.push('/');
+         })
          console.log(res.data);
       } catch (err) {
          console.log(err.response.data);
-      } finally {
-         this.props.history.push('/')
+         this.props.history.push('/');
       }
    };
 
@@ -411,7 +422,11 @@ export default class Dashboard extends Component {
       if (this.state.project.created_by === this.state.loggedInUser.user_id || this.state.projectPermissions.add_lists) {
          this.setState({ displayAddListModal: true, displayColorPicker: true });
       } else {
-         alert('You do not have permission to add lists for this project.');
+         Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to add lists for this project.',
+			})
       }
    };
 
@@ -460,7 +475,11 @@ export default class Dashboard extends Component {
       if (type === 'list') { // If dragged item is a list
          // Only allow loggedInUser to move lists if they are the project owner or have permission to edit the project
          if (this.state.project.created_by !== this.state.loggedInUser.user_id && !this.state.projectPermissions.edit_project) {
-            alert('You do not have permission to edit this project.');
+            Swal.fire({
+               type: 'warning',
+               title: 'Oops!',
+               text: 'You do not have permission to edit this project.',
+            })
             this.setState({ displayAddButton: true });
             return;
          }
@@ -489,8 +508,11 @@ export default class Dashboard extends Component {
       } else if (type === 'task') { // If dragged item is a task
          // Only allow loggedInUser to move tasks if they are the project owner or have permissions to edit lists
          if (this.state.project.created_by !== this.state.loggedInUser.user_id && !this.state.projectPermissions.edit_lists) {
-            console.log(this.state.project.created_by, this.state.loggedInUser.user_id)
-            alert('You do not have permission to edit this project.');
+            Swal.fire({
+               type: 'warning',
+               title: 'Oops!',
+               text: 'You do not have permission to edit this project.',
+            })
             return;
          }
 

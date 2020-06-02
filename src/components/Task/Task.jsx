@@ -13,6 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
+import Swal from 'sweetalert2';
 
 export default class Task extends Component {
 	state = {
@@ -44,7 +45,11 @@ export default class Task extends Component {
 		if (this.props.project.created_by === this.props.loggedInUser.user_id || this.props.projectPermissions.edit_tasks) {
 			this.setState({ displayEditModal: true });
 		} else {
-			alert('You do not have permission to edit tasks for this project.');
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to edit tasks for this project.',
+			})
 		}
 	};
 

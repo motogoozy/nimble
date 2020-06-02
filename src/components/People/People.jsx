@@ -10,6 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Swal from 'sweetalert2';
 
 export default class People extends Component {
 	state = {
@@ -123,7 +124,11 @@ export default class People extends Component {
 		if (this.props.loggedInUser.user_id === this.props.project.created_by || this.props.projectPermissions.add_collaborators) {
 			this.setState({ displayAddCollaboratorModal: true });
 		} else {
-			alert('You do not have permission to add collaborators to this project.')
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to add collaborators to this project.',
+			})
 		}
 	};
 
@@ -131,7 +136,11 @@ export default class People extends Component {
 		if (this.props.loggedInUser.user_id === this.props.project.created_by || this.props.projectPermissions.add_collaborators) {
 			this.removeProjectUser(user.user_id)
 		} else {
-			alert('You do not have permission to remove collaborators from this project.')
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to remove collaborators from this project.',
+			})
 		}
 	};
 
