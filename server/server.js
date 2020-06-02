@@ -25,9 +25,9 @@ app.use(session({
 }));
 app.use((req, res, next) => { // authentication before every request
    if (
-      req.url !== '/auth/login' &&
-      req.url !== '/auth/register' &&
-      req.url !== '/auth/logout' &&
+      req.url !== '/api/auth/login' &&
+      req.url !== '/api/auth/register' &&
+      req.url !== '/api/auth/logout' &&
       !req.session.loggedInUser
       ) {
       res.status(401).send('Please log in.');
@@ -35,6 +35,7 @@ app.use((req, res, next) => { // authentication before every request
       next();
    }
 });
+
 
 // DATABASE CONNECTION
 massive(DATABASE_URL)
@@ -49,51 +50,62 @@ massive(DATABASE_URL)
 
 // ENDPOINTS
 // Project
-app.get('/project/:project_id', projectController.getProjectById); // Get project by Id
-app.get('/project/:project_id/users', projectController.getProjectUsers) // Get all project users
-app.get('/project/:project_id/permissions', projectController.getProjectPermissions) // Get Project Permissions
-app.post('/project', projectController.createProject); // Create Project
-app.post('/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
-app.put('/project/:project_id', projectController.updateProject); // Update Project
-app.put('/project/:project_id/permissions', projectController.updateProjectPermissions) // Update Project Permissions
-app.delete('/project/:project_id/user/:user_id', projectController.deleteProjectUser) // Remove User from Project (Collaborator)
+app.get('/api/project/:project_id', projectController.getProjectById); // Get project by Id
+app.get('/api/project/:project_id/users', projectController.getProjectUsers) // Get all project users
+app.get('/api/project/:project_id/permissions', projectController.getProjectPermissions) // Get Project Permissions
+app.post('/api/project', projectController.createProject); // Create Project
+app.post('/api/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
+app.put('/api/project/:project_id', projectController.updateProject); // Update Project
+app.put('/api/project/:project_id/permissions', projectController.updateProjectPermissions) // Update Project Permissions
+app.delete('/api/project/:project_id/user/:user_id', projectController.deleteProjectUser) // Remove User from Project (Collaborator)
 
 // User
-app.get('/user/:user_id', userController.getUserById) // Get user by id
-app.get('/find-user', userController.getUserByEmail) // Get user by email
-app.get('/user/:user_id/projects', projectController.getProjectsByUserId) // Get all user's projects
+app.get('/api/user/:user_id', userController.getUserById) // Get user by id
+app.get('/api/find-user', userController.getUserByEmail) // Get user by email
+app.get('/api/user/:user_id/projects', projectController.getProjectsByUserId) // Get all user's projects
 
 // List
-app.get('/project/:project_id/lists', listController.getLists); // Get all project lists
-app.get('/list/:list_id', listController.getListById); // Get list by list_id
-app.post('/project/:project_id/list', listController.createList); // Add list
-app.put('/project/:project_id/list/:list_id', listController.updateList); // Edit List
-app.delete('/project/:project_id/list/:list_id', listController.deleteList); // Delete list
+app.get('/api/project/:project_id/lists', listController.getLists); // Get all project lists
+app.get('/api/list/:list_id', listController.getListById); // Get list by list_id
+app.post('/api/project/:project_id/list', listController.createList); // Add list
+app.put('/api/project/:project_id/list/:list_id', listController.updateList); // Edit List
+app.delete('/api/project/:project_id/list/:list_id', listController.deleteList); // Delete list
 
 // Task
-app.get('/project/:project_id/tasks', taskController.getAllTasks); // Get all project tasks
-app.get('/project/:project_id/tasks/:user_id', taskController.getTasksByUserId); // Get all tasks assigned to a specific user
-app.get('/task_users/:project_id', taskController.getTaskUsers); // Get all task-user relationships from task_users table
-app.post('/project/:project_id/task', taskController.createTask); // Create new task
-app.post('/task_users/:project_id', taskController.addTaskUser) // Assign user to task
-app.put('/task/:task_id', taskController.updateTask); // Update task
-app.delete('/task/:task_id', taskController.deleteTask); // Delete task
-app.delete('/tasks/list/:list_id', taskController.deleteTasksByListId)
-app.delete('/task_users/:tu_id', taskController.deleteTaskUser) // Remove user from task
-app.delete('/task_users/project/:project_id/user/:user_id', taskController.deleteTaskUsersByProjectAndUser) // Remove user from all tasks in project
-app.delete('/task_users/task/:task_id', taskController.deleteTaskUsersByTask) // Delete all task_users by task_id
+app.get('/api/project/:project_id/tasks', taskController.getAllTasks); // Get all project tasks
+app.get('/api/project/:project_id/tasks/:user_id', taskController.getTasksByUserId); // Get all tasks assigned to a specific user
+app.get('/api/task_users/:project_id', taskController.getTaskUsers); // Get all task-user relationships from task_users table
+app.post('/api/project/:project_id/task', taskController.createTask); // Create new task
+app.post('/api/task_users/:project_id', taskController.addTaskUser) // Assign user to task
+app.put('/api/task/:task_id', taskController.updateTask); // Update task
+app.delete('/api/task/:task_id', taskController.deleteTask); // Delete task
+app.delete('/api/tasks/list/:list_id', taskController.deleteTasksByListId)
+app.delete('/api/task_users/:tu_id', taskController.deleteTaskUser) // Remove user from task
+app.delete('/api/task_users/project/:project_id/user/:user_id', taskController.deleteTaskUsersByProjectAndUser) // Remove user from all tasks in project
+app.delete('/api/task_users/task/:task_id', taskController.deleteTaskUsersByTask) // Delete all task_users by task_id
 
 // Connection
-app.get('/connection/user/:user_id', connectionController.getUserConnections); // Get all connections for user
-app.post('/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
+app.get('/api/connection/user/:user_id', connectionController.getUserConnections); // Get all connections for user
+app.post('/api/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
 app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
-app.delete('/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
+app.delete('/api/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
 
 // Auth
-app.get('/auth/user_session', authController.getUserSession) // Get user session (logged in user)
-app.get('/auth/logout', authController.logout) // Logout
-app.post('/auth/login', authController.login); // Login
-app.post('/auth/register', authController.register); // Register/Create new user
+app.get('/api/auth/user_session', authController.getUserSession) // Get user session (logged in user)
+app.get('/api/auth/logout', authController.logout) // Logout
+app.post('/api/auth/login', authController.login); // Login
+app.post('/api/auth/register', authController.register); // Register/Create new user
+
+
+// Handle Internal Server Errors
+app.use((err, req, res, next) => {
+   if (!err) {
+      return next();
+   }
+   
+   res.status(500).send(`Something went wrong on our end. We'll look into it.`);
+   next();
+})
 
 app.get('*', (req, res)=>{
    res.sendFile(path.join(__dirname, '../build/index.html'));

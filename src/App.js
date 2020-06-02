@@ -7,6 +7,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default function App() {
+   let baseUrl = '/api';
+   axios.defaults.baseURL = baseUrl;
    axios.interceptors.response.use(response => {
       return response;
    }, (err) => {
