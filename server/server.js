@@ -27,13 +27,10 @@ app.use((req, res, next) => { // authentication before every request
    if (
       req.url !== '/auth/login' &&
       req.url !== '/auth/register' &&
-      req.url !== '/auth/logout'
-   ) {
-      if (req.session.loggedInUser) {
-         next();
-      } else {
-         res.status(401).send('Please log in.');
-      }
+      req.url !== '/auth/logout' &&
+      !req.session.loggedInUser
+      ) {
+      res.status(401).send('Please log in.');
    } else {
       next();
    }

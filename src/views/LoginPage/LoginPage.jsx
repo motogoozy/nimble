@@ -105,7 +105,6 @@ export default function LoginPage(props) {
                timer: 1000
             }).then(() => {
                props.history.push('/dashboard');
-
             })
          }
       } catch (err) {

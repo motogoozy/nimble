@@ -15,6 +15,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Swal from 'sweetalert2';
 
 function Copyright() {
    return (
@@ -86,7 +87,16 @@ export default function RegisterPage(props) {
       try {
          let res = await axios.post('/auth/register', body);
          if (res.data.user_id) {
-            props.history.push('/dashboard');
+            Swal.fire({
+               type: 'success',
+               title: `Welcome, ${res.data.first_name}!`,
+               text: 'Account successfully created.',
+               // position: 'top-end',
+               showConfirmButton: false,
+               timer: 1500
+            }).then(() => {
+               props.history.push('/dashboard');
+            })
          }
       } catch (err) {
          setLoginErrMsg(err.response.data);
