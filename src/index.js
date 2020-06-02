@@ -13,12 +13,10 @@ axios.interceptors.response.use(response => {
 }, (err) => {
 	if (err.response && !err.config.skipErrorHandler) {
 		if (err.response.status === 401) {
-			console.log(err)
 			window.location.hash = '/login';
-			return Promise.reject(err);
 		}
 	}
-	return err;
+	return Promise.reject(err);
 });
 
 ReactDOM.render(

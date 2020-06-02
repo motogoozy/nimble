@@ -46,10 +46,12 @@ export default function ProfilePage(props) {
    const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
    useEffect(() => {
-      axios.get('/auth/user_session').then(res => {
-         setOldUserDetails(res.data);
-         setNewUserDetails(res.data);
-      })
+      axios.get('/auth/user_session')
+         .then(res => {
+            setOldUserDetails(res.data);
+            setNewUserDetails(res.data);
+         })
+         .catch(err => console.log(err.response.data));
    }, []);
 
    // useEffect(() => {

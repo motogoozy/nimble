@@ -25,6 +25,7 @@ export default class Dashboard extends Component {
       displayLists: false,
       displayPeople: false,
       displaySettings: false,
+      highlightTasksOfUser: 'all',
       isLoading: false,
       lists: '',
       listOrder: [], // array of strings of list_id's
@@ -38,7 +39,6 @@ export default class Dashboard extends Component {
       tasks: '',
       taskUsers: '',
       title: '',
-      highlightTasksOfUser: 'all',
    };
 
    componentDidMount = async () => {
@@ -375,6 +375,8 @@ export default class Dashboard extends Component {
    };
 
    handleSidebarSelection = (selection) => {
+      if (!this.state.projectId) return;
+      
       if (selection === 'people') {
          this.setState({
             displayPeople: true,
