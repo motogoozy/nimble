@@ -139,7 +139,7 @@ export default function LoginPage(props) {
                      required
                      fullWidth
                      id="email"
-                     label="Email Address"
+                     placeholder="Email Address"
                      name="email"
                      autoComplete="email"
                      autoFocus
@@ -153,7 +153,7 @@ export default function LoginPage(props) {
                      required
                      fullWidth
                      name="password"
-                     label="Password"
+                     placeholder="Password"
                      type="password"
                      id="password"
                      autoComplete="current-password"

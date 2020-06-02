@@ -133,7 +133,7 @@ export default function RegisterPage(props) {
                               required
                               fullWidth
                               id="firstName"
-                              label="First Name"
+                              placeholder="First Name"
                               autoFocus
                               onChange={event => setFirstName(event.target.value)}
                            />
@@ -144,7 +144,7 @@ export default function RegisterPage(props) {
                               required
                               fullWidth
                               id="lastName"
-                              label="Last Name"
+                              placeholder="Last Name"
                               name="lastName"
                               autoComplete="lname"
                               onChange={event => setLastName(event.target.value)}
@@ -156,7 +156,7 @@ export default function RegisterPage(props) {
                               required
                               fullWidth
                               id="email"
-                              label="Email Address"
+                              placeholder="Email Address"
                               name="email"
                               autoComplete="email"
                               onChange={event => setEmail(event.target.value)}
@@ -168,7 +168,7 @@ export default function RegisterPage(props) {
                               required
                               fullWidth
                               name="password"
-                              label="Password"
+                              placeholder="Password"
                               type="password"
                               id="password"
                               autoComplete="current-password"
