@@ -213,7 +213,7 @@ export default class Task extends Component {
 	};
 
 	editModal = () => {
-		const { colorCode, formatColor, checkIsLight, projectUsers } = this.props;
+		const { colorCode, checkIsLight, projectUsers } = this.props;
 		const { title, newTitle, notes, assignedUsers } = this.state;
 		const currentColor = formatColor(colorCode);
 		const headerTextColor = checkIsLight(colorCode) === true ? 'black' : 'white';
