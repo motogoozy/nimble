@@ -7,10 +7,7 @@ import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -18,15 +15,6 @@ import Container from '@material-ui/core/Container';
 const useStyles = makeStyles(theme => ({
    root: {
       height: '100vh',
-   },
-   left: {
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      background: 'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)'
    },
    paper: {
       marginTop: theme.spacing(8),
@@ -47,27 +35,58 @@ const useStyles = makeStyles(theme => ({
    },
 }));
 
-export default function ProfilePage() {
-   const [loggedInUser, setLoggedInUser] = useState();
+export default function ProfilePage(props) {
+   const [oldUserDetails, setOldUserDetails] = useState();
+   const [newUserDetails, setNewUserDetails] = useState();
    const [newColor, setNewColor] = useState();
+   const [editUserDetails, setEditUserDetails] = useState(false);
+   const [editPassword, setEditPassword] = useState(false);
+   const [oldPassword, setOldPassword] = useState('');
+   const [newPassword, setNewPassword] = useState('');
+   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
    useEffect(() => {
       axios.get('/auth/user_session').then(res => {
-         setLoggedInUser(res.data);
+         setOldUserDetails(res.data);
+         setNewUserDetails(res.data);
       })
    }, []);
+
+   // useEffect(() => {
+   //    console.log(oldPassword)
+   //    console.log(newPassword)
+   //    console.log(confirmNewPassword)
+   // }, [oldPassword, newPassword, confirmNewPassword])
+
+   const handleEditUserDetails = (key, value) => {
+      setNewUserDetails({...oldUserDetails, [key]: value});
+   };
+
+   const cancelEditUserDetails = () => {
+      setNewUserDetails({...oldUserDetails});
+      setEditUserDetails(false);
+   };
+
+   const cancelEditPassword = () => {
+      setEditPassword(false);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+   };
 
    const classes = useStyles();
 
    return (
       <div className='profile-page page-content'>
+         <i className="far fa-arrow-alt-circle-left cursor-pointer profile-back-button" onClick={() => props.history.goBack()}></i>
+
          {
-            loggedInUser
+            newUserDetails
             &&
             <div className='user-info-container'>
                <Avatar
-                  color={formatColor(loggedInUser.color)}
-                  initials={getUserInitials(loggedInUser)}
+                  color={formatColor(newUserDetails.color)}
+                  initials={getUserInitials(newUserDetails)}
                   size={'5rem'}
                   fontSize={'2.5rem'}
                />
@@ -77,100 +96,165 @@ export default function ProfilePage() {
                   <CssBaseline />
                   <div className={classes.paper}>
                      <Typography component="h1" variant="h5">
-                        Profile Settings
+                        {
+                           !editPassword
+                           ?
+                           'Profile Settings'
+                           :
+                           'Change Password'
+                        }
                      </Typography>
                      <form className={classes.form} noValidate>
                         <Grid container spacing={2}>
-                           <Grid item xs={12} sm={6}>
-                              <TextField
-                                 value={loggedInUser.first_name}
-                                 name="firstName"
-                                 variant="outlined"
-                                 required
-                                 fullWidth
-                                 id="firstName"
-                                 label="First Name"
-                                 autoFocus
-                                 // onChange={event => setFirstName(event.target.value)}
-                              />
-                           </Grid>
-                           <Grid item xs={12} sm={6}>
-                              <TextField
-                                 variant="outlined"
-                                 required
-                                 fullWidth
-                                 id="lastName"
-                                 label="Last Name"
-                                 name="lastName"
-                                 autoComplete="lname"
-                                 // onChange={event => setLastName(event.target.value)}
-                              />
-                           </Grid>
-                           <Grid item xs={12}>
-                              <TextField
-                                 variant="outlined"
-                                 required
-                                 fullWidth
-                                 id="email"
-                                 label="Email Address"
-                                 name="email"
-                                 autoComplete="email"
-                                 // onChange={event => setEmail(event.target.value)}
-                              />
-                           </Grid>
-                           <Grid item xs={12}>
-                              <TextField
-                                 variant="outlined"
-                                 required
-                                 fullWidth
-                                 name="password"
-                                 label="Password"
-                                 type="password"
-                                 id="password"
-                                 autoComplete="current-password"
-                                 // onChange={event => setPassword(event.target.value)}
-                              />
-                           </Grid>
-                           <Grid item xs={12}>
-                              <TextField
-                                 variant="outlined"
-                                 required
-                                 fullWidth
-                                 name="confirm-password"
-                                 label="Confirm Password"
-                                 type="password"
-                                 id="confirm-password"
-                                 autoComplete="current-password"
-                                 // onChange={event => setPassword(event.target.value)}
-                              />
-                           </Grid>
+                           {
+                              !editPassword
+                              ?
+                              <>
+                                 <Grid item xs={12} sm={6}>
+                                    <TextField
+                                       autoFocus
+                                       disabled={!editUserDetails}
+                                       fullWidth
+                                       id="firstName"
+                                       name="firstName"
+                                       onChange={e => handleEditUserDetails('first_name', e.target.value)}
+                                       placeholder="First Name"
+                                       value={newUserDetails.first_name}
+                                       variant="outlined"
+                                    />
+                                 </Grid>
+                                 <Grid item xs={12} sm={6}>
+                                    <TextField
+                                       fullWidth
+                                       disabled={!editUserDetails}
+                                       id="lastName"
+                                       name="lastName"
+                                       onChange={e => handleEditUserDetails('last_name', e.target.value)}
+                                       placeholder="Last Name"
+                                       value={newUserDetails.last_name}
+                                       variant="outlined"
+                                    />
+                                 </Grid>
+                                 <Grid item xs={12}>
+                                    <TextField
+                                       fullWidth
+                                       disabled={!editUserDetails}
+                                       id="email"
+                                       name="email"
+                                       onChange={e => handleEditUserDetails('email', e.target.value)}
+                                       placeholder="Email Address"
+                                       value={newUserDetails.email}
+                                       variant="outlined"
+                                    />
+                                 </Grid>
+
+                                 <div className='profile-button-container'>
+                                    {
+                                       editUserDetails
+                                       ?
+                                       <>
+                                          <div className='profile-button'>
+                                             <Button
+                                                fullWidth
+                                                variant="contained"
+                                                color="secondary"
+                                                width={12}
+                                                onClick={cancelEditUserDetails}
+                                             >Cancel</Button>
+                                          </div>
+                                          <div className='profile-button'>
+                                             <Button
+                                                fullWidth
+                                                variant="contained"
+                                                color="primary"
+                                                // onClick={register}
+                                             >Save</Button>
+                                          </div>
+                                       </>
+                                       :
+                                       <div className='profile-button'>
+                                       <Button
+                                             fullWidth
+                                             variant="contained"
+                                             color="primary"
+                                             onClick={setEditUserDetails}
+                                          >Edit</Button>
+                                       </div>
+                                    }
+                                 </div>
+                              </>
+                              :
+                              <>
+                                 <Grid item xs={12}>
+                                    <TextField
+                                       fullWidth
+                                       id="old-password"
+                                       name="old-password"
+                                       onChange={event => setOldPassword(event.target.value)}
+                                       placeholder="Old Password"
+                                       required
+                                       type="password"
+                                       value={oldPassword}
+                                       variant="outlined"
+                                    />
+                                 </Grid>
+                                 <Grid item xs={12}>
+                                    <TextField
+                                       fullWidth
+                                       id="password"
+                                       name="password"
+                                       onChange={event => setNewPassword(event.target.value)}       
+                                       placeholder="New Password"
+                                       required
+                                       type="password"
+                                       value={newPassword}
+                                       variant="outlined"
+                                    />
+                                 </Grid>
+                                 <Grid item xs={12}>
+                                    <TextField
+                                       fullWidth
+                                       id="confirm-password"
+                                       name="confirm-password"
+                                       onChange={event => setConfirmNewPassword(event.target.value)}
+                                       placeholder="Confirm Password"
+                                       required
+                                       type="password"
+                                       value={confirmNewPassword}
+                                       variant="outlined"
+                                    />
+                                 </Grid>
+
+                                 <div className='profile-button-container'>
+                                    <div className='profile-button'>
+                                       <Button
+                                          fullWidth
+                                          variant="contained"
+                                          color="secondary"
+                                          width={12}
+                                          onClick={cancelEditPassword}
+                                       >Cancel</Button>
+                                    </div>
+                                    <div className='profile-button'>
+                                       <Button
+                                          fullWidth
+                                          variant="contained"
+                                          color="primary"
+                                          // onClick={register}
+                                       >Save</Button>
+                                    </div>
+                                 </div>
+                              </>
+                           }
                         </Grid>
 
-                        <div className='profile-button-container'>
-                           <div className='profile-button'>
-                              <Button
-                                 fullWidth
-                                 variant="contained"
-                                 color="secondary"
-                                 width={12}
-                                 // className={classes.submit}
-                                 // onClick={register}
-                              >
-                                 Cancel
-                              </Button>
+                        {
+                           !editPassword
+                           &&
+                           <div className='change-password-container'>
+                              <p onClick={setEditPassword}>Change Password</p>
                            </div>
-                           <div className='profile-button'>
-                              <Button
-                                 fullWidth
-                                 variant="contained"
-                                 color="primary"
-                                 // className={classes.submit}
-                                 // onClick={register}
-                              >
-                                 Save
-                              </Button>
-                           </div>
-                        </div>
+                        }
                      </form>
                   </div>
                </Container>
