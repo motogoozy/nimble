@@ -21,14 +21,19 @@ module.exports = {
 			next(err);
 		}
 	},
-	// editUserDetails: async (req, res, next) => {
-	// 	const { first_name, last_name, email } = req.body;
-	// 	const db = req.app.get('db');
-	// 	try {
-
-	// 	} catch (err) {
-	// 		err.message = 'Unable to update user details.';
-	// 		next(err);
-	// 	}
-	// }
+	updateUserDetails: async (req, res, next) => {
+		const { user_id } = req.params;
+		const { first_name, last_name, email, color } = req.body;
+		const db = req.app.get('db');
+		try {
+			let updatedUser = await db.user.update_user({
+				user_id, first_name, last_name, email, color
+			});
+			req.session.loggedInUser = updatedUser[0];
+			res.status(200).send(updatedUser[0]);
+		} catch (err) {
+			err.message = 'Unable to update user details.';
+			next(err);
+		}
+	}
 }

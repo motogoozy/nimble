@@ -91,6 +91,7 @@ app.delete('/api/project/:project_id/user/:user_id', projectController.deletePro
 app.get('/api/user/:user_id', userController.getUserById) // Get user by id
 app.get('/api/find-user', userController.getUserByEmail) // Get user by email
 app.get('/api/user/:user_id/projects', projectController.getProjectsByUserId) // Get all user's projects
+app.put('/api/user/:user_id', userController.updateUserDetails) // Edit User
 
 // List
 app.get('/api/project/:project_id/lists', listController.getLists); // Get all project lists
@@ -123,6 +124,7 @@ app.get('/api/auth/user_session', authController.getUserSession) // Get user ses
 app.get('/api/auth/logout', authController.logout) // Logout
 app.post('/api/auth/login', authController.login); // Login
 app.post('/api/auth/register', authController.register); // Register/Create new user
+app.put('/api/auth/change_password/:user_id', authController.updateUserPassword) // Change user's password
 
 // Error Handler
 app.use((err, req, res, next) => {
@@ -130,12 +132,16 @@ app.use((err, req, res, next) => {
       next();
    } else {
       let statusCode = err.statusCode || 500;
-      let message = err.message || 'Internal Server Error.'
-      logger.log({
-         level: 'error',
-         message: err.message,
-         endpoint: req.path
-      });
+      let message = err.message || 'Internal Server Error.';
+      if (statusCode === 500) {
+         logger.log({
+            level: 'error',
+            message: message,
+            endpoint: req.path || 'Unknown',
+            user: req.session.loggedInUser || 'Unknown',
+            stack: err.stack || 'Unavailable',
+         });
+      }
       res.status(statusCode).send(message);
    }
 });

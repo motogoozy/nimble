@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ProfilePage.scss';
 import Avatar from '../../components/Avatar/Avatar';
 import { formatColor, getUserInitials } from '../../utils';
+import ColorPicker from '../../components/ColorPicker/ColorPicker';
 
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -11,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Swal from 'sweetalert2';
 
 const useStyles = makeStyles(theme => ({
    root: {
@@ -36,44 +38,105 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ProfilePage(props) {
-   const [oldUserDetails, setOldUserDetails] = useState();
+   const [userDetails, setUserDetails] = useState();
    const [newUserDetails, setNewUserDetails] = useState();
-   const [newColor, setNewColor] = useState();
-   const [editUserDetails, setEditUserDetails] = useState(false);
-   const [editPassword, setEditPassword] = useState(false);
    const [oldPassword, setOldPassword] = useState('');
    const [newPassword, setNewPassword] = useState('');
    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+   const [editUserDetails, setEditUserDetails] = useState(false);
+   const [editPassword, setEditPassword] = useState(false);
+   const [displayColorPicker, setDisplayColorPicker] = useState(false);
+   const [passwordErrMsg, setPasswordErrMsg] = useState('');
 
    useEffect(() => {
       axios.get('/auth/user_session')
          .then(res => {
-            setOldUserDetails(res.data);
+            setUserDetails(res.data);
             setNewUserDetails(res.data);
          })
          .catch(err => console.log(err.response.data));
    }, []);
 
-   // useEffect(() => {
-   //    console.log(oldPassword)
-   //    console.log(newPassword)
-   //    console.log(confirmNewPassword)
-   // }, [oldPassword, newPassword, confirmNewPassword])
+   const updateUserDetails = async (newColor) => {
+      const { user_id } = userDetails;
+      const body = {
+         first_name: newUserDetails.first_name,
+         last_name: newUserDetails.last_name,
+         email: newUserDetails.email,
+         color: newColor || userDetails.color
+      };
 
-   const handleEditUserDetails = (key, value) => {
-      setNewUserDetails({...oldUserDetails, [key]: value});
+      try {
+         let res = await axios.put(`/user/${user_id}`, body);
+         setUserDetails(res.data);
+         setNewUserDetails(res.data);
+      } catch (err) {
+         console.log(err);
+      } finally {
+         setEditUserDetails(false);
+      }
    };
 
+   const updatePassword = async () => {
+      const { user_id } = userDetails;
+      const body = {
+         oldPassword: oldPassword,
+         newPassword: newPassword
+      };
+
+      if (newPassword !== confirmNewPassword) {
+         setPasswordErrMsg('Passwords do not match.');
+         return;
+      }
+
+      try {
+         let res = await axios.put(`/auth/change_password/${user_id}`, body);
+         Swal.fire({
+            type: 'success',
+            title: res.data,
+            // position: 'top-end',
+            showConfirmButton: false,
+            timer: 1000
+         }).then(() => {
+            clearFields();
+            setEditPassword(false);
+         })
+      } catch (err) {
+         console.log(err.response.data);
+         setPasswordErrMsg(err.response.data);
+      }
+   };
+
+   const clearFields = () => {
+      setPasswordErrMsg('');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+   };
+
+   const handleEditUserDetails = (key, value) => {
+      setNewUserDetails({...userDetails, [key]: value});
+   };
+
+   const handleColorChange = (event) => {
+		const { r, g, b, a } = event.rgb;
+      const codeArr = [r, g, b, a];
+      updateUserDetails(codeArr);
+      setDisplayColorPicker(false);
+	};
+
    const cancelEditUserDetails = () => {
-      setNewUserDetails({...oldUserDetails});
+      setNewUserDetails({...userDetails});
       setEditUserDetails(false);
    };
 
    const cancelEditPassword = () => {
+      clearFields();
       setEditPassword(false);
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
+   };
+
+   const closeColorPicker = () => {
+      setDisplayColorPicker(false);
    };
 
    const classes = useStyles();
@@ -83,16 +146,30 @@ export default function ProfilePage(props) {
          <i className="far fa-arrow-alt-circle-left cursor-pointer profile-back-button" onClick={() => props.history.goBack()}></i>
 
          {
-            newUserDetails
+            newUserDetails && userDetails
             &&
             <div className='user-info-container'>
                <Avatar
-                  color={formatColor(newUserDetails.color)}
-                  initials={getUserInitials(newUserDetails)}
+                  color={formatColor(userDetails.color)}
+                  initials={getUserInitials(userDetails)}
                   size={'5rem'}
                   fontSize={'2.5rem'}
                />
-               <p className='change-color-button'>Change Color</p>
+               <p onClick={() => setDisplayColorPicker(true)} className='change-color-button'>Change Color</p>
+
+               {
+                  displayColorPicker
+                  &&
+                  <div className='modal-wrapper' onClick={() => setDisplayColorPicker(false)}>
+                     <div className='profile-color-container' onClick={e => e.stopPropagation()}>
+                        <p>Select New Color:</p>
+                        <ColorPicker
+                           handleColorChange={e => handleColorChange(e)}
+                           closeColorPicker={closeColorPicker}
+                        />
+                     </div>
+                  </div>
+               }
 
                <Container component="main" maxWidth="xs">
                   <CssBaseline />
@@ -101,9 +178,9 @@ export default function ProfilePage(props) {
                         {
                            !editPassword
                            ?
-                           'Profile Settings'
+                           <p style={{ color: displayColorPicker ? 'white' : 'black' }}>Profile Settings</p>
                            :
-                           'Change Password'
+                           <p style={{ color: displayColorPicker ? 'white' : 'black' }}>Change Password</p>
                         }
                      </Typography>
                      <form className={classes.form} noValidate>
@@ -169,7 +246,12 @@ export default function ProfilePage(props) {
                                                 fullWidth
                                                 variant="contained"
                                                 color="primary"
-                                                // onClick={register}
+                                                onClick={() => updateUserDetails()}
+                                                disabled={
+                                                   !newUserDetails.first_name ||
+                                                   !newUserDetails.last_name ||
+                                                   !newUserDetails.email
+                                                }
                                              >Save</Button>
                                           </div>
                                        </>
@@ -227,6 +309,14 @@ export default function ProfilePage(props) {
                                     />
                                  </Grid>
 
+                                 {
+                                    passwordErrMsg
+                                    &&
+                                    <div className='password-err-msg-container'>
+                                       <p>{passwordErrMsg}</p>
+                                    </div>
+                                 }
+
                                  <div className='profile-button-container'>
                                     <div className='profile-button'>
                                        <Button
@@ -242,7 +332,8 @@ export default function ProfilePage(props) {
                                           fullWidth
                                           variant="contained"
                                           color="primary"
-                                          // onClick={register}
+                                          onClick={updatePassword}
+                                          disabled={!oldPassword || !newPassword || !confirmNewPassword}
                                        >Save</Button>
                                     </div>
                                  </div>

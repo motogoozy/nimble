@@ -41,7 +41,9 @@ module.exports = {
 
          const passwordMatch = bcrypt.compareSync(password, user[0].hash);
          if (!passwordMatch) {
-            res.status(401).send('Incorrect username or password. Please try again.');
+            let err = new Error('Incorrect username or password. Please try again.');
+            err.statusCode = 401;
+            next(err);
          } else {
             const userObj = {
                user_id: user[0].user_id,
@@ -77,4 +79,35 @@ module.exports = {
          next(err);
       }
    },
+   updateUserPassword: async (req, res, next) => {
+      const { user_id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+      const db = req.app.get('db');
+
+      try {
+         const user = await db.auth.find_user_by_id({ user_id });
+
+         if (!user[0]) {
+            let err = new Error('User not found.');
+            err.statusCode = 404;
+            next(err);
+         }
+
+         const passwordMatch = bcrypt.compareSync(oldPassword, user[0].hash);
+         if (!passwordMatch) {
+            let err = new Error('Incorrect password. Please try again.');
+            err.statusCode = 400;
+            next(err);
+         } else {
+            const salt = bcrypt.genSaltSync();
+            const hash = bcrypt.hashSync(newPassword, salt);
+            await db.auth.update_user_password({ user_id, hash });
+            res.status(200).send('Password successfully updated.');
+         }
+      } catch (err) {
+         console.log(err.stack);
+         err.message = 'Unable to change password.';
+         next(err);
+      }
+   }
 }
