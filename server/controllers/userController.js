@@ -21,4 +21,14 @@ module.exports = {
 			res.status(500).send('Unable to get user by email.');
 		}
 	},
+	editUserDetails: async (req, res) => {
+		const { first_name, last_name, email } = req.body;
+		const db = req.app.get('db');
+		try {
+
+		} catch (err) {
+			console.log(err);
+			res.status(500).send('Unable to update user details.');
+		}
+	}
 }

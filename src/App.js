@@ -19,7 +19,7 @@ export default function App() {
          if (err.response.status === 500) {
             Swal.fire({
                type: 'error',
-               title: 'Internal Server Error',
+               title: 'Something went wrong...',
                text: err.response.data,
             })
          }

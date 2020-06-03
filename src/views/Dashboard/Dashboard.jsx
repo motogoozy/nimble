@@ -72,7 +72,6 @@ export default class Dashboard extends Component {
          }).then(() => {
             this.props.history.push('/');
          })
-         console.log(res.data);
       } catch (err) {
          console.log(err.response.data);
          this.props.history.push('/');
@@ -386,8 +385,6 @@ export default class Dashboard extends Component {
    };
 
    handleSidebarSelection = (selection) => {
-      if (!this.state.projectId) return;
-      
       if (selection === 'people') {
          this.setState({
             displayPeople: true,
@@ -761,9 +758,15 @@ export default class Dashboard extends Component {
                         }
                         </>
                         :
-                        <div className='progress-container'>
-                           <PulseLoader size={15} color={'#995D81'} />
-                        </div>
+                        <>
+                           {
+                              this.state.projectId
+                              &&
+                              <div className='progress-container'>
+                                 <PulseLoader size={15} color={'#995D81'} />
+                              </div>
+                           }
+                        </>
                      }
                      </>
                   }

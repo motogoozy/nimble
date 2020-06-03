@@ -1,5 +1,5 @@
 module.exports = {
-   getProjectsByUserId: async (req, res) => {
+   getProjectsByUserId: async (req, res, next) => {
       const { user_id } = req.params;
       const db = req.app.get('db');
       try {
@@ -7,8 +7,8 @@ module.exports = {
          res.status(200).send(projects);
       }
       catch (err) {
-         console.log(err);
-         res.status(500).send('Unable to get projects by user id.');
+         err.message = 'Unable to get user projects.';
+         next(err);
       }
    },
    getProjectById: async (req, res) => {

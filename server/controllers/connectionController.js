@@ -1,16 +1,16 @@
 module.exports = {
-   getUserConnections: async (req, res) => {
+   getUserConnections: async (req, res, next) => {
       const { user_id } = req.params;
       const db = req.app.get('db');
       try {
          let connections = await db.connection.get_connections({ user_id });
          res.status(200).send(connections);
       } catch(err) {
-         console.log(err);
-         res.status(500).send('Could not get user connections.');
+         err.message = 'Could not get user connections.';
+         next(err);
       }
    },
-   addUserConnection: async (req, res) => {
+   addUserConnection: async (req, res, next) => {
       const { user_id } = req.params;
       const { email } = req.body;
       const db = req.app.get('db');
@@ -24,11 +24,13 @@ module.exports = {
             });
             res.status(200).send(inserted[0]);
          } else {
-            res.status(404).send('User not found. Please try a different email.');
+            let err = new Error('User not found. Please try a different email.');
+            err.statusCode = 404;
+            next(err);
          }
       } catch (err) {
-         console.log(err);
-         res.status(500).send('Could not add user connection.');
+         err.message('Could not add user connection.');
+         next(err);
       }
    },
    acceptUserConnection: async (req, res) => {

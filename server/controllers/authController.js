@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 module.exports = {
-   register: async (req, res) => {
+   register: async (req, res, next) => {
       const { first_name, last_name, email, password, color } = req.body;
       const db = req.app.get('db');
 
@@ -9,8 +9,9 @@ module.exports = {
          const existingUser = await db.auth.find_user({ email });
 
          if (existingUser.length >= 1) {
-            res.status(400).send('A user with this email already exists. Please enter a different email.')
-            return;
+            let err = new Error('A user with this email already exists. Please enter a different email.');
+            err.statusCode = 403;
+            next(err);
          }
 
          const salt = bcrypt.genSaltSync();
@@ -21,10 +22,11 @@ module.exports = {
          req.session.cookie.maxAge = 1000 * 60 * 30;
          res.status(200).send(newUser[0]);
       } catch (err) {
-         res.status(500).send('Error creating user.');
+         err.message = 'Error creating user.';
+         next(err)
       }
    },
-   login: async (req, res) => {
+   login: async (req, res, next) => {
       const { email, password } = req.body;
       const db = req.app.get('db');
 
@@ -32,8 +34,9 @@ module.exports = {
          const user = await db.auth.find_user({ email });
 
          if (!user[0]) {
-            res.status(404).send('Incorrect username or password. Please try again.');
-            return;
+            let err = new Error('Incorrect username or password. Please try again.');
+            err.statusCode = 404;
+            next(err);
          }
 
          const passwordMatch = bcrypt.compareSync(password, user[0].hash);
@@ -52,24 +55,26 @@ module.exports = {
             res.status(200).send(userObj);
          }
       } catch (err) {
-         console.log(err);
-         res.status(500).send('Error logging in.');
+         err.message = 'Error logging in.';
+         next(err);
       }
    },
-   logout: (req, res) => {
+   logout: (req, res, next) => {
       try {
          req.session.destroy();
          res.status(200).send('Successfully logged out.')
       } catch (err) {
-         console.log(err);
-         res.status(500).send('Error logging out.');
+         err.message('Error logging out.');
+         next(err);
       }
    },
-   getUserSession: (req, res) => {
+   getUserSession: (req, res, next) => {
       if (req.session.loggedInUser) {
          res.status(200).send(req.session.loggedInUser);
       } else {
-         res.status(401).send('Please log in.');
+         let err = new Error('Please log in.');
+         err.statusCode = 401;
+         next(err);
       }
    },
 }

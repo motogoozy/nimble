@@ -200,6 +200,11 @@ export default class People extends Component {
 			});
 		} catch (err) {
 			console.log(err.response.data);
+			Swal.fire({
+				type: 'warning',
+				title: 'Not Found.',
+				text: err.response.data,
+			})
 		}
 	};
 
@@ -543,7 +548,7 @@ export default class People extends Component {
                />
                <div>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddUserConnection}>Cancel</Button>
-                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addUserConnection}>Save</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addUserConnection}>Add</Button>
                </div>
             </div>
 			</div>

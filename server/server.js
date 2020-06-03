@@ -36,7 +36,6 @@ app.use((req, res, next) => { // authentication before every request
    }
 });
 
-
 // DATABASE CONNECTION
 massive(DATABASE_URL)
    .then(db => {
@@ -96,17 +95,18 @@ app.get('/api/auth/logout', authController.logout) // Logout
 app.post('/api/auth/login', authController.login); // Login
 app.post('/api/auth/register', authController.register); // Register/Create new user
 
-
-// Handle Internal Server Errors
-app.use((err, req, res, next) => {
-   if (!err) {
-      return next();
-   }
-   
-   res.status(500).send(`Something went wrong on our end. We'll look into it.`);
-   next();
-})
-
+// Return main app file for SPA
 app.get('*', (req, res)=>{
    res.sendFile(path.join(__dirname, '../build/index.html'));
+});
+
+// Error Handler
+app.use((err, req, res, next) => {
+   if (!err) {
+      next();
+   } else {
+      let statusCode = err.statusCode || 500;
+      let errMessage = err.message || 'Internal Server Error.'
+      res.status(statusCode).send(errMessage);
+   }
 });
