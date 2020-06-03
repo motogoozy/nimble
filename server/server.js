@@ -9,11 +9,13 @@ const express = require('express');
 const massive = require('massive');
 const session = require('express-session');
 const path = require('path');
+const winston = require('winston');
+const { format, transports } = winston;
 require('dotenv').config();
 
+const app = express();
 const { PORT, DEV_PORT, DATABASE_URL, SECRET } = process.env;
 const port = PORT || DEV_PORT;
-const app = express();
 
 // MIDDLEWARE
 app.use(express.static( `${__dirname}/../build` ));
@@ -46,6 +48,33 @@ massive(DATABASE_URL)
       })
    })
    .catch(err => console.log(`Error connecting to database: ${err}`));
+
+// LOGGER
+const logger = winston.createLogger({
+   level: 'info',
+   format: format.combine(
+      format.timestamp({
+         format: 'YYYY-MM-DD HH:mm:ss'
+      }),
+      format.errors({ stack: true }),
+      format.splat(),
+      format.json()
+   ),
+   transports: [
+      new transports.File({ filename: 'error.log', level: 'error' }),
+      new transports.File({ filename: 'combined.log' }),
+   ]
+});
+
+// If we're not in production then log to the `console` with the format:`${info.level}: ${info.message} JSON.stringify({ ...rest )
+if (process.env.NODE_ENV !== 'production') {
+   logger.add(new winston.transports.Console({
+      format: winston.format.combine(
+         format.colorize(),
+         format.simple()
+      )
+   }));
+}
 
 // ENDPOINTS
 // Project
@@ -95,18 +124,23 @@ app.get('/api/auth/logout', authController.logout) // Logout
 app.post('/api/auth/login', authController.login); // Login
 app.post('/api/auth/register', authController.register); // Register/Create new user
 
-// Return main app file for SPA
-app.get('*', (req, res)=>{
-   res.sendFile(path.join(__dirname, '../build/index.html'));
-});
-
 // Error Handler
 app.use((err, req, res, next) => {
    if (!err) {
       next();
    } else {
       let statusCode = err.statusCode || 500;
-      let errMessage = err.message || 'Internal Server Error.'
-      res.status(statusCode).send(errMessage);
+      let message = err.message || 'Internal Server Error.'
+      logger.log({
+         level: 'error',
+         message: err.message,
+         endpoint: req.path
+      });
+      res.status(statusCode).send(message);
    }
+});
+
+// Return main app file for SPA
+app.get('*', (req, res)=>{
+   res.sendFile(path.join(__dirname, '../build/index.html'));
 });

@@ -33,7 +33,7 @@ module.exports = {
          next(err);
       }
    },
-   acceptUserConnection: async (req, res) => {
+   acceptUserConnection: async (req, res, next) => {
       const { connection_id } = req.params;
       const { user_id } = req.body;
       const db = req.app.get('db');
@@ -45,19 +45,21 @@ module.exports = {
                let added = await db.connection.accept_user_connection({ connection_id });
                res.status(200).send(added[0]);
             } else {
-               res.status(403).send({
-                  message: 'You do not have permission to perform this action.'
-               })
+               let err = new Error('You do not have permission to perform this action.');
+               err.statusCode = 403;
+               next(err);
             }
          } else {
-            res.status(404).send('Connection not found.');
+            let err = new Error('Connection not found.');
+            err.statusCode = 404;
+            next(err);
          }
       } catch (err) {
-         console.log(err);
-         res.status(500).send('Could not accept user connection.');
+         err.message = 'Could not accept user connection.';
+         next(err);
       }
    },
-   deleteUserConnection: async (req, res) => {
+   deleteUserConnection: async (req, res, next) => {
       const { connection_id, user_id } = req.params;
       const db = req.app.get('db');
 
@@ -68,16 +70,18 @@ module.exports = {
                let deleted = await db.connection.delete_user_connection({ connection_id });
                res.status(200).send(deleted[0]);
             } else {
-               res.status(403).send({
-                  message: 'You do not have permission to perform this action.'
-               })
+               let err = new Error('You do not have permission to perform this action.');
+               err.statusCode = 403;
+               next(err);
             }
          } else {
-            res.status(404).send('Connection not found.');
+            let err = new Error('Connection not found.');
+            err.statusCode = 404;
+            next(err);
          }
       } catch (err) {
-         console.log(err);
-         res.status(500).send('Could not delete user connection');
+         err.message = 'Could not delete user connection';
+         next(err);
       }
    },
 };
