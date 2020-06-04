@@ -185,7 +185,7 @@ export default class People extends Component {
 		const { newUserEmail } = this.state;
 		const { loggedInUser } = this.props;
 		const body = {
-			email: newUserEmail,
+			email: newUserEmail.toLowerCase(),
 		};
 
 		try {
