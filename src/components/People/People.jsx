@@ -49,7 +49,7 @@ export default class People extends Component {
 	getUserConnections = async () => {
 		const { loggedInUser } = this.props;
 
-		const res = await axios.get(`/connection//user/${loggedInUser.user_id}`);
+		const res = await axios.get(`/connection/user/${loggedInUser.user_id}`);
 		let current = [], requests = [], pending = [];
 		res.data.forEach(connection => {
 			if (connection.status === 2) {
