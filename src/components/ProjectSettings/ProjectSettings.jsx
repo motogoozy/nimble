@@ -239,7 +239,7 @@ export default function ProjectSettings(props) {
                         </>
                         :
                         <div className='permissions-owner-message'>
-                           <p>Only Project Owners change permissions.</p>
+                           <p>Only Project Owners can change permissions.</p>
                         </div>
                      }
                   </div>

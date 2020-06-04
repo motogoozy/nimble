@@ -6,7 +6,7 @@ module.exports = {
          let lists = await db.list.get_lists({ project_id });
          res.status(200).send(lists);
       } catch(err) {
-         err.message = 'Unable to get lists.';
+         err.clientMessage = 'Unable to get lists.';
          next(err);
       }
    },
@@ -17,7 +17,7 @@ module.exports = {
          let list = await db.list.get_list_by_id({ list_id });
          res.status(200).send(list[0]);
       } catch (err) {
-         err.message = 'Unable to get list.';
+         err.clientMessage = 'Unable to get list.';
          next(err);
       }
    },
@@ -29,7 +29,7 @@ module.exports = {
 			let newList = await db.list.create_list({ title, color_code, archived, project_id, task_order });
 			res.status(200).send(newList);
 		} catch(err) {
-         err.message = 'Could not create list.';
+         err.clientMessage = 'Could not create list.';
          next(err);
 		}
    },
@@ -47,7 +47,7 @@ module.exports = {
          });
          res.status(200).send(updatedList);
       } catch(err) {
-         err.message = 'Could not update list.';
+         err.clientMessage = 'Could not update list.';
          next(err);
       }
    },
@@ -58,7 +58,7 @@ module.exports = {
          let deletedList = await db.list.delete_list({ list_id });
 			res.status(200).send(deletedList);
 		} catch(err) {
-         err.message = 'Could not delete list.';
+         err.clientMessage = 'Could not delete list.';
          next(err);
 		}
    },

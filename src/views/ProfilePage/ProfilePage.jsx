@@ -66,8 +66,26 @@ export default function ProfilePage(props) {
          color: newColor || userDetails.color
       };
 
+      if (
+         userDetails.first_name === newUserDetails.first_name &&
+         userDetails.last_name === newUserDetails.last_name &&
+         userDetails.email === newUserDetails.email &&
+         newColor === newUserDetails.color
+      ) {
+         console.log('No changes to commit.');
+         setEditUserDetails(false);
+         return;
+      };
+
       try {
          let res = await axios.put(`/user/${user_id}`, body);
+         Swal.fire({
+            type: 'success',
+            title: 'Profile successfully updated.',
+            // position: 'top-end',
+            showConfirmButton: false,
+            timer: 1000
+         })
          setUserDetails(res.data);
          setNewUserDetails(res.data);
       } catch (err) {
@@ -100,6 +118,7 @@ export default function ProfilePage(props) {
          }).then(() => {
             clearFields();
             setEditPassword(false);
+            setEditUserDetails(false);
          })
       } catch (err) {
          console.log(err.response.data);
@@ -121,8 +140,8 @@ export default function ProfilePage(props) {
    const handleColorChange = (event) => {
 		const { r, g, b, a } = event.rgb;
       const codeArr = [r, g, b, a];
-      updateUserDetails(codeArr);
       setDisplayColorPicker(false);
+      updateUserDetails(codeArr);
 	};
 
    const cancelEditUserDetails = () => {
@@ -133,6 +152,7 @@ export default function ProfilePage(props) {
    const cancelEditPassword = () => {
       clearFields();
       setEditPassword(false);
+      setEditUserDetails(false);
    };
 
    const closeColorPicker = () => {

@@ -6,7 +6,7 @@ module.exports = {
          let connections = await db.connection.get_connections({ user_id });
          res.status(200).send(connections);
       } catch(err) {
-         err.message = 'Could not get user connections.';
+         err.clientMessage = 'Could not get user connections.';
          next(err);
       }
    },
@@ -29,7 +29,7 @@ module.exports = {
             next(err);
          }
       } catch (err) {
-         err.message('Could not add user connection.');
+         err.clientMessage('Could not add user connection.');
          next(err);
       }
    },
@@ -55,7 +55,7 @@ module.exports = {
             next(err);
          }
       } catch (err) {
-         err.message = 'Could not accept user connection.';
+         err.clientMessage = 'Could not accept user connection.';
          next(err);
       }
    },
@@ -80,7 +80,7 @@ module.exports = {
             next(err);
          }
       } catch (err) {
-         err.message = 'Could not delete user connection';
+         err.clientMessage = 'Could not delete user connection';
          next(err);
       }
    },

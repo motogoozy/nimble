@@ -6,7 +6,7 @@ module.exports = {
          let tasks = await db.task.get_tasks({ project_id });
          res.status(200).send(tasks);
       } catch (err) {
-         err.message = 'Unable to get all tasks.';
+         err.clientMessage = 'Unable to get all tasks.';
          next(err);
       }
    },
@@ -17,7 +17,7 @@ module.exports = {
          let tasks = await db.task.get_tasks_by_user_id({ user_id });
          res.status(200).send(tasks);
       } catch (err) {
-         err.message = 'Unable to get tasks.';
+         err.clientMessage = 'Unable to get tasks.';
          next(err);
       }
    },
@@ -31,7 +31,7 @@ module.exports = {
          let added = await db.task.create_task({ project_id, title, status, created_by, created_at, list_id });
          res.status(200).send(added[0]);
       } catch (err) {
-         err.message = 'Unable to create task.';
+         err.clientMessage = 'Unable to create task.';
          next(err);
       }
    },
@@ -43,7 +43,7 @@ module.exports = {
          let updatedTask = await db.task.update_task({ task_id, title, notes, status, list_id, created_at, created_by });
          res.status(200).send(updatedTask[0]);
       } catch (err) {
-         err.message = 'Unable to update task.';
+         err.clientMessage = 'Unable to update task.';
          next(err);
       }
    },
@@ -54,7 +54,7 @@ module.exports = {
          let deletedTask = await db.task.delete_task({ task_id });
          res.status(200).send(deletedTask[0]);
       } catch (err) {
-         err.message = 'Unable to delete task.';
+         err.clientMessage = 'Unable to delete task.';
          next(err);
       }
    },
@@ -66,7 +66,7 @@ module.exports = {
          let deleted = await db.task.delete_all_tasks_by_list({ list_id });
          res.status(200).send(deleted);
       } catch (err) {
-         err.message = 'Unable to delete tasks.';
+         err.clientMessage = 'Unable to delete tasks.';
          next(err);
       }
    },
@@ -86,7 +86,7 @@ module.exports = {
          });
          res.status(200).send(unassignedTasks);
       } catch (err) {
-         err.message = 'Unable to get tasks.';
+         err.clientMessage = 'Unable to get tasks.';
          next(err);
       }
    },
@@ -97,7 +97,7 @@ module.exports = {
          let taskUsers = await db.task_users.get_all_task_users({ project_id });
          res.status(200).send(taskUsers)
       } catch (err) {
-         err.message = 'Unable to get task users.';
+         err.clientMessage = 'Unable to get task users.';
          next(err);
       }
    },
@@ -110,7 +110,7 @@ module.exports = {
          let added = await db.task_users.add_task_user({ task_id, user_id, project_id });
          res.status(200).send(added[0]);
       } catch (err) {
-         err.message = 'Unable to add task user.';
+         err.clientMessage = 'Unable to add task user.';
          next(err);
       }
    },
@@ -122,7 +122,7 @@ module.exports = {
          let deleted = await db.task_users.delete_task_user({ tu_id });
          res.status(200).send(deleted[0]);
       } catch (err) {
-         err.message = 'Unable to delete task user.';
+         err.clientMessage = 'Unable to delete task user.';
          next(err);
       }
    },
@@ -137,7 +137,7 @@ module.exports = {
          });
          res.status(200).send(deleted)
       } catch (err) {
-         err.message = 'Unable to delete task users.';
+         err.clientMessage = 'Unable to delete task users.';
          next(err);
       }
    },
@@ -149,7 +149,7 @@ module.exports = {
          let deleted = await db.task_users.delete_all_task_users_by_task({ task_id });
          res.status(200).send(deleted[0])
       } catch (err) {
-         err.message = 'Unable to delete task users.';
+         err.clientMessage = 'Unable to delete task users.';
          next(err);
       }
    },

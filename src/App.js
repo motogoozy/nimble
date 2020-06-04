@@ -20,7 +20,7 @@ export default function App() {
             Swal.fire({
                type: 'error',
                title: 'Something went wrong...',
-               text: err.response.data,
+               text: `${err.response.data} (Internal Server Error)`,
             })
          }
       }

@@ -6,7 +6,7 @@ module.exports = {
 			let user = await db.user.get_user_by_id({ user_id });
 			res.status(200).send(user[0]);
 		} catch (err) {
-			err.message = 'Unable to get user..';
+			err.clientMessage = 'Unable to get user..';
 			next(err);
 		}
 	},
@@ -17,7 +17,7 @@ module.exports = {
 			let foundUser = await db.user.get_user_by_email({ email });
 			res.status(200).send(foundUser);
 		} catch(err) {
-			err.message = 'Unable to get user by email.';
+			err.clientMessage = 'Unable to get user by email.';
 			next(err);
 		}
 	},
@@ -32,7 +32,7 @@ module.exports = {
 			req.session.loggedInUser = updatedUser[0];
 			res.status(200).send(updatedUser[0]);
 		} catch (err) {
-			err.message = 'Unable to update user details.';
+			err.clientMessage = 'Unable to update user details.';
 			next(err);
 		}
 	}
