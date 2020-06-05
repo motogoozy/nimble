@@ -269,13 +269,22 @@ export default class Dashboard extends Component {
 
    addList = async () => {
       const { projectId, newColorCode, title, lists, listOrder } = this.state;
-
       const body = {
          title: title,
          color_code: newColorCode,
          archived: false,
          task_order: [],
       };
+
+      if (title.length > 50) {
+         Swal.fire({
+            type: 'warning',
+            title: 'Oops!',
+            text: 'List title must be under 50 characters in length.',
+         })
+         return;
+      }
+
       this.setState({ displayAddListModal: false });
       try {
          let res = await axios.post(`/project/${projectId}/list`, body);
@@ -326,32 +335,44 @@ export default class Dashboard extends Component {
       return updated;
    };
 
-   deleteList = async (databaseId, id) => {
+   deleteList = (databaseId, id) => {
       const { project_id, listOrder, lists } = this.state;
 
-      try {
-         let tasksToRemove = lists[databaseId].taskIds;
-         let removedTaskPromises = tasksToRemove.map(id => {
-            return axios.delete(`/task_users/task/${id}`);
-         })
-         await Promise.all(removedTaskPromises);
-         await axios.delete(`/tasks/list/${databaseId}`);
-         await axios.delete(`/project/${project_id}/list/${databaseId}`);
-         const indexToRemove = listOrder.indexOf(id);
-         let newOrder = Array.from(listOrder);
-         newOrder.splice(indexToRemove, 1);
-         let newLists = lists;
-         delete newLists[id];
-         this.setState({
-            lists: newLists,
-            listOrder: newOrder,
-         }, () => {
-            this.updateProject();
-            console.log('List and tasks successfully deleted.')
-         });
-      } catch(err) {
-         console.log(err.response.data);
-      }
+      Swal.fire({
+         type: 'warning',
+         title: 'Are you sure?',
+         text: "This list will be permanently deleted!",
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+      }).then(async (res) => {
+         if (res.value) {
+            try {
+               let tasksToRemove = lists[databaseId].taskIds;
+               let removedTaskPromises = tasksToRemove.map(id => {
+                  return axios.delete(`/task_users/task/${id}`);
+               })
+               await Promise.all(removedTaskPromises);
+               await axios.delete(`/tasks/list/${databaseId}`);
+               await axios.delete(`/project/${project_id}/list/${databaseId}`);
+               const indexToRemove = listOrder.indexOf(id);
+               let newOrder = Array.from(listOrder);
+               newOrder.splice(indexToRemove, 1);
+               let newLists = lists;
+               delete newLists[id];
+               this.setState({
+                  lists: newLists,
+                  listOrder: newOrder,
+               }, () => {
+                  this.updateProject();
+                  console.log('List and tasks successfully deleted.')
+               });
+            } catch(err) {
+               console.log(err.response.data);
+            }
+         }
+      })
    };
 
    updateListIdOnTask = async (taskId, listId) => {
@@ -664,6 +685,7 @@ export default class Dashboard extends Component {
                         id="standard-required"
                         onChange={e => this.handleInput('title', e.target.value)}
                         autoFocus
+                        placeohlder='Title (50 chars max)'
                      />
                   </div>
                   <div>

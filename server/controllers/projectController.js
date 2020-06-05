@@ -109,4 +109,13 @@ module.exports = {
          next(err);
       }
    },
+   archiveProject: async (req, res, next) => {
+      const { project_id } = req.params;
+      const db = req.app.get('db');
+      try {
+
+      } catch (err) {
+         
+      }
+   }
 };

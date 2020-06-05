@@ -123,6 +123,16 @@ class Header extends Component {
          title: newProjectName,
          created_by: loggedInUser.user_id,
       };
+
+      if (newProjectName.length > 50) {
+         Swal.fire({
+            type: 'warning',
+            title: 'Oops!',
+            text: 'Project name must be under 50 characters in length.',
+         })
+         return;
+      }
+
       try {
          let res = await axios.post('/project', body);
          await axios.post(`/project/${res.data.project_id}/user/${loggedInUser.user_id}`);
@@ -181,6 +191,7 @@ class Header extends Component {
                   label="Project Name"
                   onChange={e => this.handleInput('newProjectName', e.target.value)}
                   autoFocus
+                  placeholder='Name (50 chars max)'
                />
                <div>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddProject}>Cancel</Button>
