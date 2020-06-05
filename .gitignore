@@ -21,6 +21,7 @@
 .env.production.local
 error.log
 combined.log
+requests.rest
 
 npm-debug.log*
 yarn-debug.log*
