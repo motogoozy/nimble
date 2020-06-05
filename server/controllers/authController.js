@@ -22,7 +22,7 @@ module.exports = {
          req.session.cookie.maxAge = 1000 * 60 * 30;
          res.status(200).send(newUser[0]);
       } catch (err) {
-         err.message = 'Error creating user.';
+         err.clientMessage = 'Error creating user.';
          next(err)
       }
    },
@@ -57,7 +57,7 @@ module.exports = {
             res.status(200).send(userObj);
          }
       } catch (err) {
-         err.message = 'Error logging in.';
+         err.clientMessage = 'Error logging in.';
          next(err);
       }
    },
@@ -66,7 +66,7 @@ module.exports = {
          req.session.destroy();
          res.status(200).send('Successfully logged out.')
       } catch (err) {
-         err.message('Error logging out.');
+         err.clientMessage('Error logging out.');
          next(err);
       }
    },
@@ -106,7 +106,7 @@ module.exports = {
          }
       } catch (err) {
          console.log(err.stack);
-         err.message = 'Unable to change password.';
+         err.clientMessage = 'Unable to change password.';
          next(err);
       }
    }

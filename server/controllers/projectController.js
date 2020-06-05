@@ -7,7 +7,7 @@ module.exports = {
          res.status(200).send(projects);
       }
       catch (err) {
-         err.message = 'Unable to get user projects.';
+         err.clientMessage = 'Unable to get user projects.';
          next(err);
       }
    },
@@ -19,7 +19,7 @@ module.exports = {
          res.status(200).send(project);
       }
       catch (err) {
-         err.message = 'Unable to get project.';
+         err.clientMessage = 'Unable to get project.';
          next(err);
       }
    },
@@ -30,7 +30,7 @@ module.exports = {
          let users = await db.project.get_project_users({ project_id });
          res.status(200).send(users);
       } catch (err) {
-         err.message = 'Unable to get project users.';
+         err.clientMessage = 'Unable to get project users.';
          next(err);
       }
    },
@@ -41,7 +41,7 @@ module.exports = {
          let permissions = await db.project.get_project_permissions({ project_id });
          res.status(200).send(permissions[0]);
       } catch (err) {
-         err.message = 'Unable to get project permissions.';
+         err.clientMessage = 'Unable to get project permissions.';
          next(err);
       }
    },
@@ -59,7 +59,7 @@ module.exports = {
          res.status(200).send(added[0]);
       }
       catch (err) {
-         err.message = 'Unable to create project.';
+         err.clientMessage = 'Unable to create project.';
          next(err);
       }
    },
@@ -70,7 +70,7 @@ module.exports = {
          let addedUser = await db.project.add_project_user({ project_id, user_id });
          res.status(200).send(addedUser[0]);
       } catch (err) {
-         err.message = 'Error adding user to project. Please try again.';
+         err.clientMessage = 'Error adding user to project. Please try again.';
          next(err);
       }
    },
@@ -82,7 +82,7 @@ module.exports = {
          let updatedProject = await db.project.update_project({ project_id, title, list_order });
          res.status(200).send(updatedProject);
       } catch (err) {
-         err.message = 'Unable to update project.';
+         err.clientMessage = 'Unable to update project.';
          next(err);
       }
    },
@@ -94,7 +94,7 @@ module.exports = {
          let updatedPermissions = await db.project.update_project_permissions({ ...permissions, project_id });
          res.status(200).send(updatedPermissions[0]);
       } catch (err) {
-         err.message = 'Unable to update project permissions.';
+         err.clientMessage = 'Unable to update project permissions.';
          next(err);
       }
    },
@@ -105,7 +105,7 @@ module.exports = {
          let deletedUser = await db.project.delete_project_user({ project_id, user_id });
          res.status(200).send(deletedUser[0]);
       } catch(err) {
-         err.message = 'Could not remove user from project.';
+         err.clientMessage = 'Could not remove user from project.';
          next(err);
       }
    },

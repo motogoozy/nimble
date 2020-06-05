@@ -132,17 +132,19 @@ app.use((err, req, res, next) => {
       next();
    } else {
       let statusCode = err.statusCode || 500;
-      let message = err.message || 'Internal Server Error.';
+      let clientMessage = err.clientMessage || err.message || 'Internal Server Error.';
+      
       if (statusCode === 500) {
          logger.log({
             level: 'error',
-            message: message,
+            clientMessage: clientMessage,
+            message: err.message || 'Unknown',
             endpoint: req.path || 'Unknown',
             user: req.session.loggedInUser || 'Unknown',
             stack: err.stack || 'Unavailable',
          });
       }
-      res.status(statusCode).send(message);
+      res.status(statusCode).send(clientMessage);
    }
 });
 
