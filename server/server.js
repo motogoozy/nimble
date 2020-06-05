@@ -83,6 +83,7 @@ app.get('/api/project/:project_id/users', projectController.getProjectUsers) // 
 app.get('/api/project/:project_id/permissions', projectController.getProjectPermissions) // Get Project Permissions
 app.post('/api/project', projectController.createProject); // Create Project
 app.post('/api/project/:project_id/user/:user_id', projectController.addProjectUser) // Add User to Project (Collaborator)
+app.put('/api/project/archive/:project_id', projectController.archiveProject) // Archive project
 app.put('/api/project/:project_id', projectController.updateProject); // Update Project
 app.put('/api/project/:project_id/permissions', projectController.updateProjectPermissions) // Update Project Permissions
 app.delete('/api/project/:project_id/user/:user_id', projectController.deleteProjectUser) // Remove User from Project (Collaborator)

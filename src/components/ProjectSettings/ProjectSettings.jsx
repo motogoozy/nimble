@@ -10,6 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
 import Swal from 'sweetalert2';
+import { useHistory } from 'react-router-dom';
 
 export default function ProjectSettings(props) {
    const [projectTitle, setProjectTitle] = useState();
@@ -26,6 +27,8 @@ export default function ProjectSettings(props) {
       add_collaborators: false,
       remove_collaborators: false,
    });
+
+   const history = useHistory();
 
    useEffect(() => {
       setProjectTitle(props.project.title);
@@ -58,6 +61,34 @@ export default function ProjectSettings(props) {
 				text: 'You do not have permission to edit this project.',
 			})
       }
+   };
+
+   const archiveProject = () => {
+      Swal.fire({
+         type: 'warning',
+         title: 'Are you sure?',
+         text: "This project and all associated lists and tasks will be permanently deleted!",
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+      }).then(async (res) => {
+         if (res.value) {
+            await axios.put(`/project/archive/${props.project.project_id}`);
+            Swal.fire({
+               type: 'success',
+               title: 'Project deleted',
+               // position: 'top-end',
+               showConfirmButton: false,
+               timer: 1000
+            }).then(() => {
+               history.push('/dashboard');
+               window.location.reload();
+            }).catch(err => {
+               console.log(err);
+            })
+         }
+      })
    };
 
    const CustomSwitch = withStyles({
@@ -246,14 +277,18 @@ export default function ProjectSettings(props) {
                </div>
       
                <div className='project-settings-footer'>
-                  <Tooltip title={'Delete List'}>
-                     <div className='delete-project-container cursor-pointer'>
-                        <IconButton aria-label="delete">
-                           <DeleteIcon />
-                        </IconButton>
-                        <p>Delete Project</p>
-                     </div>
-                  </Tooltip>
+                  {
+                     props.loggedInUser.user_id === props.project.created_by
+                     &&
+                     <Tooltip title={'Delete List'}>
+                        <div className='delete-project-container cursor-pointer' onClick={archiveProject}>
+                           <IconButton aria-label="delete">
+                              <DeleteIcon />
+                           </IconButton>
+                           <p>Delete Project</p>
+                        </div>
+                     </Tooltip>
+                  }
                </div>
             </>
             :

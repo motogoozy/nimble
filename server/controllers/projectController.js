@@ -113,9 +113,11 @@ module.exports = {
       const { project_id } = req.params;
       const db = req.app.get('db');
       try {
-
+         let archivedProject = await db.project.archive_project({ project_id });
+         res.status(200).send(archivedProject[0]);
       } catch (err) {
-         
+         err.clientMessage = 'Could not delete project';
+         next(err);
       }
    }
 };

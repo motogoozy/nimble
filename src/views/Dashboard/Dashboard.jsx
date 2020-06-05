@@ -366,7 +366,6 @@ export default class Dashboard extends Component {
                   listOrder: newOrder,
                }, () => {
                   this.updateProject();
-                  console.log('List and tasks successfully deleted.')
                });
             } catch(err) {
                console.log(err.response.data);
