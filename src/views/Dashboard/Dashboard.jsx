@@ -461,7 +461,11 @@ export default class Dashboard extends Component {
 		this.setState({ 
 			displayColorPicker: false,
 		});
-	};
+   };
+   
+   clearConnectionRequests = () => {
+      this.setState({ connectionRequests: [] });
+   };
 
    onDragStart = (result ) => {
       const { type } = result;
@@ -808,6 +812,7 @@ export default class Dashboard extends Component {
                            getConnectionRequests={this.getConnectionRequests}
                            getUserById={this.getUserById}
                            isLoading={this.state.isLoading}
+                           clearConnectionRequests={this.clearConnectionRequests}
                         />
                      </>
                   }

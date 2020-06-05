@@ -163,22 +163,53 @@ export default class People extends Component {
 		})
 	};
 
-	removeProjectUser = async (userId) => {
+	removeProjectUser = (userId) => {
 		const { projectId } = this.props;
 
-		try {
-			await axios.delete(`/project/${projectId}/user/${userId}`);
-			await axios.delete(`/task_users/project/${projectId}/user/${userId}`)
-			await this.props.getProjectUsers();
-			await this.props.getTaskUsers();
-			await this.props.getAllTasks();
-			await this.getUserConnections();
-			await this.getUserConnectionDetails();
-		} catch (err) {
-			if (err.response.data) {
-				console.log(err.response.data);
+		Swal.fire({
+         type: 'warning',
+         title: 'Are you sure?',
+         text: "This will remove the user from this project and all associated tasks.",
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+      }).then(async (res) => {
+			if (res.value) {
+				try {
+					await axios.delete(`/project/${projectId}/user/${userId}`);
+					await axios.delete(`/task_users/project/${projectId}/user/${userId}`)
+					await this.props.getProjectUsers();
+					await this.props.getTaskUsers();
+					await this.props.getAllTasks();
+					await this.getUserConnections();
+					await this.getUserConnectionDetails();
+				} catch (err) {
+					if (err.response.data) {
+						console.log(err.response.data);
+					}
+				}
+			}
+		})
+	};
+
+	checkExistingConnection = () => {
+		const { users, currentConnections, pendingConnections, connectionRequests, newUserEmail } = this.state;
+
+		for (let id in users) {
+			let user = users[id];
+			if (user.email.toLowerCase() === newUserEmail.toLowerCase()) {
+				if (currentConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
+					return 'You are already connected with this user.';
+				} else if (pendingConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
+					return 'You have already sent a connection request to this user.';
+				} else if (connectionRequests.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
+					return 'This user has already requested to connect with you. Check your connection requests.';
+				}
 			}
 		}
+
+		return null;
 	};
 
 	addUserConnection = async () => {
@@ -187,6 +218,17 @@ export default class People extends Component {
 		const body = {
 			email: newUserEmail.toLowerCase(),
 		};
+
+		const isAlreadyConnected = this.checkExistingConnection();
+
+		if (isAlreadyConnected) {
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: isAlreadyConnected,
+			})
+			return;
+		}
 
 		try {
 			await axios.post(`/connection/user/${loggedInUser.user_id}`, body);
@@ -215,34 +257,35 @@ export default class People extends Component {
 		});
 	};
 
-	removeUserConnection = async (connection) => {
-		const { loggedInUser, projectId } = this.props;
-		let userId;
+	removeUserConnection = (connection) => {
+		const { loggedInUser } = this.props;
 
-		if (connection.send_id === loggedInUser.user_id) {
-			userId = connection.receive_id;
-		} else {
-			userId = connection.send_id;
-		}
-
-		try {
-			await axios.delete(`/connection/${connection.connection_id}/user/${loggedInUser.user_id}`);
-			await axios.delete(`/project/${projectId}/user/${userId}`);
-			await axios.delete(`/task_users/project/${projectId}/user/${userId}`);
-			await this.props.getTaskUsers();
-			await this.props.getAllTasks();
-			this.setState({
-				users: ''
-			}, async () => {
-				await this.getUserConnections();
-				await this.getUserConnectionDetails();
-				await this.props.getProjectUsers();
-			})
-		} catch (err) {
-			if (err.response.data) {
-				console.log(err.response.data);
+		Swal.fire({
+         type: 'warning',
+         title: 'Are you sure?',
+         text: "Your connection to this user will be removed.",
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+      }).then(async (res) => {
+			if (res.value) {
+				try {
+					await axios.delete(`/connection/${connection.connection_id}/user/${loggedInUser.user_id}`);
+					this.setState({
+						users: ''
+					}, async () => {
+						await this.getUserConnections();
+						await this.getUserConnectionDetails();
+						this.props.clearConnectionRequests();
+					})
+				} catch (err) {
+					if (err.response.data) {
+						console.log(err.response.data);
+					}
+				}
 			}
-		}
+		})
 	};
 
 	acceptUserConnection = async (connectionId) => {
@@ -566,10 +609,10 @@ export default class People extends Component {
 						<div className='collaborators-column-header'>
 							<p>Project Collaborators</p>
 							{
-								currentConnections
+								currentConnections && projectId
 								&&
 								<div onClick={this.handleAddProjectUserClick}>
-									<SmallAddButton title={'Add User to Project'} />
+									<SmallAddButton title={'Add Person to Project'} />
 								</div>
 							}
 						</div>

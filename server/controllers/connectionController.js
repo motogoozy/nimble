@@ -17,12 +17,12 @@ module.exports = {
       try {
          let foundUser = await db.user.get_user_by_email({ email });
          if (foundUser[0]) {
-            let inserted = await db.connection.add_user_connection({
+            let addedConnection = await db.connection.add_user_connection({
                send_id: user_id,
                receive_id: foundUser[0].user_id,
                status: 1
             });
-            res.status(200).send(inserted[0]);
+            res.status(200).send(addedConnection[0]);
          } else {
             let err = new Error('User not found. Please try a different email.');
             err.statusCode = 404;

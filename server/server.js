@@ -117,7 +117,7 @@ app.delete('/api/task_users/task/:task_id', taskController.deleteTaskUsersByTask
 // Connection
 app.get('/api/connection/user/:user_id', connectionController.getUserConnections); // Get all connections for user
 app.post('/api/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
-app.put(`/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
+app.put(`/api/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
 app.delete('/api/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
 
 // Auth
