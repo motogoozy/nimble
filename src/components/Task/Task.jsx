@@ -68,7 +68,6 @@ export default class Task extends Component {
 	};
 
 	updateTask = async () => {
-		this.setState({ displayEditModal: false });
 		const { newTitle, notes, status, assignedUsers } = this.state;
 		const { id, list_id, created_at, created_by, projectId, taskUsers } = this.props;
 		const taskBody = {
@@ -80,6 +79,25 @@ export default class Task extends Component {
 			created_by: created_by,
 		};
 
+		if (newTitle.length > 60) {
+			Swal.fire({
+            type: 'warning',
+            title: 'Oops!',
+            text: 'Task title must be under 60 characters in length.',
+			})
+			return;
+		}
+
+		if (notes.length > 1000) {
+			Swal.fire({
+            type: 'warning',
+            title: 'Oops!',
+            text: 'Task notes must remain under 1000 characters in length.',
+			})
+			return;
+		}
+		
+		this.setState({ displayEditModal: false });
 		try {
 			let previouslyAssigned = this.props.assignedUsers;
 			let usersToAdd = [];

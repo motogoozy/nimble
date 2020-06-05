@@ -23,12 +23,12 @@ module.exports = {
    },
    createTask: async (req, res, next) => {
       const { project_id } = req.params;
-      const { title, created_by, list_id } = req.body;
+      const { title, created_by, list_id, notes } = req.body;
       let status = null;
       const created_at = new Date();
       const db = req.app.get('db');
       try {
-         let added = await db.task.create_task({ project_id, title, status, created_by, created_at, list_id });
+         let added = await db.task.create_task({ project_id, title, status, created_by, created_at, list_id, notes });
          res.status(200).send(added[0]);
       } catch (err) {
          err.clientMessage = 'Unable to create task.';

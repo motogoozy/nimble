@@ -8,8 +8,9 @@ import { formatColor } from '../../utils';
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import Checkbox from '@material-ui/core/Checkbox';
 import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import Swal from 'sweetalert2/src/sweetalert2.js'
@@ -23,16 +24,18 @@ export default class List extends Component {
 		displayEditModal: false,
 		listColorCode: [],
 		newListColorCode: [],
+		newListTitle: '',
 		newTaskTitle: '',
-		newTitle: '',
-		title: '',
+		newAssignedUsers: '',
+		newTaskNotes: '',
+		title: '', // current list title
 	};
 
 	componentDidMount = () => {
 		const { list } = this.props;
 		this.setState({ 
 			title: list.title,
-			newTitle: list.title,
+			newListTitle: list.title,
 			listColorCode: list.colorCode,
 			newListColorCode: list.colorCode,
 			archived: list.archived,
@@ -40,7 +43,21 @@ export default class List extends Component {
 	};
 
 	handleInput = (key, value) => {
-      this.setState({ [key]: value });
+		this.setState({ [key]: value });
+	};
+
+	handleCheckUser = event => {
+		const { newAssignedUsers } = this.state;
+		const userId = parseInt(event.target.value)
+		let users = Array.from(newAssignedUsers);
+
+		if (event.target.checked) {
+			users.push(userId);
+		} else {
+			users.splice(users.indexOf(userId), 1);
+		}
+
+		this.setState({ newAssignedUsers: users });
 	};
 	
 	handleAddTaskClick = () => {
@@ -103,8 +120,17 @@ export default class List extends Component {
 	};
 
 	saveChanges = async () => {
-		const { newTitle, newListColorCode, archived } = this.state;
+		const { newListTitle, newListColorCode, archived } = this.state;
 		const { list } = this.props;
+
+		if (newListTitle.length > 50) {
+			Swal.fire({
+            type: 'warning',
+            title: 'Oops!',
+            text: 'List title must be under 50 characters in length.',
+			})
+			return;
+		}
 		try {
 			let taskIdIntegers = this.props.convertTaskIdsToIntegers(list.taskIds);
 			let oldList = await axios.get(`/list/${list.databaseId}`);
@@ -118,7 +144,7 @@ export default class List extends Component {
 			});
 			mergedTaskOrder = [...mergedTaskOrder, ...newTaskOrder];
 			const body = {
-				title: newTitle,
+				title: newListTitle,
 				color_code: newListColorCode,
 				archived: archived,
 				task_order: mergedTaskOrder,
@@ -128,7 +154,7 @@ export default class List extends Component {
 
 			this.setState({
 				title: updated.title,
-				newTitle: updated.title,
+				newListTitle: updated.title,
 				listColorCode: updated.color_code,
 				newListColorCode: updated.color_code,
 				displayEditModal: false,
@@ -141,16 +167,39 @@ export default class List extends Component {
 	};
 
 	addTask = async () => {
-		const { newTaskTitle } = this.state;
+		const { newTaskTitle, newTaskNotes, newAssignedUsers } = this.state;
 		const { loggedInUser, list, projectId, updateList, getLists } = this.props;
 		const taskBody = {
 			title: newTaskTitle,
 			created_by: loggedInUser.user_id,
 			list_id: list.databaseId,
+			notes: newTaskNotes,
 		};
+
+		if (newTaskTitle.length > 60) {
+			Swal.fire({
+            type: 'warning',
+            title: 'Oops!',
+            text: 'Task title must be under 60 characters in length.',
+			})
+			return;
+		}
+
 		this.setState({ displayAddTaskModal: false });
 		try {
 			let res = await axios.post(`/project/${projectId}/task`, taskBody);
+			
+			if (newAssignedUsers) {
+				let taskUserPromises = newAssignedUsers.map(userId => {
+					const body = {
+						user_id: userId,
+						task_id: res.data.task_id,
+					};
+					return axios.post(`/task_users/${projectId}`, body);
+				});
+				await Promise.all(taskUserPromises);
+			}
+
 			let added = res.data;
 			let newTaskOrder = list.taskIds.map(id => parseInt(id));
 			let newTaskId = added.task_id;
@@ -161,6 +210,7 @@ export default class List extends Component {
 				archived: list.archived,
 				task_order: newTaskOrder,
 			};
+			await this.props.getTaskUsers();
 			await this.props.getAllTasks();
 			await updateList(added.list_id, listBody);			
 			await getLists();
@@ -179,29 +229,41 @@ export default class List extends Component {
 		});
 	};
 
-	deleteTask = async (task_id) => {
-		this.setState({ displayEditModal: false });
-		const { list } = this.props;
-		let removedIndex = list.taskIds.indexOf(task_id.toString());
-		let taskOrder = list.taskIds;
-		taskOrder.splice(removedIndex, 1);
-		let newTaskOrder = taskOrder.map(task => parseInt(task));
-		const body = {
-			title: list.title,
-			color_code: list.colorCode,
-			archived: list.archived,
-			task_order: newTaskOrder,
-		};
-		try {
-			await axios.delete(`/task_users/task/${task_id}`);
-			await axios.delete(`/task/${task_id}`);
-			await this.props.updateList(list.id, body);
-			await this.props.getAllTasks();
-			await this.props.getTaskUsers();
-			this.props.getLists();
-		} catch (err) {
-			console.log(err.response.data);
-		}
+	deleteTask = (task_id) => {
+		Swal.fire({
+         type: 'warning',
+         title: 'Are you sure?',
+         text: "This task will be permanently deleted!",
+         showCancelButton: true,
+         confirmButtonColor: '#d33',
+         cancelButtonColor: '#3085d6',
+         confirmButtonText: 'Yes, delete it!'
+      }).then(async (res) => {
+			if (res.value) {
+				this.setState({ displayEditModal: false });
+				const { list } = this.props;
+				let removedIndex = list.taskIds.indexOf(task_id.toString());
+				let taskOrder = list.taskIds;
+				taskOrder.splice(removedIndex, 1);
+				let newTaskOrder = taskOrder.map(task => parseInt(task));
+				const body = {
+					title: list.title,
+					color_code: list.colorCode,
+					archived: list.archived,
+					task_order: newTaskOrder,
+				};
+				try {
+					await axios.delete(`/task_users/task/${task_id}`);
+					await axios.delete(`/task/${task_id}`);
+					await this.props.updateList(list.id, body);
+					await this.props.getAllTasks();
+					await this.props.getTaskUsers();
+					this.props.getLists();
+				} catch (err) {
+					console.log(err.response.data);
+				}
+			}
+		})
 	};
 
 	displayTasks = () => {
@@ -290,13 +352,32 @@ export default class List extends Component {
 	};
 
 	addTaskModal = () => {
+		const { projectUsers } = this.props;
+		const { newAssignedUsers, newTaskNotes } = this.state;
+
+		projectUsers.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
+
+		const availableUserList = projectUsers.map(user => {
+			return (
+				<div key={user.user_id} className='new-task-assigned-user'>
+					<Checkbox
+						color='primary'
+						value={user.user_id}
+						onChange={event => this.handleCheckUser(event)}
+						checked={newAssignedUsers.includes(user.user_id)}
+					/>
+					<p>{user.first_name} {user.last_name}</p>
+				</div>
+			)
+		});
+
 		return (
 			<div className='modal-wrapper' onClick={this.cancelAddTask}>
             <div className='add-task-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-               <p style={{ fontSize: '1.2rem' }}>New Task:</p>
+               <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>New Task:</p>
                <div className='add-task-modal-body'>
                   <div className='add-modal-body-item'>
-                     <p>Title</p>
+                     <p className='add-task-modal-header'>Title</p>
                      <TextField
 								required
 								autoFocus
@@ -305,10 +386,26 @@ export default class List extends Component {
 								onChange={e => this.handleInput('newTaskTitle', e.target.value)}
                      />
                   </div>
+						<div className='add-modal-body-item new-task-assigned-users-container'>
+							<p className='add-task-modal-header'>Assigned Users:</p>
+							<div className='new-task-assigned-users'>
+								{ availableUserList }
+							</div>
+						</div>
+						<div className='add-modal-body-item new-task-notes'>
+							<p className='add-task-modal-header'>Notes</p>
+							<textarea
+								name="task-notes"
+								id="task-notes"
+								maxLength='250'
+								value={newTaskNotes}
+								onChange={e => this.handleInput('newTaskNotes', e.target.value )}
+							></textarea>
+						</div>
                </div>
                <div>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddTask}>Cancel</Button>
-                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addTask}>Save</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addTask} disabled={!this.state.newTaskTitle}>Add</Button>
                </div>
             </div>
          </div>
@@ -334,8 +431,8 @@ export default class List extends Component {
 								required
 								id="standard-required"
 								fullWidth={true}
-								value={this.state.newTitle}
-								onChange={e => this.handleInput('newTitle', e.target.value)}
+								value={this.state.newListTitle}
+								onChange={e => this.handleInput('newListTitle', e.target.value)}
 							/>
 						</div>
 						<div className='edit-modal-body-item'>
