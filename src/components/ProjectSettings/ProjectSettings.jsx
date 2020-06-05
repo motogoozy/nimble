@@ -10,7 +10,6 @@ import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
 import Swal from 'sweetalert2';
-import { useHistory } from 'react-router-dom';
 
 export default function ProjectSettings(props) {
    const [projectTitle, setProjectTitle] = useState();
@@ -27,8 +26,6 @@ export default function ProjectSettings(props) {
       add_collaborators: false,
       remove_collaborators: false,
    });
-
-   const history = useHistory();
 
    useEffect(() => {
       setProjectTitle(props.project.title);
@@ -82,7 +79,7 @@ export default function ProjectSettings(props) {
                showConfirmButton: false,
                timer: 1000
             }).then(() => {
-               history.push('/dashboard');
+               window.location.hash = '/dashboard';
                window.location.reload();
             }).catch(err => {
                console.log(err);
