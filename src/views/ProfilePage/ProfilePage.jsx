@@ -134,7 +134,7 @@ export default function ProfilePage(props) {
    };
 
    const handleEditUserDetails = (key, value) => {
-      setNewUserDetails({...userDetails, [key]: value});
+      setNewUserDetails({...newUserDetails, [key]: value});
    };
 
    const handleColorChange = (event) => {
