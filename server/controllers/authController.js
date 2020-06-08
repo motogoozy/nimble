@@ -1,5 +1,10 @@
 const bcrypt = require('bcryptjs');
 
+const metrics = {
+   totalLogins: 0,
+   userActivity: {}
+};
+
 module.exports = {
    register: async (req, res, next) => {
       const { first_name, last_name, email, password, color } = req.body;
@@ -11,7 +16,7 @@ module.exports = {
          if (existingUser.length >= 1) {
             let err = new Error('A user with this email already exists. Please enter a different email.');
             err.statusCode = 403;
-            next(err);
+            return next(err);
          }
 
          const salt = bcrypt.genSaltSync();
@@ -21,6 +26,16 @@ module.exports = {
          req.session.loggedInUser = newUser[0];
          req.session.cookie.maxAge = 1000 * 60 * 30;
          res.status(200).send(newUser[0]);
+
+         // Logging traffic
+         metrics.totalLogins++;
+         metrics.userActivity[newUser[0].user_id] = {
+            name: `${newUser[0].first_name} ${newUser[0].last_name}` || 'Unknown',
+            email: newUser[0].email || 'Unknown',
+            logins: 1,
+         };
+         res.locals.metrics = metrics;
+         next();
       } catch (err) {
          err.clientMessage = 'Error creating user.';
          next(err)
@@ -36,7 +51,7 @@ module.exports = {
          if (!user[0]) {
             let err = new Error('Incorrect username or password. Please try again.');
             err.statusCode = 404;
-            next(err);
+            return next(err);
          }
 
          const passwordMatch = bcrypt.compareSync(password, user[0].hash);
@@ -55,6 +70,17 @@ module.exports = {
             req.session.loggedInUser = userObj;
             req.session.cookie.maxAge = 1000 * 60 * 30;
             res.status(200).send(userObj);
+
+            // Logging traffic
+            metrics.totalLogins++;
+            metrics.userActivity[userObj.user_id] = metrics.userActivity[userObj.user_id] || {
+               name: `${userObj.first_name} ${userObj.last_name}` || 'Unknown',
+               email: userObj.email || 'Unknown',
+               logins: 0,
+            }
+            metrics.userActivity[userObj.user_id].logins++;
+            res.locals.metrics = metrics;
+            next();
          }
       } catch (err) {
          err.clientMessage = 'Error logging in.';
@@ -64,7 +90,7 @@ module.exports = {
    logout: (req, res, next) => {
       try {
          req.session.destroy();
-         res.status(200).send('Successfully logged out.')
+         res.status(200).send('Successfully logged out.');
       } catch (err) {
          err.clientMessage('Error logging out.');
          next(err);

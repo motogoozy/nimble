@@ -38,20 +38,23 @@ app.use((req, res, next) => { // authentication before every request
    }
 });
 
-// DATABASE CONNECTION
+// DATABASE CONNECTION / START SERVER
 massive(DATABASE_URL)
    .then(db => {
       app.set('db', db)
       console.log(('Connected to database'));
       app.listen(port, () => {
          console.log(`Listening on port: ${port}`);
+         logger.log({
+            level: 'activity',
+            message: 'Server Restarted'
+         })
       })
    })
    .catch(err => console.log(`Error connecting to database: ${err}`));
 
 // LOGGER
 const logger = winston.createLogger({
-   level: 'info',
    format: format.combine(
       format.timestamp({
          format: 'YYYY-MM-DD HH:mm:ss'
@@ -60,9 +63,20 @@ const logger = winston.createLogger({
       format.splat(),
       format.json()
    ),
+   levels: { 
+      emerg: 0, 
+      alert: 1, 
+      crit: 2, 
+      error: 3, 
+      warning: 4, 
+      notice: 5, 
+      info: 6, 
+      debug: 7,
+      activity: 8
+   },
    transports: [
       new transports.File({ filename: 'error.log', level: 'error' }),
-      new transports.File({ filename: 'combined.log' }),
+      new transports.File({ filename: 'activity.log', level: 'activity' }),
    ]
 });
 
@@ -123,8 +137,22 @@ app.delete('/api/connection/:connection_id/user/:user_id', connectionController.
 // Auth
 app.get('/api/auth/user_session', authController.getUserSession) // Get user session (logged in user)
 app.get('/api/auth/logout', authController.logout) // Logout
-app.post('/api/auth/login', authController.login); // Login
-app.post('/api/auth/register', authController.register); // Register/Create new user
+app.post('/api/auth/login', authController.login, (req, res, next) => {
+   logger.log({
+      level: 'activity',
+      message: 'New Login',
+      metrics: res.locals.metrics || 'Unavailable'
+   })
+   next();
+}); // Login
+app.post('/api/auth/register', authController.register, (req, res, next) => {
+   logger.log({
+      level: 'activity',
+      message: 'New Login',
+      metrics: res.locals.metrics || 'Unavailable'
+   })
+   return next();
+}); // Register/Create new user
 app.put('/api/auth/change_password/:user_id', authController.updateUserPassword) // Change user's password
 
 // Error Handler
@@ -151,5 +179,5 @@ app.use((err, req, res, next) => {
 
 // Return main app file for SPA
 app.get('*', (req, res)=>{
-   res.sendFile(path.join(__dirname, '../build/index.html'));
+   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
