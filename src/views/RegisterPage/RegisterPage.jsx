@@ -83,7 +83,7 @@ export default function RegisterPage(props) {
       const body = {
          first_name: firstName,
          last_name: lastName,
-         email: email,
+         email: email.toLowerCase(),
          password: password,
          color: avatarColor,
       }
