@@ -18,6 +18,7 @@
     "hash-router": "^0.4.0",
     "massive": "^6.1.1",
     "node-sass": "^4.14.1",
+    "nodemailer": "^6.4.8",
     "normalize.css": "^8.0.1",
     "react": "^16.11.0",
     "react-beautiful-dnd": "^12.2.0",
