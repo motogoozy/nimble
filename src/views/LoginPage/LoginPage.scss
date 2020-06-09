@@ -35,4 +35,26 @@
    justify-content: space-between;
    align-items: center;
    padding: 0 1rem;
+
+   p {
+      color: #3f51b5;
+      &:hover {
+         text-decoration: underline;
+      }
+   }
+}
+
+.reset-password-container {
+   height: 50vh;
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+
+   .cancel-reset-password-button {
+      &:hover {
+         text-decoration: underline;
+      }
+   }
 }

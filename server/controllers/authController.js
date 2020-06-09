@@ -1,4 +1,6 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const metrics = {
    totalLogins: 0,
@@ -11,7 +13,7 @@ module.exports = {
       const db = req.app.get('db');
 
       try {
-         const existingUser = await db.auth.find_user({ email });
+         const existingUser = await db.auth.find_user_by_email({ email });
 
          if (existingUser.length >= 1) {
             let err = new Error('A user with this email already exists. Please enter a different email.');
@@ -46,7 +48,7 @@ module.exports = {
       const db = req.app.get('db');
 
       try {
-         const user = await db.auth.find_user({ email });
+         const user = await db.auth.find_user_by_email({ email });
 
          if (!user[0]) {
             let err = new Error('Incorrect username or password. Please try again.');
@@ -116,7 +118,7 @@ module.exports = {
          if (!user[0]) {
             let err = new Error('User not found.');
             err.statusCode = 404;
-            next(err);
+            return next(err);
          }
 
          const passwordMatch = bcrypt.compareSync(oldPassword, user[0].hash);
@@ -131,8 +133,58 @@ module.exports = {
             res.status(200).send('Password successfully updated.');
          }
       } catch (err) {
-         console.log(err.stack);
          err.clientMessage = 'Unable to change password.';
+         next(err);
+      }
+   },
+   resetUserPassword: async (req, res, next) => {
+      const { email } = req.body;
+      const db = req.app.get('db');
+      const { NODEMAILER_HOST, NODEMAILER_USER, NODEMAILER_PASSWORD } = process.env;
+      
+      try {
+         const user = await db.auth.find_user_by_email({ email });
+         if (user[0]) {
+            let randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const salt = bcrypt.genSaltSync();
+            const hash = bcrypt.hashSync(randomString, salt);
+            
+            // Send Recovery Email
+            const transporter = await nodemailer.createTransport({
+               host: `${NODEMAILER_HOST}`,
+               secure: false,
+               port: 587, // default port for insecure
+               auth: {
+                  user: `${NODEMAILER_USER}`,
+                  pass: `${NODEMAILER_PASSWORD}`
+               }
+            });
+
+            await transporter.sendMail({
+               from: '"Nimble Support" <kspayne93@outlook.com',
+               to: email,
+               subject: 'Nimble Password Reset',
+               html: `
+                  <p>${user[0].first_name},</p>
+                  <div>
+                     <p>
+                        Here is your temporary password:
+                        <b>${randomString}</b>
+                     </p>
+                     <br/>
+                     <p>Use it to login to your account and update your password.</p>
+                  </div>
+               `
+            });
+            
+            await db.auth.update_user_password({
+               user_id: user[0].user_id,
+               hash: hash
+            });
+         }
+         res.status(200).send();
+      } catch (err) {
+         err.clientMessage = 'Unable to reset password.';
          next(err);
       }
    }

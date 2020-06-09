@@ -14,14 +14,14 @@ const { format, transports } = winston;
 require('dotenv').config();
 
 const app = express();
-const { PORT, DEV_PORT, DATABASE_URL, SECRET } = process.env;
+const { PORT, DEV_PORT, DATABASE_URL, SESSION_SECRET } = process.env;
 const port = PORT || DEV_PORT;
 
 // MIDDLEWARE
 app.use(express.static( `${__dirname}/../build` ));
 app.use(express.json());
 app.use(session({
-   secret: SECRET,
+   secret: SESSION_SECRET,
    resave: false,
    saveUninitialized: false,
 }));
@@ -30,6 +30,7 @@ app.use((req, res, next) => { // authentication before every request
       req.url !== '/api/auth/login' &&
       req.url !== '/api/auth/register' &&
       req.url !== '/api/auth/logout' &&
+      req.url !== '/api/auth/reset_password' &&
       !req.session.loggedInUser
       ) {
       res.status(401).send('Please log in.');
@@ -64,15 +65,8 @@ const logger = winston.createLogger({
       format.json()
    ),
    levels: { 
-      emerg: 0, 
-      alert: 1, 
-      crit: 2, 
-      error: 3, 
-      warning: 4, 
-      notice: 5, 
-      info: 6, 
-      debug: 7,
-      activity: 8
+      activity: 0,
+      error: 1
    },
    transports: [
       new transports.File({ filename: 'error.log', level: 'error' }),
@@ -154,6 +148,7 @@ app.post('/api/auth/register', authController.register, (req, res, next) => {
    return next();
 }); // Register/Create new user
 app.put('/api/auth/change_password/:user_id', authController.updateUserPassword) // Change user's password
+app.put('/api/auth/reset_password', authController.resetUserPassword) // Reset user password
 
 // Error Handler
 app.use((err, req, res, next) => {

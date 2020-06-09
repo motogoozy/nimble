@@ -66,6 +66,9 @@ export default function LoginPage(props) {
    const [password, setPassword] = useState('');
    const [rememberMe, setRememberMe] = useState(true);
    const [loginErrMsg, setLoginErrMsg] = useState('');
+   const [displayForgotPassword, setDisplayForgotPassword] = useState(false);
+   const [recoveryEmail, setRecoveryEmail] = useState('');
+   const [resetErrMsg, setResetErrMsg] = useState('');
 
    // Getting user's email from localStorage
    useEffect(() => {
@@ -83,7 +86,7 @@ export default function LoginPage(props) {
 
       let body = {
          email: email,
-         password: password
+         password: password,
       };
 
       try {
@@ -100,16 +103,64 @@ export default function LoginPage(props) {
                type: 'success',
                title: 'Logged In',
                text: `Welcome back, ${res.data.first_name}`,
-               // position: 'top-end',
                showConfirmButton: false,
                timer: 1000
             }).then(() => {
-               props.history.push('/dashboard');
+               if (localStorage.getItem('nimblePasswordReset')) {
+                  props.history.push('/profile');
+               } else {
+                  props.history.push('/dashboard');
+               }
             })
          }
       } catch (err) {
          console.log(err.response.data);
          setLoginErrMsg(err.response.data);
+      }
+   };
+
+   const resetPassword = async () => {
+      if (!recoveryEmail) {
+         setResetErrMsg('*Missing required field.');
+         return;
+      } 
+      if (!emailIsValid(recoveryEmail)) {
+         setResetErrMsg('*Please enter a valid email');
+         return;
+      }
+
+      try {
+         axios.put('/auth/reset_password', { email: recoveryEmail });
+         Swal.fire({
+            type: 'success',
+            text: 'A recovery email be will sent to the email you provided. It may take a few minutes.',
+         }).then(() => {
+            setLoginErrMsg('');
+            setResetErrMsg('');
+            setDisplayForgotPassword(false);
+            setRecoveryEmail('');
+
+            if (localStorage) {
+               localStorage.setItem('nimblePasswordReset', true);
+            }
+         })
+      } catch (err) {
+         console.log(err.response.data);
+         setResetErrMsg(err.response.data);
+      }
+   };
+
+   const cancelResetPassword = () => {
+      setDisplayForgotPassword(false);
+      setRecoveryEmail('');
+      setResetErrMsg('');
+   };
+
+   const emailIsValid = email => {
+      if (!email.includes('@') || !email.includes('.')) {
+         return false;
+      } else {
+         return true;
       }
    };
 
@@ -140,72 +191,110 @@ export default function LoginPage(props) {
                   <LockOutlinedIcon />
                </Avatar>
                <Typography component="h1" variant="h5">
-                  Sign in
-               </Typography>
-               <form className={classes.form} noValidate onKeyPress={onKeyPress}>
-                  <TextField
-                     variant="outlined"
-                     margin="normal"
-                     required
-                     fullWidth
-                     id="email"
-                     placeholder="Email Address"
-                     name="email"
-                     autoComplete="email"
-                     autoFocus
-                     value={email}
-                     onChange={event => setEmail(event.target.value)}
-                     // onKeyPress={onKeyPress}
-                  />
-                  <TextField
-                     variant="outlined"
-                     margin="normal"
-                     required
-                     fullWidth
-                     name="password"
-                     placeholder="Password"
-                     type="password"
-                     id="password"
-                     autoComplete="current-password"
-                     onChange={event => setPassword(event.target.value)}
-                     // onKeyPress={onKeyPress}
-                  />
                   {
-                     loginErrMsg && <p style={{ color: 'crimson' }}>{loginErrMsg}</p>
+                     !displayForgotPassword
+                     ?
+                     'Sign in'
+                     :
+                     'Reset Password'
                   }
-                  <FormControlLabel
-                     control={<Checkbox value="remember" color="primary" />}
-                     label="Remember me"
-                     checked={rememberMe}
-                     onChange={event => setRememberMe(event.target.checked)}
-                  />
-                  <Button
-                     fullWidth
-                     variant="contained"
-                     color="primary"
-                     className={classes.submit}
-                     onClick={login}
-                  >
-                     Sign In
-                  </Button>
-                  <Grid container>
-                     <div className='login-options-button-container'>
-                        <Grid item>
-                           <Link href="#" variant="body2">
-                              Forgot password?
-                           </Link>
-                        </Grid>
-                        <Grid item>
-                           <Link href="#/register" variant="body2">
-                              {"Don't have an account? Sign Up"}
-                           </Link>
-                        </Grid>
-                     </div>
-                  </Grid>
-                  <Box mt={5}>
-                  <Copyright />
-                  </Box>
-               </form>
+               </Typography>
+               {
+                  !displayForgotPassword
+                  ?
+                  <form className={classes.form} noValidate onKeyPress={onKeyPress}>
+                     <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        placeholder="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={email}
+                        onChange={event => setEmail(event.target.value)}
+                        // onKeyPress={onKeyPress}
+                     />
+                     <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        placeholder="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        onChange={event => setPassword(event.target.value)}
+                        // onKeyPress={onKeyPress}
+                     />
+                     {
+                        loginErrMsg && <p style={{ color: 'crimson' }}>{loginErrMsg}</p>
+                     }
+                     <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
+                        checked={rememberMe}
+                        onChange={event => setRememberMe(event.target.checked)}
+                     />
+                     <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={login}
+                     >
+                        Sign In
+                     </Button>
+                     <Grid container>
+                        <div className='login-options-button-container'>
+                           <Grid item>
+                              <p className='cursor-pointer' onClick={() => setDisplayForgotPassword(true)}>Forgot password?</p>
+                           </Grid>
+                           <Grid item>
+                              <Link href="#/register" variant="body2">
+                                 {"Don't have an account? Sign Up"}
+                              </Link>
+                           </Grid>
+                        </div>
+                     </Grid>
+                     <Box mt={5}>
+                     <Copyright />
+                     </Box>
+                  </form>
+                  :
+                  <div className='reset-password-container'>
+                     <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="email"
+                        placeholder="Enter your email"
+                        type="email"
+                        id="email"
+                        onChange={event => setRecoveryEmail(event.target.value)}
+                        // onKeyPress={onKeyPress}
+                     />
+                     {
+                        resetErrMsg
+                        &&
+                        <p style={{ color: 'crimson' }}>{resetErrMsg}</p>
+                     }
+                     <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={resetPassword}
+                     >
+                        Reset
+                     </Button>
+                     <p className='cursor-pointer cancel-reset-password-button' onClick={cancelResetPassword}>Cancel</p>
+                  </div>
+               }
             </div>
          </Grid>
       </Grid>

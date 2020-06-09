@@ -75,7 +75,6 @@ export default function ProjectSettings(props) {
             Swal.fire({
                type: 'success',
                title: 'Project deleted',
-               // position: 'top-end',
                showConfirmButton: false,
                timer: 1000
             }).then(() => {

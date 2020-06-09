@@ -53,6 +53,9 @@ export default function ProfilePage(props) {
          .then(res => {
             setUserDetails(res.data);
             setNewUserDetails(res.data);
+            if (localStorage.getItem('nimblePasswordReset')) {
+               setEditPassword(true);
+            }
          })
          .catch(err => console.log(err.response.data));
    }, []);
@@ -82,7 +85,6 @@ export default function ProfilePage(props) {
          Swal.fire({
             type: 'success',
             title: 'Profile successfully updated.',
-            // position: 'top-end',
             showConfirmButton: false,
             timer: 1000
          })
@@ -112,13 +114,15 @@ export default function ProfilePage(props) {
          Swal.fire({
             type: 'success',
             title: res.data,
-            // position: 'top-end',
             showConfirmButton: false,
             timer: 1000
          }).then(() => {
             clearFields();
             setEditPassword(false);
             setEditUserDetails(false);
+            if (localStorage.getItem('nimblePasswordReset')) {
+               localStorage.removeItem('nimblePasswordReset');
+            }
          })
       } catch (err) {
          console.log(err.response.data);
@@ -163,7 +167,7 @@ export default function ProfilePage(props) {
 
    return (
       <div className='profile-page page-content'>
-         <i className="far fa-arrow-alt-circle-left cursor-pointer profile-back-button" onClick={() => props.history.goBack()}></i>
+         <i className="far fa-arrow-alt-circle-left cursor-pointer profile-back-button" onClick={() => props.history.push('dashboard')}></i>
 
          {
             newUserDetails && userDetails
@@ -365,7 +369,7 @@ export default function ProfilePage(props) {
                            !editPassword
                            &&
                            <div className='change-password-container'>
-                              <p onClick={setEditPassword}>Change Password</p>
+                              <p onClick={() => setEditPassword(true)}>Change Password</p>
                            </div>
                         }
                      </form>

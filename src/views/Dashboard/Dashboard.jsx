@@ -63,7 +63,7 @@ export default class Dashboard extends Component {
       try {
          let res = await axios.get('/auth/logout');
          Swal.fire({
-            position: 'top-end',
+            // position: 'top-end',
             type: 'success',
             title: `${res.data}`,
             text: `See you next time, ${loggedInUser.first_name}`,

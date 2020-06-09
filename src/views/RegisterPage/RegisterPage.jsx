@@ -74,6 +74,10 @@ export default function RegisterPage(props) {
          setLoginErrMsg('*Missing required field(s).');
          return;
       }
+      if (!emailIsValid(email)) {
+         setLoginErrMsg('*Please enter a valid email.');
+         return;
+      }
       
       const avatarColor = avatarColors[Math.floor(Math.random() * avatarColors.length - 1)];
       const body = {
@@ -91,7 +95,6 @@ export default function RegisterPage(props) {
                type: 'success',
                title: `Welcome, ${res.data.first_name}!`,
                text: 'Account successfully created.',
-               // position: 'top-end',
                showConfirmButton: false,
                timer: 1500
             }).then(() => {
@@ -100,6 +103,14 @@ export default function RegisterPage(props) {
          }
       } catch (err) {
          setLoginErrMsg(err.response.data);
+      }
+   };
+
+   const emailIsValid = email => {
+      if (!email.includes('@') || !email.includes('.')) {
+         return false;
+      } else {
+         return true;
       }
    };
 
