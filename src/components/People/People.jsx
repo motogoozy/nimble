@@ -333,6 +333,7 @@ export default class People extends Component {
 						actions={['Remove']}
 						tooltipTitles={['Remove Person From Project']}
 						avatarColor={avatarColor}
+						isProjectOwner={this.props.project.created_by === user.user_id}
 					/>
 					{
 						user.user_id !== loggedInUser.user_id && user.user_id !== this.props.project.created_by

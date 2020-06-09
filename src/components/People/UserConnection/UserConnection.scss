@@ -25,6 +25,13 @@
 			flex-direction: column;
 			justify-content: flex-start;
 			align-items: flex-start;
+
+			span {
+				color: green;
+				font-size: .8em;
+				height: 100%;
+				vertical-align: middle;
+			}
 	
 			p:nth-child(2) {
 				color: gray;

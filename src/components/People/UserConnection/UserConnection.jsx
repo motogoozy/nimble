@@ -15,7 +15,7 @@ export default function UserConnection(props) {
                <Avatar initials={userInitials} color={avatarColor}/>
             </div>
             <div className='connection-name-email-container'>
-               <p>{user.first_name} {user.last_name}</p>
+               <p>{user.first_name} {user.last_name} <span>{props.isProjectOwner && ' (Project owner)'}</span></p>
                <p>{user.email}</p>
             </div>
          </div>
