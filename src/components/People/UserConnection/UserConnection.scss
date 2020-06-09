@@ -27,14 +27,18 @@
 			align-items: flex-start;
 
 			span {
-				color: green;
+				color: #008044;
 				font-size: .8em;
 				height: 100%;
 				vertical-align: middle;
 			}
 	
-			p:nth-child(2) {
+			.user-connection-email {
 				color: gray;
+				&:hover {
+					cursor: pointer;
+					text-decoration: underline;
+				}
 			}
 		}
 

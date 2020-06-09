@@ -2,6 +2,8 @@ import React from 'react';
 import './UserConnection.scss';
 import Avatar from '../../Avatar/Avatar';
 
+import Tooltip from '@material-ui/core/Tooltip';
+
 export default function UserConnection(props) {
    const { user, avatarColor } = props;
    const firstInitial = user.first_name.split('')[0];
@@ -16,7 +18,13 @@ export default function UserConnection(props) {
             </div>
             <div className='connection-name-email-container'>
                <p>{user.first_name} {user.last_name} <span>{props.isProjectOwner && ' (Project owner)'}</span></p>
-               <p>{user.email}</p>
+               <div className='user-connection-email' onClick={() => {
+                  window.location.href = `mailto:${user.email}`
+               }}>
+                  <Tooltip title={'Send email'}>
+                     <p>{user.email}</p>
+                  </Tooltip>
+               </div>
             </div>
          </div>
       </div>
