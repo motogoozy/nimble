@@ -65,9 +65,9 @@ export default function LoginPage(props) {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [rememberMe, setRememberMe] = useState(true);
-   const [loginErrMsg, setLoginErrMsg] = useState('');
    const [displayForgotPassword, setDisplayForgotPassword] = useState(false);
    const [recoveryEmail, setRecoveryEmail] = useState('');
+   const [loginErrMsg, setLoginErrMsg] = useState('');
    const [resetErrMsg, setResetErrMsg] = useState('');
 
    // Getting user's email from localStorage
@@ -154,6 +154,7 @@ export default function LoginPage(props) {
       setDisplayForgotPassword(false);
       setRecoveryEmail('');
       setResetErrMsg('');
+      setLoginErrMsg('');
    };
 
    const emailIsValid = email => {
