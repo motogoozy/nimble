@@ -65,8 +65,8 @@ const logger = winston.createLogger({
       format.json()
    ),
    levels: { 
-      activity: 0,
-      error: 1
+      error: 0,
+      activity: 1,
    },
    transports: [
       new transports.File({ filename: 'error.log', level: 'error' }),
