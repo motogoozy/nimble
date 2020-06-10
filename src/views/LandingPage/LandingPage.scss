@@ -188,17 +188,27 @@
 			padding: 1rem;
 
 			.info-box-header {
+				height: 30%;
+				width: 100%;
 				font-size: calc(.2rem + 1vw);
 				// font-size: 1.5vw;
 				font-weight: 500;
-				margin-bottom: 1rem;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
 			}
 
 			.info-box-body {
+				height: 70%;
 				p {
 					font-size:calc(.1rem + 1vw);
 					// font-size: 1.1vw;
 					color: $primary-dk-gray;
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-start;
+					align-items: center;
 				}
 			}
 		}
