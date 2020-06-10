@@ -24,19 +24,25 @@ module.exports = {
          const salt = bcrypt.genSaltSync();
          const hash = bcrypt.hashSync(password, salt);
 
-         const newUser = await db.auth.create_user({ first_name, last_name, email, hash, color });
-         req.session.loggedInUser = newUser[0];
+         const createdUser = await db.auth.create_user({ first_name, last_name, email, hash, color });
+         const newUser = createdUser[0];
+         req.session.loggedInUser = newUser;
          req.session.cookie.maxAge = 1000 * 60 * 30;
-         res.status(200).send(newUser[0]);
+         res.status(200).send(newUser);
 
          // Logging traffic
          metrics.totalLogins++;
-         metrics.userActivity[newUser[0].user_id] = {
-            name: `${newUser[0].first_name} ${newUser[0].last_name}` || 'Unknown',
-            email: newUser[0].email || 'Unknown',
+         metrics.userActivity[newUser.user_id] = {
+            name: `${newUser.first_name} ${newUser.last_name}` || 'Unknown',
+            email: newUser.email || 'Unknown',
             logins: 1,
          };
          res.locals.metrics = metrics;
+         res.locals.user = {
+            user_id: newUser.user_id,
+            name: `${newUser.first_name} ${newUser.last_name}` || 'Unknown',
+            email: newUser.email || 'Unknown',
+         }
          next();
       } catch (err) {
          err.clientMessage = 'Error creating user.';
@@ -82,6 +88,11 @@ module.exports = {
             }
             metrics.userActivity[userObj.user_id].logins++;
             res.locals.metrics = metrics;
+            res.locals.user = {
+               user_id: userObj.user_id,
+               name: `${userObj.first_name} ${userObj.last_name}` || 'Unknown',
+               email: userObj.email || 'Unknown',
+            };
             next();
          }
       } catch (err) {

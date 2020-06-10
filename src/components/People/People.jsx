@@ -209,7 +209,7 @@ export default class People extends Component {
 			}
 		}
 
-		return null;
+		return false;
 	};
 
 	addUserConnection = async () => {
@@ -226,6 +226,15 @@ export default class People extends Component {
 				type: 'warning',
 				title: 'Oops!',
 				text: isAlreadyConnected,
+			})
+			return;
+		}
+
+		if (newUserEmail === loggedInUser.email) {
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You cannot add yourself as a connection.'
 			})
 			return;
 		}

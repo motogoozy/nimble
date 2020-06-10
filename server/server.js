@@ -135,7 +135,8 @@ app.post('/api/auth/login', authController.login, (req, res, next) => {
    logger.log({
       level: 'activity',
       message: 'New Login',
-      metrics: res.locals.metrics || 'Unavailable'
+      user: res.locals.user || 'Unavailable',
+      metrics: res.locals.metrics || 'Unavailable',
    })
    next();
 }); // Login

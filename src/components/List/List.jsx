@@ -216,6 +216,8 @@ export default class List extends Component {
 			await getLists();
 			this.setState({
 				newTaskTitle: '',
+				newAssignedUsers: '',
+				newTaskNotes: '',
 			});
 		} catch (err) {
 			console.log(err.response.data);
@@ -224,8 +226,10 @@ export default class List extends Component {
 
 	cancelAddTask = () => {
 		this.setState({
-			newTaskTitle: '',
 			displayAddTaskModal: false,
+			newTaskTitle: '',
+			newAssignedUsers: '',
+			newTaskNotes: '',
 		});
 	};
 
