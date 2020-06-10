@@ -69,8 +69,8 @@ const logger = winston.createLogger({
       activity: 1,
    },
    transports: [
-      new transports.File({ filename: 'error.log', level: 'error' }),
-      new transports.File({ filename: 'activity.log', level: 'activity' }),
+      new transports.File({ filename: path.join(__dirname, '../error.log'), level: 'error' }),
+      new transports.File({ filename: path.join(__dirname, '../activity.log'), level: 'activity' }),
    ]
 });
 
