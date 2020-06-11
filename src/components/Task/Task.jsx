@@ -169,7 +169,7 @@ export default class Task extends Component {
 	};
 
 	displayTaskUserAvatars = () => {
-		const { projectUsers, highlightTasksOfUser } = this.props;
+		const { projectUsers, highlightTasksOfUser, loggedInUser } = this.props;
 		const projectUserMap = {};
 		projectUsers.forEach(projectUser => {
 			projectUserMap[projectUser.user_id] = projectUser;
@@ -177,6 +177,16 @@ export default class Task extends Component {
 		const { assignedUsers } = this.state;
 		let displayUsers = [];
 		let remainingUsers = [];
+
+		if (assignedUsers.length > 1) {
+			// moving loggedInUser's avatar to front of assigned users list
+			let loggedInUserIndex = assignedUsers.findIndex(assignedUser => {
+				return assignedUser === loggedInUser.user_id;
+			});
+			let loggedInUserId = assignedUsers.splice(loggedInUserIndex, 1)[0];
+			assignedUsers.unshift(loggedInUserId);
+		}
+
 		if (assignedUsers.length > 3) {
 			displayUsers = assignedUsers.slice(0, 3);
 			remainingUsers = assignedUsers.slice(3);
@@ -220,7 +230,7 @@ export default class Task extends Component {
 			}  else return null;
 		});
 
-		if (remainingUsers.length > 0 && highlightTasksOfUser === 'all') {
+		if (remainingUsers.length > 0 && (highlightTasksOfUser === 'all' || highlightTasksOfUser === 'none')) {
 			avatarList.push(
 				<Tooltip key={'remaining-users-avatar'} title={`${remainingUsers.length} more...`}>
 					<Avatar className={classes.default}>{`+${remainingUsers.length}`}</Avatar>
