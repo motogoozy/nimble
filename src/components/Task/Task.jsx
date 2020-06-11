@@ -174,7 +174,7 @@ export default class Task extends Component {
 		projectUsers.forEach(projectUser => {
 			projectUserMap[projectUser.user_id] = projectUser;
 		});
-		const { assignedUsers } = this.state;
+		const assignedUsers = [...this.state.assignedUsers];
 		let displayUsers = [];
 		let remainingUsers = [];
 
