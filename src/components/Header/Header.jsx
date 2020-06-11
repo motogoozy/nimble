@@ -276,7 +276,15 @@ class Header extends Component {
                      open={Boolean(this.state.anchorEl)}
                      onClose={this.closeMenu}
                   >
-                     <Link to='/profile' style={{ textDecoration: 'none', color: 'black' }}>
+                     <Link
+                        to={{
+                           pathname: '/profile',
+                           state: {
+                              prevPath: this.props.location.pathname
+                           }
+                        }}
+                        style={{ textDecoration: 'none', color: 'black' }}
+                     >
                         <MenuItem className='header-link'>Profile</MenuItem>
                      </Link>
                      <MenuItem className='header-link' onClick={this.props.logout}>Logout</MenuItem>

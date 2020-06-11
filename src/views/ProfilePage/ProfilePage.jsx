@@ -167,7 +167,13 @@ export default function ProfilePage(props) {
 
    return (
       <div className='profile-page page-content'>
-         <i className="far fa-arrow-alt-circle-left cursor-pointer profile-back-button" onClick={() => props.history.push('dashboard')}></i>
+         <i className="far fa-arrow-alt-circle-left cursor-pointer profile-back-button" onClick={() => {
+            if (props.location.state?.prevPath && props.location.state.prevPath.includes('/dashboard/project/')) {
+               props.history.goBack();
+            } else {
+               props.history.push('/dashboard');
+            }
+         }}></i>
 
          {
             newUserDetails && userDetails
