@@ -136,7 +136,6 @@ app.post('/api/auth/login', authController.login, (req, res, next) => {
       level: 'activity',
       message: 'New Login',
       user: res.locals.user || 'Unavailable',
-      metrics: res.locals.metrics || 'Unavailable',
    })
    next();
 }); // Login
@@ -144,9 +143,9 @@ app.post('/api/auth/register', authController.register, (req, res, next) => {
    logger.log({
       level: 'activity',
       message: 'New Login',
-      metrics: res.locals.metrics || 'Unavailable'
+      user: res.locals.user || 'Unavailable',
    })
-   return next();
+   next();
 }); // Register/Create new user
 app.put('/api/auth/change_password/:user_id', authController.updateUserPassword) // Change user's password
 app.put('/api/auth/reset_password', authController.resetUserPassword) // Reset user password

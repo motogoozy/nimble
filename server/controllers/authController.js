@@ -2,11 +2,6 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-const metrics = {
-   totalLogins: 0,
-   userActivity: {}
-};
-
 module.exports = {
    register: async (req, res, next) => {
       const { first_name, last_name, email, password, color } = req.body;
@@ -31,13 +26,6 @@ module.exports = {
          res.status(200).send(newUser);
 
          // Logging traffic
-         metrics.totalLogins++;
-         metrics.userActivity[newUser.user_id] = {
-            name: `${newUser.first_name} ${newUser.last_name}` || 'Unknown',
-            email: newUser.email || 'Unknown',
-            logins: 1,
-         };
-         res.locals.metrics = metrics;
          res.locals.user = {
             user_id: newUser.user_id,
             name: `${newUser.first_name} ${newUser.last_name}` || 'Unknown',
@@ -54,40 +42,33 @@ module.exports = {
       const db = req.app.get('db');
 
       try {
-         const user = await db.auth.find_user_by_email({ email });
+         const foundUser = await db.auth.find_user_by_email({ email });
+         const user = foundUser[0];
 
-         if (!user[0]) {
+         if (!user) {
             let err = new Error('Incorrect username or password. Please try again.');
             err.statusCode = 404;
             return next(err);
          }
 
-         const passwordMatch = bcrypt.compareSync(password, user[0].hash);
+         const passwordMatch = bcrypt.compareSync(password, user.hash);
          if (!passwordMatch) {
             let err = new Error('Incorrect username or password. Please try again.');
             err.statusCode = 401;
             next(err);
          } else {
             const userObj = {
-               user_id: user[0].user_id,
-               first_name: user[0].first_name,
-               last_name: user[0].last_name,
-               email: user[0].email,
-               color: user[0].color,
+               user_id: user.user_id,
+               first_name: user.first_name,
+               last_name: user.last_name,
+               email: user.email,
+               color: user.color,
             }
             req.session.loggedInUser = userObj;
             req.session.cookie.maxAge = 1000 * 60 * 30;
             res.status(200).send(userObj);
 
             // Logging traffic
-            metrics.totalLogins++;
-            metrics.userActivity[userObj.user_id] = metrics.userActivity[userObj.user_id] || {
-               name: `${userObj.first_name} ${userObj.last_name}` || 'Unknown',
-               email: userObj.email || 'Unknown',
-               logins: 0,
-            }
-            metrics.userActivity[userObj.user_id].logins++;
-            res.locals.metrics = metrics;
             res.locals.user = {
                user_id: userObj.user_id,
                name: `${userObj.first_name} ${userObj.last_name}` || 'Unknown',
@@ -124,15 +105,16 @@ module.exports = {
       const db = req.app.get('db');
 
       try {
-         const user = await db.auth.find_user_by_id({ user_id });
+         const foundUser = await db.auth.find_user_by_id({ user_id });
+         const user = foundUser[0]
 
-         if (!user[0]) {
+         if (!user) {
             let err = new Error('User not found.');
             err.statusCode = 404;
             return next(err);
          }
 
-         const passwordMatch = bcrypt.compareSync(oldPassword, user[0].hash);
+         const passwordMatch = bcrypt.compareSync(oldPassword, user.hash);
          if (!passwordMatch) {
             let err = new Error('Incorrect password. Please try again.');
             err.statusCode = 400;
@@ -154,8 +136,10 @@ module.exports = {
       const { NODEMAILER_HOST, NODEMAILER_USER, NODEMAILER_PASSWORD } = process.env;
       
       try {
-         const user = await db.auth.find_user_by_email({ email });
-         if (user[0]) {
+         const foundUser = await db.auth.find_user_by_email({ email });
+         const user = foundUser[0];
+
+         if (user) {
             let randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             const salt = bcrypt.genSaltSync();
             const hash = bcrypt.hashSync(randomString, salt);
@@ -176,7 +160,7 @@ module.exports = {
                to: email,
                subject: 'Nimble Password Reset',
                html: `
-                  <p>${user[0].first_name},</p>
+                  <p>${user.first_name},</p>
                   <div>
                      <p>
                         Here is your temporary password:
@@ -189,7 +173,7 @@ module.exports = {
             });
             
             await db.auth.update_user_password({
-               user_id: user[0].user_id,
+               user_id: user.user_id,
                hash: hash
             });
          }
