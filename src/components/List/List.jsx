@@ -378,26 +378,29 @@ export default class List extends Component {
 		return (
 			<div className='modal-wrapper' onClick={this.cancelAddTask}>
             <div className='add-task-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-               <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>New Task:</p>
+					<div className='add-task-modal-header'>
+						<p>New Task:</p>
+					</div>
                <div className='add-task-modal-body'>
-                  <div className='add-modal-body-item'>
-                     <p className='add-task-modal-header'>Title</p>
+                  <div className='add-task-modal-body-item add-task-title-container'>
+                     <p className='add-task-body-item-header'>Title</p>
                      <TextField
 								required
 								autoFocus
+								fullWidth
 								placeholder='Title (60 chars max)'
 								id="standard-required"
 								onChange={e => this.handleInput('newTaskTitle', e.target.value)}
                      />
                   </div>
-						<div className='add-modal-body-item new-task-assigned-users-container'>
-							<p className='add-task-modal-header'>Assigned Users:</p>
+						<div className='add-task-modal-body-item new-task-assigned-users-container'>
+							<p className='add-task-body-item-header'>Assigned Users:</p>
 							<div className='new-task-assigned-users'>
 								{ availableUserList }
 							</div>
 						</div>
-						<div className='add-modal-body-item new-task-notes'>
-							<p className='add-task-modal-header'>Notes</p>
+						<div className='add-task-modal-body-item new-task-notes'>
+							<p className='add-task-body-item-header'>Notes</p>
 							<textarea
 								name="task-notes"
 								id="task-notes"
@@ -407,7 +410,7 @@ export default class List extends Component {
 							></textarea>
 						</div>
                </div>
-               <div>
+               <div className='add-task-modal-footer'>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddTask}>Cancel</Button>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addTask} disabled={!this.state.newTaskTitle}>Add</Button>
                </div>
