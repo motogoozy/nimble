@@ -174,5 +174,5 @@ app.use((err, req, res, next) => {
 
 // Return main app file for SPA
 app.get('*', (req, res)=>{
-   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
