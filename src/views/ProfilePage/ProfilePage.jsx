@@ -70,15 +70,25 @@ export default function ProfilePage(props) {
       };
 
       if (
-         userDetails.first_name === newUserDetails.first_name &&
-         userDetails.last_name === newUserDetails.last_name &&
-         userDetails.email === newUserDetails.email &&
-         newColor === newUserDetails.color
+         userDetails.first_name === body.first_name &&
+         userDetails.last_name === body.last_name &&
+         userDetails.email === body.email &&
+         JSON.stringify(userDetails.color) === JSON.stringify(body.color)
       ) {
-         console.log('No changes to commit.');
          setEditUserDetails(false);
          return;
       };
+
+      // If demo user account
+      if (userDetails.user_id === 31) {
+         Swal.fire({
+            type: 'warning',
+            title: "Cannot update demo user.",
+            text: 'Profile settings cannot be changed for this account.',
+         }); 
+         setEditUserDetails(false);
+         return;
+      }
 
       try {
          let res = await axios.put(`/user/${user_id}`, body);
@@ -106,6 +116,17 @@ export default function ProfilePage(props) {
 
       if (newPassword !== confirmNewPassword) {
          setPasswordErrMsg('Passwords do not match.');
+         return;
+      }
+
+      // If Demo User account
+      if (userDetails.user_id === 31) {
+         Swal.fire({
+            type: 'warning',
+            title: "Cannot update demo user.",
+            text: 'Profile settings cannot be changed for this account.',
+         });
+         setEditPassword(false);
          return;
       }
 
@@ -220,6 +241,7 @@ export default function ProfilePage(props) {
                               ?
                               <>
                                  <Grid item xs={12} sm={6}>
+                                    <p className='profile-settings-input-label'>First Name</p>
                                     <TextField
                                        autoFocus
                                        disabled={!editUserDetails}
@@ -233,6 +255,7 @@ export default function ProfilePage(props) {
                                     />
                                  </Grid>
                                  <Grid item xs={12} sm={6}>
+                                    <p className='profile-settings-input-label'>Last Name</p>
                                     <TextField
                                        fullWidth
                                        disabled={!editUserDetails}
@@ -245,6 +268,7 @@ export default function ProfilePage(props) {
                                     />
                                  </Grid>
                                  <Grid item xs={12}>
+                                    <p className='profile-settings-input-label'>Email</p>
                                     <TextField
                                        fullWidth
                                        disabled={!editUserDetails}
