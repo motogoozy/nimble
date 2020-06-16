@@ -176,11 +176,11 @@ export default class List extends Component {
 			notes: newTaskNotes,
 		};
 
-		if (newTaskTitle.length > 60) {
+		if (newTaskTitle.length > 250) {
 			Swal.fire({
             type: 'warning',
             title: 'Oops!',
-            text: 'Task title must be under 60 characters in length.',
+            text: 'Task title must be under 250 characters in length.',
 			})
 			return;
 		}

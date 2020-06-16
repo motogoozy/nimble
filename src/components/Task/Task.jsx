@@ -79,11 +79,11 @@ export default class Task extends Component {
 			created_by: created_by,
 		};
 
-		if (newTitle.length > 60) {
+		if (newTitle.length > 250) {
 			Swal.fire({
             type: 'warning',
             title: 'Oops!',
-            text: 'Task title must be under 60 characters in length.',
+            text: 'Task title must be under 250 characters in length.',
 			})
 			return;
 		}
@@ -248,9 +248,10 @@ export default class Task extends Component {
 	editModal = () => {
 		const { colorCode, checkIsLight, projectUsers } = this.props;
 		const { title, newTitle, notes, assignedUsers } = this.state;
+		const formattedTitle = title.length > 57 ? `${title.slice(0, 57)}...` : title;
 		const currentColor = formatColor(colorCode);
 		const headerTextColor = checkIsLight(colorCode) === true ? 'black' : 'white';
-		
+
 		projectUsers.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
 		
 		const availableUserList = projectUsers.map(user => {
@@ -271,7 +272,7 @@ export default class Task extends Component {
 			<div className='modal-wrapper' onClick={this.cancelUpdateTask}>
 				<div className='edit-task-modal' onClick={e => e.stopPropagation()}>
 					<div className='edit-task-modal-header' style={{ backgroundColor: currentColor, color: headerTextColor }}>
-						<p style={{ fontSize: '1.2rem' }}>{title}</p>
+						<p style={{ fontSize: '1.2rem' }}>{formattedTitle}</p>
 					</div>
 					<div className='edit-task-modal-body'>
 						<div className='edit-task-title'>
@@ -325,6 +326,7 @@ export default class Task extends Component {
 	
 	render() {
 		const { title } = this.state;
+		const formattedTitle = title.length > 57 ? `${title.slice(0, 57)}...` : title;
 		const { id, index, colorCode, highlight } = this.props;
 
 		return (
@@ -351,7 +353,7 @@ export default class Task extends Component {
 								ref={provided.innerRef} 
 							>
 								<div className='task-header'>
-									<p>{title}</p>
+									<p>{formattedTitle}</p>
 									<Tooltip title={'Edit Task'}>
 										<i className={highlight ? 'fas fa-pencil-alt cursor-pointer' : 'fas fa-pencil-alt cursor-pointer unselected-task'} onClick={this.handleEditTaskClick}></i>
 									</Tooltip>

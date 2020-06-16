@@ -673,7 +673,7 @@ export default class Dashboard extends Component {
    };
 
    addListModal = () => {
-      const { newColorCode } = this.state;
+      const { title, newColorCode } = this.state;
       let defaultColor = formatColor(newColorCode);
       
       return (
@@ -712,7 +712,7 @@ export default class Dashboard extends Component {
                </div>
                <div>
                   <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddList}>Cancel</Button>
-                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addList}>Save</Button>
+                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' disabled={!title} onClick={this.addList}>Save</Button>
                </div>
             </div>
          </div>
