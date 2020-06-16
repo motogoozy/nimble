@@ -87,6 +87,7 @@ export default function ProfilePage(props) {
             text: 'Profile settings cannot be changed for this account.',
          }); 
          setEditUserDetails(false);
+         setNewUserDetails(userDetails)
          return;
       }
 
@@ -127,6 +128,7 @@ export default function ProfilePage(props) {
             text: 'Profile settings cannot be changed for this account.',
          });
          setEditPassword(false);
+         clearPasswordFields();
          return;
       }
 
@@ -138,7 +140,7 @@ export default function ProfilePage(props) {
             showConfirmButton: false,
             timer: 1000
          }).then(() => {
-            clearFields();
+            clearPasswordFields();
             setEditPassword(false);
             setEditUserDetails(false);
             if (localStorage.getItem('nimblePasswordReset')) {
@@ -151,7 +153,7 @@ export default function ProfilePage(props) {
       }
    };
 
-   const clearFields = () => {
+   const clearPasswordFields = () => {
       setPasswordErrMsg('');
       setOldPassword('');
       setNewPassword('');
@@ -175,7 +177,7 @@ export default function ProfilePage(props) {
    };
 
    const cancelEditPassword = () => {
-      clearFields();
+      clearPasswordFields();
       setEditPassword(false);
       setEditUserDetails(false);
    };
