@@ -42,7 +42,7 @@ CREATE TABLE list (
 
 CREATE TABLE task (
 	task_id SERIAL PRIMARY KEY,
-	title character varying(60) NOT NULL,
+	title character varying(250) NOT NULL,
 	status character varying(50) NOT NULL,
 	list_id integer NOT NULL REFERENCES list(id),
 	project_id integer NOT NULL REFERENCES project(id),
