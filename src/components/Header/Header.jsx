@@ -43,7 +43,10 @@ class Header extends Component {
             if (project) {
                this.handleSelection(project);
             }
+         } else if (this.state.projects.length === 1) {
+            this.handleSelection(this.state.projects[0]);
          }
+         
          this.setState({ currentPage: window.location.hash });
       } catch (err) {
          console.log(err.response.data);
