@@ -212,7 +212,6 @@ export default class Dashboard extends Component {
       const { projectId } = this.state;
 
       const res = await axios.get(`/project/${projectId}/permissions`);
-      console.log(res.data)
 
       this.setState({ projectPermissions: res.data });
       return res.data;
