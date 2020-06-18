@@ -212,6 +212,7 @@ export default class Dashboard extends Component {
       const { projectId } = this.state;
 
       const res = await axios.get(`/project/${projectId}/permissions`);
+      console.log(res.data)
 
       this.setState({ projectPermissions: res.data });
       return res.data;
@@ -336,7 +337,16 @@ export default class Dashboard extends Component {
    };
 
    deleteList = (databaseId, id) => {
-      const { project_id, listOrder, lists } = this.state;
+      const { project, project_id, listOrder, lists, loggedInUser, projectPermissions} = this.state;
+
+      if (project.created_by !== loggedInUser.user_id || !projectPermissions.delete_lists) {
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to delete lists for this project.',
+			})
+			return;
+		}
 
       Swal.fire({
          type: 'warning',

@@ -234,6 +234,16 @@ export default class List extends Component {
 	};
 
 	deleteTask = (task_id) => {
+		// Only allow task deletion if loggedInUser is project owner or has permission to add tasks
+		if (this.props.project.created_by !== this.props.loggedInUser.user_id || !this.props.projectPermissions.delete_tasks) {
+			Swal.fire({
+				type: 'warning',
+				title: 'Oops!',
+				text: 'You do not have permission to delete tasks for this project.',
+			})
+			return;
+		}
+
 		Swal.fire({
          type: 'warning',
          title: 'Are you sure?',
