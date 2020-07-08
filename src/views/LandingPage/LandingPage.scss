@@ -9,7 +9,7 @@
 	align-items: center;
 
 	.landing-page-header {
-		position: fixed;
+		position: absolute;
 		height: 4rem;
 		width: 100vw;
 		display: flex;
@@ -169,7 +169,7 @@
 	.landing-info-box-container {
 		width: 60vw;
 		height: 20vh;
-		position: fixed;
+		position: absolute;
 		bottom: 10vh;
 		background-color: white;
 		box-shadow: 0 0 15px rgba(0,0,0,.5);

@@ -21,7 +21,7 @@
    align-items: center;
    
    .main-content {
-      height: calc(100vh - #{$header-height});
+      height: 100%;
       width: 100%;
       display: flex;
       flex-direction: row;
@@ -45,12 +45,14 @@
          box-shadow: 0 0 1px rgba(255, 255, 255, .5);
       }
 
-      .add-list-button {
-         button {
-            margin: 0 1rem;
-            background-color: #995D81;
-            &:hover {
-               background-color: #663f56;
+      .add-list-button-container {
+         .add-list-button {
+            button {
+               margin: 0 1rem;
+               background-color: #995D81;
+               &:hover {
+                  background-color: #663f56;
+               }
             }
          }
       }
@@ -132,4 +134,40 @@
 		width: 2rem;
 		height: 2rem;
 	}
+}
+
+@media(max-width: 715px) {
+   .dashboard {
+      .main-content-container {
+         width: 100%;
+
+         .main-content {
+            position: initial;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 0;
+
+            .list-container {
+               width: 100%;
+               height: 100%;
+               flex-direction: column;
+               overflow-x: hidden;
+               padding: .5rem 0;
+            }
+
+            .add-list-button-container {
+               button {
+                  position: fixed;
+                  bottom: 0;
+                  right: 0;
+                  z-index: 2;
+                  margin: .5rem;
+               }
+            }
+         }
+      }
+   }
 }

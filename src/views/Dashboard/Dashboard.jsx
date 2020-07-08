@@ -729,6 +729,8 @@ export default class Dashboard extends Component {
    };
 
 	render() {
+      const droppableDirection = window.innerWidth > 715 ? 'horizontal' : 'vertical';
+
 		return (
             <div className='dashboard'>
                {
@@ -765,7 +767,7 @@ export default class Dashboard extends Component {
                         ?
                         <>
                         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd} >
-                           <Droppable droppableId='all-lists' direction='horizontal' type='list' >
+                           <Droppable droppableId='all-lists' direction={droppableDirection} type='list' >
                               {(provided) => {
                                  return (
                                     <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
@@ -773,7 +775,7 @@ export default class Dashboard extends Component {
                                           { this.displayLists() }
                                           { provided.placeholder }
                                        </div>
-                                       <div style={{ display: this.state.displayAddButton ? 'block' : 'none' }}>
+                                       <div className='add-list-button-container' style={{ display: this.state.displayAddButton ? 'initial' : 'none' }}>
                                           <Tooltip title={'Add New List'}>
                                              <div className='add-list-button' style={{ width: '0px' }} onClick={this.handleAddListClick}>
                                                 <AddButton />

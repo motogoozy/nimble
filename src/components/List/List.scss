@@ -257,3 +257,13 @@
 		height: 2rem;
 	}
 }
+
+@media(max-width: 715px) {
+	.list {
+		height: 35%;
+		min-height: 20rem;
+		width: 90%;
+		max-width: none;
+		margin: .5rem 0;
+	}
+}
