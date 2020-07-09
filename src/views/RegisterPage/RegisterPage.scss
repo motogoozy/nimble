@@ -1,57 +1,62 @@
 @import '../../styles.scss';
 
 .register-page-main {
-   height: 100vh;
-   width: 100vw;
-   display: flex;
-   flex-direction: row;
-   justify-content: flex-start;
-   align-items: flex-start;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
 
-   .register-page-left {
-      width: 60vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%);
-      padding-bottom: 5rem;
+  .register-page-left {
+    width: 60vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(
+      146deg,
+      rgba(45, 49, 66, 1) 0%,
+      rgba(153, 93, 129, 1) 50%,
+      rgba(235, 130, 88, 1) 100%
+    );
+    padding-bottom: 5rem;
 
-      .register-left-grid-container {
-         img {
-            width: 80%;
-            height: auto;
-         }
-      
-         p {
-            font-size: 2.5rem;
-            letter-spacing: 3px;
-            color: $accent-orange;
-         }
-
-         i {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            color: white;
-            font-size: 2rem;
-            transition: .15s;
-      
-            &:hover {
-               color: gray;
-               transition: .15s;
-            }
-         }
+    .register-left-grid-container {
+      img {
+        width: 80%;
+        height: auto;
       }
-   }
 
-   .register-page-right {
-      width: 40vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-   }
+      p {
+        font-size: 2.5rem;
+        letter-spacing: 3px;
+        color: $accent-orange;
+      }
+
+      i {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        color: white;
+        font-size: 2rem;
+        transition: 0.15s;
+
+        &:hover {
+          color: gray;
+          transition: 0.15s;
+        }
+      }
+    }
+  }
+
+  .register-page-right {
+    width: 40vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
 }

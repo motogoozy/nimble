@@ -1,79 +1,79 @@
 @import '../../styles.scss';
 
 .sidebar {
-   width: 6rem;
-   height: 100vh;
-   background-color: $primary-dk-gray;
-   display: flex;
-   flex-direction: column;
-   justify-content: flex-start;
-   align-items: center;
+  width: 6rem;
+  height: 100vh;
+  background-color: $primary-dk-gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .sidebar-logo-container {
-   width: 100%;
-   height: auto;
-   padding: .7rem;
+  width: 100%;
+  height: auto;
+  padding: 0.7rem;
 
-   img {
-      width: 90%;
-      height: auto;
-   }
+  img {
+    width: 90%;
+    height: auto;
+  }
 }
 
 .logo-text {
-   color: $accent-orange;
-   font-size: .85rem;
-   letter-spacing: 2px;
+  color: $accent-orange;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
 }
 
 .sidebar-buttons-container {
-   width: 100%;
-   height: auto;
-   margin: 2rem 0;
-   display: flex;
-   flex-direction: column;
-   justify-content: flex-start;
-   align-items: center;
+  width: 100%;
+  height: auto;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 
-   .sidebar-button {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      color: white;
-      margin: 1rem 0;
+  .sidebar-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+    margin: 1rem 0;
+    i {
+      transition: 0.1s ease-in-out;
+      -webkit-transition: 0.1s ease-in-out;
+    }
+
+    i {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 0.68rem;
+    }
+
+    &:hover {
+      cursor: pointer;
       i {
-         transition: .1s ease-in-out;
-         -webkit-transition: .1s ease-in-out;
+        -webkit-transition: 0.1s ease-in-out;
+        transition: 0.1s ease-in-out;
+        color: $accent-orange;
       }
-      
-      i {
-         font-size: 1.5rem;
-         margin-bottom: .5rem;
-      }
+    }
 
-      p {
-         font-size: .68rem;
-      }
+    .MuiBadge-badge {
+      background-color: crimson;
+    }
+  }
 
-      &:hover {
-         cursor: pointer;
-         i {
-               -webkit-transition: .1s ease-in-out;
-               transition: .1s ease-in-out;
-               color: $accent-orange;
-         }
-      }
-
-      .MuiBadge-badge {
-         background-color: crimson;
-      }
-   }
-
-   .active-button {
-      i {
-         color: $accent-orange;
-      }
-   }
+  .active-button {
+    i {
+      color: $accent-orange;
+    }
+  }
 }

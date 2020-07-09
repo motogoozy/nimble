@@ -1,58 +1,57 @@
 @import '../../../styles.scss';
 
 .user-connection {
-	width: 100%;
-	height: 3rem;
-	min-height: 3rem;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
+  width: 100%;
+  height: 3rem;
+  min-height: 3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-	.connection-info-container {
-		height: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
+  .connection-info-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
 
-		.connection-avatar-container {
-			margin-right: 1rem;
-		}
-	
-		.connection-name-email-container {
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: flex-start;
+    .connection-avatar-container {
+      margin-right: 1rem;
+    }
 
-			span {
-				color: #008044;
-				font-size: .8em;
-				height: 100%;
-				vertical-align: middle;
-			}
-	
-			.user-connection-email {
-				color: gray;
-				&:hover {
-					cursor: pointer;
-					text-decoration: underline;
-				}
-			}
-		}
-
-	}
-
-	.connection-button-container {
+    .connection-name-email-container {
       display: flex;
-      flex-direction: row;
-		p {
-         font-size: .8rem;
-         margin-left: .3rem;
-			&:hover {
-				color: $accent-purple;
-			}
-		}
-	}
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      span {
+        color: #008044;
+        font-size: 0.8em;
+        height: 100%;
+        vertical-align: middle;
+      }
+
+      .user-connection-email {
+        color: gray;
+        &:hover {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .connection-button-container {
+    display: flex;
+    flex-direction: row;
+    p {
+      font-size: 0.8rem;
+      margin-left: 0.3rem;
+      &:hover {
+        color: $accent-purple;
+      }
+    }
+  }
 }
