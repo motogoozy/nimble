@@ -13,710 +13,745 @@ import Button from '@material-ui/core/Button';
 import Swal from 'sweetalert2';
 
 export default class People extends Component {
-	state = {
-		currentConnections: '',
-		connectionRequests: '',
-		pendingConnections: '',
-		users: '',
-		projectUsers: '',
-		newUserEmail: '',
-		displayAddCollaboratorModal: false,
-		displayAddConnectionModal: false,
-		addingUser: '',
-	};
+  state = {
+    currentConnections: '',
+    connectionRequests: '',
+    pendingConnections: '',
+    users: '',
+    projectUsers: '',
+    newUserEmail: '',
+    displayAddCollaboratorModal: false,
+    displayAddConnectionModal: false,
+    addingUser: '',
+  };
 
-	componentDidMount = async () => {
-		try {
-			await this.getUserConnections();
-			await this.getUserConnectionDetails();
-		} catch (err) {
-			console.log(err.response.data);
-		}
-	};
+  componentDidMount = async () => {
+    try {
+      await this.getUserConnections();
+      await this.getUserConnectionDetails();
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
 
-	componentDidUpdate = async (prevProps) => {
-		if (prevProps.projectId !== this.props.projectId) {
-			try {
-				await this.props.getProjectUsers();
-				await this.getUserConnections();
-				await this.getUserConnectionDetails();
-			} catch (err) {
-				console.log(err.response.data);
-			}
-		}
-	};
+  componentDidUpdate = async prevProps => {
+    if (prevProps.projectId !== this.props.projectId) {
+      try {
+        await this.props.getProjectUsers();
+        await this.getUserConnections();
+        await this.getUserConnectionDetails();
+      } catch (err) {
+        console.log(err.response.data);
+      }
+    }
+  };
 
-	getUserConnections = async () => {
-		const { loggedInUser } = this.props;
+  getUserConnections = async () => {
+    const { loggedInUser } = this.props;
 
-		const res = await axios.get(`/connection/user/${loggedInUser.user_id}`);
-		let current = [], requests = [], pending = [];
-		res.data.forEach(connection => {
-			if (connection.status === 2) {
-				current.push(connection);
-			}
-			else {
-				if (connection.receive_id === loggedInUser.user_id) {
-					requests.push(connection);
-				}
-				else if (connection.send_id === loggedInUser.user_id) {
-					pending.push(connection);
-				}
-			}
-		});
+    const res = await axios.get(`/connection/user/${loggedInUser.user_id}`);
+    let current = [],
+      requests = [],
+      pending = [];
+    res.data.forEach(connection => {
+      if (connection.status === 2) {
+        current.push(connection);
+      } else {
+        if (connection.receive_id === loggedInUser.user_id) {
+          requests.push(connection);
+        } else if (connection.send_id === loggedInUser.user_id) {
+          pending.push(connection);
+        }
+      }
+    });
 
-		const connectionsObj = {
-			currentConnections: current,
-			connectionRequests: requests,
-			pendingConnections: pending,
-		};
-		this.setState(connectionsObj);
-		return connectionsObj;
-	};
+    const connectionsObj = {
+      currentConnections: current,
+      connectionRequests: requests,
+      pendingConnections: pending,
+    };
+    this.setState(connectionsObj);
+    return connectionsObj;
+  };
 
-	getUserConnectionDetails = async () => {
-		const { currentConnections, connectionRequests, pendingConnections } = this.state;
+  getUserConnectionDetails = async () => {
+    const { currentConnections, connectionRequests, pendingConnections } = this.state;
 
-		try {
-			let connected = await this.getUserDetails(currentConnections);
-			let requests = await this.getUserDetails(connectionRequests);
-			let pending = await this.getUserDetails(pendingConnections);
-			
-			let allUsers = {
-				...connected,
-				...requests,
-				...pending
-			};
-	
-			this.setState({ users: allUsers });
-		} catch (err) {
-			console.log(err.response.data);
-		}
-	};
+    try {
+      let connected = await this.getUserDetails(currentConnections);
+      let requests = await this.getUserDetails(connectionRequests);
+      let pending = await this.getUserDetails(pendingConnections);
 
-	getUserDetails = async (list) => {
-		if (!list) return;
-		const { loggedInUser } = this.props;
-		let userMap = {};
+      let allUsers = {
+        ...connected,
+        ...requests,
+        ...pending,
+      };
 
-		let promises = list.map(connection => {
-			if (connection.send_id !== loggedInUser.user_id) {
-				return this.props.getUserById(connection.send_id);
-			} else {
-				return this.props.getUserById(connection.receive_id);
-			}
-		});
+      this.setState({ users: allUsers });
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
 
-		const results = await Promise.all(promises);
-		results.forEach(result => {
-			let userData = result.data;
-			userMap[userData.user_id] = userData;
-		})
+  getUserDetails = async list => {
+    if (!list) return;
+    const { loggedInUser } = this.props;
+    let userMap = {};
 
-		return userMap;
-	};
+    let promises = list.map(connection => {
+      if (connection.send_id !== loggedInUser.user_id) {
+        return this.props.getUserById(connection.send_id);
+      } else {
+        return this.props.getUserById(connection.receive_id);
+      }
+    });
 
-	handleInput = (key, value) => {
-      this.setState({ [key]: value });
-	};
+    const results = await Promise.all(promises);
+    results.forEach(result => {
+      let userData = result.data;
+      userMap[userData.user_id] = userData;
+    });
 
-	handleAddProjectUserClick = () => {
-		if (this.props.loggedInUser.user_id === this.props.project.created_by || this.props.projectPermissions.add_collaborators) {
-			this.setState({ displayAddCollaboratorModal: true });
-		} else {
-			Swal.fire({
-				type: 'warning',
-				title: 'Oops!',
-				text: 'You do not have permission to add collaborators to this project.',
-			})
-		}
-	};
+    return userMap;
+  };
 
-	handleRemoveProjectUserClick = (user) => {
-		if (this.props.loggedInUser.user_id === this.props.project.created_by || this.props.projectPermissions.add_collaborators) {
-			this.removeProjectUser(user.user_id)
-		} else {
-			Swal.fire({
-				type: 'warning',
-				title: 'Oops!',
-				text: 'You do not have permission to remove collaborators from this project.',
-			})
-		}
-	};
+  handleInput = (key, value) => {
+    this.setState({ [key]: value });
+  };
 
+  handleAddProjectUserClick = () => {
+    if (
+      this.props.loggedInUser.user_id === this.props.project.created_by ||
+      this.props.projectPermissions.add_collaborators
+    ) {
+      this.setState({ displayAddCollaboratorModal: true });
+    } else {
+      Swal.fire({
+        type: 'warning',
+        title: 'Oops!',
+        text: 'You do not have permission to add collaborators to this project.',
+      });
+    }
+  };
 
-	addProjectUser = async (userId) => {
-		const { projectId } = this.props;
+  handleRemoveProjectUserClick = user => {
+    if (
+      this.props.loggedInUser.user_id === this.props.project.created_by ||
+      this.props.projectPermissions.add_collaborators
+    ) {
+      this.removeProjectUser(user.user_id);
+    } else {
+      Swal.fire({
+        type: 'warning',
+        title: 'Oops!',
+        text: 'You do not have permission to remove collaborators from this project.',
+      });
+    }
+  };
 
-		this.setState({ addingUser: userId }, async () => {
-			try {
-				await axios.post(`/project/${projectId}/user/${userId}`);
-				await this.getUserConnections();
-				await this.getUserConnectionDetails();
-				await this.props.getProjectUsers();
-				this.setState({ addingUser: '' });
-			} catch (err) {
-				if (err.response.data) {
-					console.log(err.response.data);
-				}
-			}
-		})
-	};
+  addProjectUser = async userId => {
+    const { projectId } = this.props;
 
-	removeProjectUser = (userId) => {
-		const { projectId } = this.props;
+    this.setState({ addingUser: userId }, async () => {
+      try {
+        await axios.post(`/project/${projectId}/user/${userId}`);
+        await this.getUserConnections();
+        await this.getUserConnectionDetails();
+        await this.props.getProjectUsers();
+        this.setState({ addingUser: '' });
+      } catch (err) {
+        if (err.response.data) {
+          console.log(err.response.data);
+        }
+      }
+    });
+  };
 
-		Swal.fire({
-         type: 'warning',
-         title: 'Are you sure?',
-         text: "This will remove the user from this project and all associated tasks.",
-         showCancelButton: true,
-         confirmButtonColor: '#d33',
-         cancelButtonColor: '#3085d6',
-         confirmButtonText: 'Yes, delete it!'
-      }).then(async (res) => {
-			if (res.value) {
-				try {
-					await axios.delete(`/project/${projectId}/user/${userId}`);
-					await axios.delete(`/task_users/project/${projectId}/user/${userId}`)
-					await this.props.getProjectUsers();
-					await this.props.getTaskUsers();
-					await this.props.getAllTasks();
-					await this.getUserConnections();
-					await this.getUserConnectionDetails();
-				} catch (err) {
-					if (err.response.data) {
-						console.log(err.response.data);
-					}
-				}
-			}
-		})
-	};
+  removeProjectUser = userId => {
+    const { projectId } = this.props;
 
-	checkExistingConnection = () => {
-		const { users, currentConnections, pendingConnections, connectionRequests, newUserEmail } = this.state;
+    Swal.fire({
+      type: 'warning',
+      title: 'Are you sure?',
+      text: 'This will remove the user from this project and all associated tasks.',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async res => {
+      if (res.value) {
+        try {
+          await axios.delete(`/project/${projectId}/user/${userId}`);
+          await axios.delete(`/task_users/project/${projectId}/user/${userId}`);
+          await this.props.getProjectUsers();
+          await this.props.getTaskUsers();
+          await this.props.getAllTasks();
+          await this.getUserConnections();
+          await this.getUserConnectionDetails();
+        } catch (err) {
+          if (err.response.data) {
+            console.log(err.response.data);
+          }
+        }
+      }
+    });
+  };
 
-		for (let id in users) {
-			let user = users[id];
-			if (user.email.toLowerCase() === newUserEmail.toLowerCase()) {
-				if (currentConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
-					return 'You are already connected with this user.';
-				} else if (pendingConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
-					return 'You have already sent a connection request to this user.';
-				} else if (connectionRequests.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
-					return 'This user has already requested to connect with you. Check your connection requests.';
-				}
-			}
-		}
+  checkExistingConnection = () => {
+    const {
+      users,
+      currentConnections,
+      pendingConnections,
+      connectionRequests,
+      newUserEmail,
+    } = this.state;
 
-		return false;
-	};
+    for (let id in users) {
+      let user = users[id];
+      if (user.email.toLowerCase() === newUserEmail.toLowerCase()) {
+        if (
+          currentConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)
+        ) {
+          return 'You are already connected with this user.';
+        } else if (
+          pendingConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)
+        ) {
+          return 'You have already sent a connection request to this user.';
+        } else if (
+          connectionRequests.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)
+        ) {
+          return 'This user has already requested to connect with you. Check your connection requests.';
+        }
+      }
+    }
 
-	addUserConnection = async () => {
-		const { newUserEmail } = this.state;
-		const { loggedInUser } = this.props;
-		const body = {
-			email: newUserEmail.toLowerCase(),
-		};
+    return false;
+  };
 
-		const isAlreadyConnected = this.checkExistingConnection();
+  addUserConnection = async () => {
+    const { newUserEmail } = this.state;
+    const { loggedInUser } = this.props;
+    const body = {
+      email: newUserEmail.toLowerCase(),
+    };
 
-		if (isAlreadyConnected) {
-			Swal.fire({
-				type: 'warning',
-				title: 'Oops!',
-				text: isAlreadyConnected,
-			})
-			return;
-		}
+    const isAlreadyConnected = this.checkExistingConnection();
 
-		if (newUserEmail === loggedInUser.email) {
-			Swal.fire({
-				type: 'warning',
-				title: 'Oops!',
-				text: 'You cannot add yourself as a connection.'
-			})
-			return;
-		}
+    if (isAlreadyConnected) {
+      Swal.fire({
+        type: 'warning',
+        title: 'Oops!',
+        text: isAlreadyConnected,
+      });
+      return;
+    }
 
-		try {
-			await axios.post(`/connection/user/${loggedInUser.user_id}`, body);
-			this.setState({
-				users: '',
-				displayAddConnectionModal: false ,
-				newUserEmail: '',
-			}, async () => {
-				await this.getUserConnections();
-				await this.getUserConnectionDetails();
-			});
-		} catch (err) {
-			console.log(err.response.data);
-			Swal.fire({
-				type: 'warning',
-				title: 'Not Found.',
-				text: err.response.data,
-			})
-		}
-	};
+    if (newUserEmail === loggedInUser.email) {
+      Swal.fire({
+        type: 'warning',
+        title: 'Oops!',
+        text: 'You cannot add yourself as a connection.',
+      });
+      return;
+    }
 
-	cancelAddUserConnection = () => {
-		this.setState({
-			newUserEmail: '',
-			displayAddConnectionModal: false
-		});
-	};
+    try {
+      await axios.post(`/connection/user/${loggedInUser.user_id}`, body);
+      this.setState(
+        {
+          users: '',
+          displayAddConnectionModal: false,
+          newUserEmail: '',
+        },
+        async () => {
+          await this.getUserConnections();
+          await this.getUserConnectionDetails();
+        }
+      );
+    } catch (err) {
+      console.log(err.response.data);
+      Swal.fire({
+        type: 'warning',
+        title: 'Not Found.',
+        text: err.response.data,
+      });
+    }
+  };
 
-	removeUserConnection = (connection) => {
-		const { loggedInUser } = this.props;
+  cancelAddUserConnection = () => {
+    this.setState({
+      newUserEmail: '',
+      displayAddConnectionModal: false,
+    });
+  };
 
-		Swal.fire({
-         type: 'warning',
-         title: 'Are you sure?',
-         text: "Your connection to this user will be removed.",
-         showCancelButton: true,
-         confirmButtonColor: '#d33',
-         cancelButtonColor: '#3085d6',
-         confirmButtonText: 'Yes, delete it!'
-      }).then(async (res) => {
-			if (res.value) {
-				try {
-					await axios.delete(`/connection/${connection.connection_id}/user/${loggedInUser.user_id}`);
-					this.setState({
-						users: ''
-					}, async () => {
-						await this.getUserConnections();
-						await this.getUserConnectionDetails();
-						this.props.clearConnectionRequests();
-					})
-				} catch (err) {
-					if (err.response.data) {
-						console.log(err.response.data);
-					}
-				}
-			}
-		})
-	};
+  removeUserConnection = connection => {
+    const { loggedInUser } = this.props;
 
-	acceptUserConnection = async (connectionId) => {
-		const { loggedInUser, projectId } = this.props;
-		const body = {
-			user_id: loggedInUser.user_id,
-		};
+    Swal.fire({
+      type: 'warning',
+      title: 'Are you sure?',
+      text: 'Your connection to this user will be removed.',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async res => {
+      if (res.value) {
+        try {
+          await axios.delete(
+            `/connection/${connection.connection_id}/user/${loggedInUser.user_id}`
+          );
+          this.setState(
+            {
+              users: '',
+            },
+            async () => {
+              await this.getUserConnections();
+              await this.getUserConnectionDetails();
+              this.props.clearConnectionRequests();
+            }
+          );
+        } catch (err) {
+          if (err.response.data) {
+            console.log(err.response.data);
+          }
+        }
+      }
+    });
+  };
 
-		try {
-			await axios.put(`/connection/${connectionId}`, body);
-			this.setState({
-				users: '',
-			}, async () => {
-				await this.getUserConnections();
-				await this.getUserConnectionDetails();
-				await this.props.getConnectionRequests();
-				if (projectId) {
-					await this.props.getProjectUsers();
-				}
-			});
-		} catch (err) {
-			console.log(err.response.data);
-		}
-	};
+  acceptUserConnection = async connectionId => {
+    const { loggedInUser, projectId } = this.props;
+    const body = {
+      user_id: loggedInUser.user_id,
+    };
 
-	displayProjectUsers = () => {
-		const { loggedInUser, projectUsers } = this.props;
+    try {
+      await axios.put(`/connection/${connectionId}`, body);
+      this.setState(
+        {
+          users: '',
+        },
+        async () => {
+          await this.getUserConnections();
+          await this.getUserConnectionDetails();
+          await this.props.getConnectionRequests();
+          if (projectId) {
+            await this.props.getProjectUsers();
+          }
+        }
+      );
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
 
-		if (projectUsers.length === 0) {
-			return (
-				<div>
-					<i className='no-connections-text'>No users assigned to this project.</i>
-				</div>
-			)
-		}
+  displayProjectUsers = () => {
+    const { loggedInUser, projectUsers } = this.props;
 
-		projectUsers.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
+    if (projectUsers.length === 0) {
+      return (
+        <div>
+          <i className='no-connections-text'>No users assigned to this project.</i>
+        </div>
+      );
+    }
 
-		return projectUsers.map(user => {
-			let avatarColor = formatColor(user.color);
-			return (
-				<div className='user-connection-container' key={`projectCollaborator: ${user.user_id}`}>
-					<UserConnection
-						user={user}
-						actions={['Remove']}
-						tooltipTitles={['Remove Person From Project']}
-						avatarColor={avatarColor}
-						isProjectOwner={this.props.project.created_by === user.user_id}
-					/>
-					{
-						user.user_id !== loggedInUser.user_id && user.user_id !== this.props.project.created_by
-						&&
-						<div className='user-connection-actions'>
-							<Tooltip title={'Remove User from Project'}>
-								<p onClick={() => this.handleRemoveProjectUserClick(user)}>Remove</p>
-							</Tooltip>
-						</div>
-					}
-				</div>
-			)
-		})
-	};
-	
-	displayCurrentConnections = () => {
-		const { users, currentConnections } = this.state;
-		const { loggedInUser } = this.props;
+    projectUsers.sort((a, b) => (a.first_name > b.first_name ? 1 : -1));
 
-		if (currentConnections.length === 0) {
-			return (
-				<div>
-					<i className='no-connections-text'>No current connections.</i>
-				</div>
-			)
-		}
-
-		let connectionList = currentConnections.map(connection => {
-			let userId;
-			if (connection.send_id === loggedInUser.user_id ) {
-				userId = connection.receive_id;
-			} else {
-				userId = connection.send_id;
-			}
-			let user = users[userId];
-			let avatarColor = formatColor(user.color);
-			return {
-				connection: connection,
-				user: user,
-				avatarColor: avatarColor
-			}
-		});
-
-		connectionList.sort((a, b) => (a.user.first_name > b.user.first_name) ? 1 : -1);
-
-		return connectionList.map(obj => {
-			return (
-				<div className='user-connection-container' key={`current-connection-id: ${obj.connection.connection_id}`}>
-					<UserConnection
-						user={obj.user}
-						avatarColor={obj.avatarColor}
-					/>
-					<div className='user-connection-actions'>
-						<Tooltip title={'Remove User Connection'}>
-							<p onClick={() => this.removeUserConnection(obj.connection)}>Remove</p>
-						</Tooltip>
-					</div>
-				</div>
-			)
-		})
-	};
-
-	displayConnectionRequests = () => {
-		const { users, connectionRequests } = this.state;
-		const { loggedInUser } = this.props;
-
-		if (connectionRequests.length === 0) {
-			return (
-				<div>
-					<i className='no-connections-text'>No connection requests.</i>
-				</div>
-			)
-		}
-
-		let connectionList = connectionRequests.map(connection => {
-			let userId;
-			if (connection.send_id === loggedInUser.user_id ) {
-				userId = connection.receive_id;
-			} else {
-				userId = connection.send_id;
-			}
-			let user = users[userId];
-			let avatarColor = formatColor(user.color);
-			return {
-				connection: connection,
-				user: user,
-				avatarColor: avatarColor
-			}
-		});
-
-		connectionList.sort((a, b) => (a.user.first_name > b.user.first_name) ? 1 : -1);
-
-		return connectionList.map(obj => {
-			return (
-				<div className='user-connection-container' key={`request-connection-id: ${obj.connection.connection_id}`}>
-					<UserConnection
-						user={obj.user}
-						avatarColor={obj.avatarColor}
-					/>
-					<div className='user-connection-actions'>
-						<Tooltip title={'Accept Connection Request'}>
-							<p className='accept-connection-button' onClick={() => this.acceptUserConnection(obj.connection.connection_id)}>Accept</p>
-						</Tooltip>
-						<Tooltip title={'Ignore Connection Request'}>
-							<p onClick={() => this.removeUserConnection(obj.connection)}>Ignore</p>
-						</Tooltip>
-					</div>
-				</div>
-			)
-		})
-	};
-
-	displayPendingConnections = () => {
-		const { users, pendingConnections } = this.state;
-		const { loggedInUser } = this.props;
-
-		if (pendingConnections.length === 0) {
-			return (
-				<div>
-					<i className='no-connections-text'>No pending connections.</i>
-				</div>
-			)
-		}
-
-		let connectionList = pendingConnections.map(connection => {
-			let userId;
-			if (connection.send_id === loggedInUser.user_id ) {
-				userId = connection.receive_id;
-			} else {
-				userId = connection.send_id;
-			}
-			let user = users[userId];
-			let avatarColor = formatColor(user.color);
-			return {
-				connection: connection,
-				user: user,
-				avatarColor: avatarColor
-			}
-		});
-
-		connectionList.sort((a, b) => (a.user.first_name > b.user.first_name) ? 1 : -1);
-
-		return connectionList.map(obj => {
-			return (
-				<div className='user-connection-container' key={`pending-connection-id: ${obj.connection.connection_id}`}>
-					<UserConnection
-						user={obj.user}
-						avatarColor={obj.avatarColor}
-					/>
-					<div className='user-connection-actions'>
-						<Tooltip title={'Cancel Connection Request'}>
-							<p onClick={() => this.removeUserConnection(obj.connection)}>Cancel</p>
-						</Tooltip>
-					</div>
-				</div>
-			)
-		})
-	};
-
-	addCollaboratorModal = () => {
-		const { currentConnections, users, addingUser } = this.state;
-		const { loggedInUser, projectUsers } = this.props;
-
-		const displayAvailableConnections = (list) => {
-			if (list.length === 0) {
-				return <i style={{ color: 'gray', textAlign: 'left' }}>No connections available. Connect with a user to add them to the project.</i>
-			}
-
-			return list.map(user => {
-				if (user) {
-					const avatarColor = formatColor(user.color);
-					
-					return (
-						<div className='add-available-connection' key={`available: ${user.user_id}`}>
-							<UserConnection
-								user={user}
-								actions={[]}
-								tooltipTitles={[]}
-								avatarColor={avatarColor}
-							/>
-							{
-								addingUser === user.user_id
-								?
-								<div className='adding-user-progress'>
-									<CircularProgress size={25} />
-								</div>
-								:
-								<div onClick={() => this.addProjectUser(user.user_id)}>
-									<SmallAddButton title={'Add Person'}/>
-								</div>
-							}
-						</div>
-					)
-				} else return null;
-			});
-		};
-
-		let remainingConnections = currentConnections.filter(connection => {
-			let isAvailable = true;
-			for (let i = 0; i < projectUsers.length; i++) {
-				if (connection.send_id === loggedInUser.user_id) {
-					if (connection.receive_id === projectUsers[i].user_id) {
-						isAvailable = false;
-						break;
-					}
-				} else {
-					if (connection.send_id === projectUsers[i].user_id) {
-						isAvailable = false;
-						break;
-					}
-				}
-			}
-			return isAvailable;
-		})
-
-		let userList = remainingConnections.map(connection => {
-			if (connection.receive_id === loggedInUser.user_id) {
-				return users[connection.send_id];
-			} else {
-				return users[connection.receive_id];
-			}
-		});
-
-		userList.sort((a, b) => (a.first_name > b.first_name) ? 1 : -1);
-
-		return (
-			<div className='modal-wrapper' onClick={() => this.setState({ displayAddCollaboratorModal: false })}>
-				<div className='add-project-collaborator-modal' onClick={e => e.stopPropagation()}>
-					<div className='add-project-collaborator-modal-header'>
-						<p>Add Person to Project</p>
-						<i className="fas fa-times cursor-pointer" onClick={() => this.setState({ displayAddCollaboratorModal: false })}></i>
-					</div>
-					<div className='add-project-collaborator-connections-container'>
-						<p style={{ marginBottom: '1rem' }}>Available Connections:</p>
-						<div className='add-project-collaborator-connections'>
-							{ displayAvailableConnections(userList) }
-						</div>
-					</div>
-				</div>
-			</div>
-		)
-	};
-
-	addConnectionModal = () => {
-		const { newUserEmail } = this.state;
-		return (
-			<div className='modal-wrapper' onClick={this.cancelAddUserConnection}>
-				<div className='add-connection-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-               <p style={{ fontSize: '1.2rem' }}>Add New Connection:</p>
-               <TextField
-                  id="standard-search"
-						label="User Email"
-						value={newUserEmail}
-                  onChange={e => this.handleInput('newUserEmail', e.target.value)}
-                  autoFocus
-               />
-               <div>
-                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='secondary' onClick={this.cancelAddUserConnection}>Cancel</Button>
-                  <Button style={{ margin: '1rem .5rem 0 .5rem' }} variant="outlined" color='primary' onClick={this.addUserConnection}>Add</Button>
-               </div>
+    return projectUsers.map(user => {
+      let avatarColor = formatColor(user.color);
+      return (
+        <div className='user-connection-container' key={`projectCollaborator: ${user.user_id}`}>
+          <UserConnection
+            user={user}
+            actions={['Remove']}
+            tooltipTitles={['Remove Person From Project']}
+            avatarColor={avatarColor}
+            isProjectOwner={this.props.project.created_by === user.user_id}
+          />
+          {user.user_id !== loggedInUser.user_id && user.user_id !== this.props.project.created_by && (
+            <div className='user-connection-actions'>
+              <Tooltip title={'Remove User from Project'}>
+                <p onClick={() => this.handleRemoveProjectUserClick(user)}>Remove</p>
+              </Tooltip>
             </div>
-			</div>
-		)
-	};
+          )}
+        </div>
+      );
+    });
+  };
 
-	render() {
-		const { currentConnections, connectionRequests, pendingConnections, users } = this.state;
-		const { projectId, projectUsers } = this.props;
+  displayCurrentConnections = () => {
+    const { users, currentConnections } = this.state;
+    const { loggedInUser } = this.props;
 
-		return (
-			<div className='people-main'>
-				<div className='project-collaborators-container'>
-					<div className='project-collaborators-column'>
-						<div className='collaborators-column-header'>
-							<p>Project Collaborators</p>
-							{
-								currentConnections && projectId
-								&&
-								<div onClick={this.handleAddProjectUserClick}>
-									<SmallAddButton title={'Add Person to Project'} />
-								</div>
-							}
-						</div>
-						<div className='collaborators-column-body'>
-							{
-								projectId
-								?
-								<>
-								{
-									projectUsers && !this.props.isLoading
-									?
-									this.displayProjectUsers()
-									:
-									<div className='progress-container'>
-										<PulseLoader size={12} color={'#995D81'} />
-									</div>
-								}
-								</>
-								:
-								<div>
-									<i style={{ color: 'gray' }}>Select a Project to see Collaborators.</i>
-								</div>
-							}
-						</div>
-					</div>
-				</div>
-				<div className='connections-container'>
-					<div className='connection-column' >
-						<div className="connection-column-header">
-							<p>Current Connections</p>
-							{
-								currentConnections && !this.props.isLoading
-								&&
-								<div onClick={() => this.setState({ displayAddConnectionModal: true })}>
-									<SmallAddButton title={'Add Connection'}/>
-								</div>
-							}
-						</div>
-						<div className='connection-column-body'>
-							{
-								users && currentConnections && !this.props.isLoading
-								?
-								this.displayCurrentConnections()
-								:
-								<div className='progress-container'>
-									<PulseLoader size={12} color={'#995D81'} />
-								</div>
-							}
-						</div>
-					</div>
-					<div className='connection-column' >
-						<div className="connection-column-header">
-							<p>Connection Requests (Received)</p>
-						</div>
-						<div className='connection-column-body'>
-							{
-								users && connectionRequests && !this.props.isLoading
-								?
-								this.displayConnectionRequests()
-								:
-								<div className='progress-container'>
-									<PulseLoader size={12} color={'#995D81'} />
-								</div>
-							}
-						</div>
-					</div>
-					<div className='connection-column' >
-						<div className="connection-column-header">
-							<p>Pending Connections (Sent)</p>
-						</div>
-						<div className='connection-column-body'>
-							{
-								users && pendingConnections && !this.props.isLoading
-								?
-								this.displayPendingConnections()
-								:
-								<div className='progress-container'>
-									<PulseLoader size={12} color={'#995D81'} />
-								</div>
-							}
-						</div>
-					</div>
-				</div>
-				{
-					this.state.displayAddCollaboratorModal
-					&&
-					this.addCollaboratorModal()
-				}
-				{
-					this.state.displayAddConnectionModal
-					&&
-					this.addConnectionModal()
-				}
-			</div>
-		)
-	}
+    if (currentConnections.length === 0) {
+      return (
+        <div>
+          <i className='no-connections-text'>No current connections.</i>
+        </div>
+      );
+    }
+
+    let connectionList = currentConnections.map(connection => {
+      let userId;
+      if (connection.send_id === loggedInUser.user_id) {
+        userId = connection.receive_id;
+      } else {
+        userId = connection.send_id;
+      }
+      let user = users[userId];
+      let avatarColor = formatColor(user.color);
+      return {
+        connection: connection,
+        user: user,
+        avatarColor: avatarColor,
+      };
+    });
+
+    connectionList.sort((a, b) => (a.user.first_name > b.user.first_name ? 1 : -1));
+
+    return connectionList.map(obj => {
+      return (
+        <div
+          className='user-connection-container'
+          key={`current-connection-id: ${obj.connection.connection_id}`}
+        >
+          <UserConnection user={obj.user} avatarColor={obj.avatarColor} />
+          <div className='user-connection-actions'>
+            <Tooltip title={'Remove User Connection'}>
+              <p onClick={() => this.removeUserConnection(obj.connection)}>Remove</p>
+            </Tooltip>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  displayConnectionRequests = () => {
+    const { users, connectionRequests } = this.state;
+    const { loggedInUser } = this.props;
+
+    if (connectionRequests.length === 0) {
+      return (
+        <div>
+          <i className='no-connections-text'>No connection requests.</i>
+        </div>
+      );
+    }
+
+    let connectionList = connectionRequests.map(connection => {
+      let userId;
+      if (connection.send_id === loggedInUser.user_id) {
+        userId = connection.receive_id;
+      } else {
+        userId = connection.send_id;
+      }
+      let user = users[userId];
+      let avatarColor = formatColor(user.color);
+      return {
+        connection: connection,
+        user: user,
+        avatarColor: avatarColor,
+      };
+    });
+
+    connectionList.sort((a, b) => (a.user.first_name > b.user.first_name ? 1 : -1));
+
+    return connectionList.map(obj => {
+      return (
+        <div
+          className='user-connection-container'
+          key={`request-connection-id: ${obj.connection.connection_id}`}
+        >
+          <UserConnection user={obj.user} avatarColor={obj.avatarColor} />
+          <div className='user-connection-actions'>
+            <Tooltip title={'Accept Connection Request'}>
+              <p
+                className='accept-connection-button'
+                onClick={() => this.acceptUserConnection(obj.connection.connection_id)}
+              >
+                Accept
+              </p>
+            </Tooltip>
+            <Tooltip title={'Ignore Connection Request'}>
+              <p onClick={() => this.removeUserConnection(obj.connection)}>Ignore</p>
+            </Tooltip>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  displayPendingConnections = () => {
+    const { users, pendingConnections } = this.state;
+    const { loggedInUser } = this.props;
+
+    if (pendingConnections.length === 0) {
+      return (
+        <div>
+          <i className='no-connections-text'>No pending connections.</i>
+        </div>
+      );
+    }
+
+    let connectionList = pendingConnections.map(connection => {
+      let userId;
+      if (connection.send_id === loggedInUser.user_id) {
+        userId = connection.receive_id;
+      } else {
+        userId = connection.send_id;
+      }
+      let user = users[userId];
+      let avatarColor = formatColor(user.color);
+      return {
+        connection: connection,
+        user: user,
+        avatarColor: avatarColor,
+      };
+    });
+
+    connectionList.sort((a, b) => (a.user.first_name > b.user.first_name ? 1 : -1));
+
+    return connectionList.map(obj => {
+      return (
+        <div
+          className='user-connection-container'
+          key={`pending-connection-id: ${obj.connection.connection_id}`}
+        >
+          <UserConnection user={obj.user} avatarColor={obj.avatarColor} />
+          <div className='user-connection-actions'>
+            <Tooltip title={'Cancel Connection Request'}>
+              <p onClick={() => this.removeUserConnection(obj.connection)}>Cancel</p>
+            </Tooltip>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  addCollaboratorModal = () => {
+    const { currentConnections, users, addingUser } = this.state;
+    const { loggedInUser, projectUsers } = this.props;
+
+    const displayAvailableConnections = list => {
+      if (list.length === 0) {
+        return (
+          <i style={{ color: 'gray', textAlign: 'left' }}>
+            No connections available. Connect with a user to add them to the project.
+          </i>
+        );
+      }
+
+      return list.map(user => {
+        if (user) {
+          const avatarColor = formatColor(user.color);
+
+          return (
+            <div className='add-available-connection' key={`available: ${user.user_id}`}>
+              <UserConnection
+                user={user}
+                actions={[]}
+                tooltipTitles={[]}
+                avatarColor={avatarColor}
+              />
+              {addingUser === user.user_id ? (
+                <div className='adding-user-progress'>
+                  <CircularProgress size={25} />
+                </div>
+              ) : (
+                <div onClick={() => this.addProjectUser(user.user_id)}>
+                  <SmallAddButton title={'Add Person'} />
+                </div>
+              )}
+            </div>
+          );
+        } else return null;
+      });
+    };
+
+    let remainingConnections = currentConnections.filter(connection => {
+      let isAvailable = true;
+      for (let i = 0; i < projectUsers.length; i++) {
+        if (connection.send_id === loggedInUser.user_id) {
+          if (connection.receive_id === projectUsers[i].user_id) {
+            isAvailable = false;
+            break;
+          }
+        } else {
+          if (connection.send_id === projectUsers[i].user_id) {
+            isAvailable = false;
+            break;
+          }
+        }
+      }
+      return isAvailable;
+    });
+
+    let userList = remainingConnections.map(connection => {
+      if (connection.receive_id === loggedInUser.user_id) {
+        return users[connection.send_id];
+      } else {
+        return users[connection.receive_id];
+      }
+    });
+
+    userList.sort((a, b) => (a.first_name > b.first_name ? 1 : -1));
+
+    return (
+      <div
+        className='modal-wrapper'
+        onClick={() => this.setState({ displayAddCollaboratorModal: false })}
+      >
+        <div className='add-project-collaborator-modal' onClick={e => e.stopPropagation()}>
+          <div className='add-project-collaborator-modal-header'>
+            <p>Add Person to Project</p>
+            <i
+              className='fas fa-times cursor-pointer'
+              onClick={() => this.setState({ displayAddCollaboratorModal: false })}
+            ></i>
+          </div>
+          <div className='add-project-collaborator-connections-container'>
+            <p style={{ marginBottom: '1rem' }}>Available Connections:</p>
+            <div className='add-project-collaborator-connections'>
+              {displayAvailableConnections(userList)}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  addConnectionModal = () => {
+    const { newUserEmail } = this.state;
+    return (
+      <div className='modal-wrapper' onClick={this.cancelAddUserConnection}>
+        <div
+          className='add-connection-modal'
+          style={{ padding: '1rem' }}
+          onClick={e => e.stopPropagation()}
+        >
+          <p style={{ fontSize: '1.2rem' }}>Add New Connection:</p>
+          <TextField
+            id='standard-search'
+            label='User Email'
+            value={newUserEmail}
+            onChange={e => this.handleInput('newUserEmail', e.target.value)}
+            autoFocus
+          />
+          <div>
+            <Button
+              style={{ margin: '1rem .5rem 0 .5rem' }}
+              variant='outlined'
+              color='secondary'
+              onClick={this.cancelAddUserConnection}
+            >
+              Cancel
+            </Button>
+            <Button
+              style={{ margin: '1rem .5rem 0 .5rem' }}
+              variant='outlined'
+              color='primary'
+              onClick={this.addUserConnection}
+            >
+              Add
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    const { currentConnections, connectionRequests, pendingConnections, users } = this.state;
+    const { projectId, projectUsers } = this.props;
+
+    return (
+      <div className='people-main'>
+        <div className='project-collaborators-container'>
+          <div className='project-collaborators-column'>
+            <div className='collaborators-column-header'>
+              <p>Project Collaborators</p>
+              {currentConnections && projectId && (
+                <div onClick={this.handleAddProjectUserClick}>
+                  <SmallAddButton title={'Add Person to Project'} />
+                </div>
+              )}
+            </div>
+            <div className='collaborators-column-body'>
+              {projectId ? (
+                <>
+                  {projectUsers && !this.props.isLoading ? (
+                    this.displayProjectUsers()
+                  ) : (
+                    <div className='progress-container'>
+                      <PulseLoader size={12} color={'#995D81'} />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div>
+                  <i style={{ color: 'gray' }}>Select a Project to see Collaborators.</i>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='connections-container'>
+          <div className='connection-column'>
+            <div className='connection-column-header'>
+              <p>Current Connections</p>
+              {currentConnections && !this.props.isLoading && (
+                <div onClick={() => this.setState({ displayAddConnectionModal: true })}>
+                  <SmallAddButton title={'Add Connection'} />
+                </div>
+              )}
+            </div>
+            <div className='connection-column-body'>
+              {users && currentConnections && !this.props.isLoading ? (
+                this.displayCurrentConnections()
+              ) : (
+                <div className='progress-container'>
+                  <PulseLoader size={12} color={'#995D81'} />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className='connection-column'>
+            <div className='connection-column-header'>
+              <p>Connection Requests (Received)</p>
+            </div>
+            <div className='connection-column-body'>
+              {users && connectionRequests && !this.props.isLoading ? (
+                this.displayConnectionRequests()
+              ) : (
+                <div className='progress-container'>
+                  <PulseLoader size={12} color={'#995D81'} />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className='connection-column'>
+            <div className='connection-column-header'>
+              <p>Pending Connections (Sent)</p>
+            </div>
+            <div className='connection-column-body'>
+              {users && pendingConnections && !this.props.isLoading ? (
+                this.displayPendingConnections()
+              ) : (
+                <div className='progress-container'>
+                  <PulseLoader size={12} color={'#995D81'} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        {this.state.displayAddCollaboratorModal && this.addCollaboratorModal()}
+        {this.state.displayAddConnectionModal && this.addConnectionModal()}
+      </div>
+    );
+  }
 }

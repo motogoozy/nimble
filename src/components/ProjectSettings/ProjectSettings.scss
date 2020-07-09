@@ -1,188 +1,190 @@
 @import '../../styles.scss';
 
 .project-settings-main {
-   height: 100%;
-   width: 100%;
-   display: flex;
-   flex-direction: column;
-   justify-content: flex-start;
-   align-items: flex-start;
-   padding: 1rem;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 1rem;
 
-   .project-settings-header {
-      width: 100%;
-      height: 10%;
+  .project-settings-header {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    // margin-bottom: 2rem;
+    p {
+      font-size: 1.55rem;
+    }
+  }
+
+  .project-settings-body {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .project-settings-panel {
+      width: 50%;
+      height: 50%;
+      padding: 0 2rem;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      // margin-bottom: 2rem;
-      p {
-         font-size: 1.55rem;
+
+      .project-settings-panel-header {
+        width: 100%;
+        height: 1rem;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
-   }
-   
-   .project-settings-body {
-      height: 80%;
+    }
+
+    .settings-panel-divider {
+      height: 50%;
+      border: 1px solid lightgray;
+    }
+
+    .project-details-panel {
+      .details-setting {
+        margin-left: 1rem;
+      }
+
+      .project-title-input-container {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+
+        .edit-project-title-container {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+
+          .save-new-project-title {
+            margin-left: 0.5rem;
+            color: green;
+          }
+
+          p,
+          i {
+            margin: 0.5rem 1rem 0 0;
+          }
+
+          i {
+            color: rgb(180, 180, 180);
+            &:hover {
+              color: rgb(75, 75, 75);
+            }
+          }
+        }
+
+        input {
+          color: rgb(75, 75, 75);
+        }
+      }
+    }
+
+    .project-permissions-panel {
+      .permissions-owner-message {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: gray;
+      }
+    }
+
+    .project-permissions-container {
+      height: 100%;
       width: 100%;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
-      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      align-content: flex-start;
 
-      .project-settings-panel {
-         width: 50%;
-         height: 50%;
-         padding: 0 2rem;
-         display: flex;
-         flex-direction: column;
-         justify-content: flex-start;
-         align-items: flex-start;
+      .permissions-category-container {
+        width: 50%;
+        padding: 0 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
 
-         .project-settings-panel-header {
+        .permissions-category {
+          color: gray;
+          font-style: italic;
+        }
+
+        .permission-switch-container {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+
+          .permission-switch {
             width: 100%;
-            height: 1rem;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
-         }
-      }
 
-      .settings-panel-divider {
-         height: 50%;
-         border: 1px solid lightgray;
-      }
-
-      .project-details-panel {
-         .details-setting {
-            margin-left: 1rem;
-         }
-
-         .project-title-input-container {
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-   
-            .edit-project-title-container {
-               display: flex;
-               flex-direction: row;
-               justify-content: flex-start;
-               align-items: center;
-   
-               .save-new-project-title {
-                  margin-left: .5rem;
-                  color: green;
-               }
-   
-               p, i {
-                  margin: .5rem 1rem 0 0;
-               }
-   
-               i {
-                  color: rgb(180, 180, 180);
-                  &:hover {
-                     color: rgb(75, 75, 75);
-                  }
-               }
+            p {
+              color: rgb(75, 75, 75);
+              margin-left: 0.5rem;
+              text-align: left;
             }
-   
-            input {
-               color: rgb(75, 75, 75);
-            }
-         }
+          }
+        }
       }
+    }
+  }
 
-      .project-permissions-panel {
-         .permissions-owner-message {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: gray;
-         }
-      }
+  .project-settings-footer {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
 
-      .project-permissions-container {
-         height: 100%;
-         width: 100%;
-         display: flex;
-         flex-direction: row;
-         flex-wrap: wrap;
-         justify-content: flex-start;
-         align-items: stretch;
-         align-content: flex-start;
-
-         .permissions-category-container {
-            width: 50%;
-            padding: 0 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-
-            .permissions-category {
-               color: gray;
-               font-style: italic;
-            }
-
-            .permission-switch-container {
-               width: 100%;
-               display: flex;
-               flex-direction: column;
-               justify-content: flex-start;
-               align-items: center;
-
-               .permission-switch {
-                  width: 100%;
-                  display: flex;
-                  flex-direction: row;
-                  justify-content: space-between;
-                  align-items: center;
-      
-                  p {
-                     color: rgb(75, 75, 75);
-                     margin-left: .5rem;
-                     text-align: left;
-                  }
-               }
-            }
-         }
-      }
-   }
-   
-   .project-settings-footer {
-      height: 10%;
-      width: 100%;
+    .delete-project-container {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       align-items: flex-end;
+      width: auto;
 
-      .delete-project-container {
-         display: flex;
-         flex-direction: row;
-         justify-content: flex-start;
-         align-items: flex-end;
-         width: auto;
-   
-         p {
-            padding: .25rem;
-         }
-   
-         button {
-            padding: .25rem;
-         }
-   
-         p, button {
-            color: rgba(183, 28, 28, 1);
-         }
+      p {
+        padding: 0.25rem;
       }
-   }
+
+      button {
+        padding: 0.25rem;
+      }
+
+      p,
+      button {
+        color: rgba(183, 28, 28, 1);
+      }
+    }
+  }
 }

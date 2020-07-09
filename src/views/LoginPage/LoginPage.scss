@@ -1,60 +1,60 @@
 @import '../../styles.scss';
 
 .login-left-grid-container {
-   img {
-      width: 80%;
-      height: auto;
-   }
+  img {
+    width: 80%;
+    height: auto;
+  }
 
-   p {
-      font-size: 2.5rem;
-      letter-spacing: 3px;
-      color: $accent-orange;
-   }
+  p {
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+    color: $accent-orange;
+  }
 
-   i {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      color: white;
-      font-size: 2rem;
-      transition: .15s;
+  i {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    color: white;
+    font-size: 2rem;
+    transition: 0.15s;
 
-      &:hover {
-         color: gray;
-         transition: .15s;
-      }
-   }
+    &:hover {
+      color: gray;
+      transition: 0.15s;
+    }
+  }
 }
 
 .login-options-button-container {
-   width: 100%;
-   height: auto;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-   align-items: center;
-   padding: 0 1rem;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
 
-   p {
-      color: #3f51b5;
-      &:hover {
-         text-decoration: underline;
-      }
-   }
+  p {
+    color: #3f51b5;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .reset-password-container {
-   height: 50vh;
-   width: 100%;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
+  height: 50vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-   .cancel-reset-password-button {
-      &:hover {
-         text-decoration: underline;
-      }
-   }
+  .cancel-reset-password-button {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

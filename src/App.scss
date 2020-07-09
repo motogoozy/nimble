@@ -1,16 +1,16 @@
 * {
-   box-sizing: border-box;
-   margin: 0;
+  box-sizing: border-box;
+  margin: 0;
 }
 
 .App {
-   width: 100vw;
-   height: 100vh;
-   overflow: hidden;
-   text-align: center;
-   display: flex;
-   flex-direction: row;
-   flex-wrap: nowrap;
-   justify-content: flex-start;
-   align-items: stretch;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
 }

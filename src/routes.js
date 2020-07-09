@@ -7,12 +7,12 @@ import LoginPage from './views/LoginPage/LoginPage';
 import RegisterPage from './views/RegisterPage/RegisterPage';
 
 export default (
-   <Switch>
-      <Route component={LandingPage} exact path='/' />
-      <Route component={Dashboard} exact path='/dashboard' />
-      <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
-      <Route component={ProfilePage} path='/profile' />
-      <Route component={LoginPage} path='/login' />
-      <Route component={RegisterPage} path='/register' />
-   </Switch>
-)
+  <Switch>
+    <Route component={LandingPage} exact path='/' />
+    <Route component={Dashboard} exact path='/dashboard' />
+    <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
+    <Route component={ProfilePage} path='/profile' />
+    <Route component={LoginPage} path='/login' />
+    <Route component={RegisterPage} path='/register' />
+  </Switch>
+);

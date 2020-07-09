@@ -1,240 +1,240 @@
 @import '../../styles.scss';
 
 .people-main {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-	align-items: center;
-	overflow-x: hidden;
-	overflow-y: auto;
-	
-	.project-collaborators-container {
-		height: 100%;
-		flex: 2;
-		padding: 1rem .5rem 1rem 1rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  overflow-x: hidden;
+  overflow-y: auto;
 
-		.project-collaborators-column {
-			height: 100%;
-			width: 100%;
+  .project-collaborators-container {
+    height: 100%;
+    flex: 2;
+    padding: 1rem 0.5rem 1rem 1rem;
 
-			.collaborators-column-header {
-				height: 2rem;
-				width: 100%;
-				padding: 0 .75rem;
-				border-bottom: 1px solid gray;
-				background-color: $accent-purple;
-				color: white;
-				border-radius: 5px 5px 0 0;
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				align-items: center;
-	
-				.add-button {
-					cursor: default;
-				}
-	
-				i {
-					color: white;
-					&:hover {
-						color: $accent-orange;
-						cursor: pointer;
-					}
-				}
-			}
+    .project-collaborators-column {
+      height: 100%;
+      width: 100%;
 
-			.collaborators-column-body {
-				height: calc(100% - 2rem);
-				width: 100%;
-				border: 1px solid lightgray;
-				border-radius: 0 0 5px 5px;
-				padding: 1rem;
-				overflow-x: hidden;
-				overflow-y: auto;
-				display: flex;
-				flex-direction: column;
-				justify-content: flex-start;
-				align-items: flex-start;
-				flex-wrap: nowrap;
-			}
-		}
-	}
-	
-	.connections-container {
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1rem 1rem 1rem .5rem;
-		flex: 1;
+      .collaborators-column-header {
+        height: 2rem;
+        width: 100%;
+        padding: 0 0.75rem;
+        border-bottom: 1px solid gray;
+        background-color: $accent-purple;
+        color: white;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
 
-		.connection-column {
-			height: calc(33.3% - .5rem);
-			width: 100%;
-	
-			.connection-column-header {
-				height: 2rem;
-				width: 100%;
-				padding: 0 .75rem;
-				border-bottom: 1px solid gray;
-				background-color: $primary-blue;
-				color: white;
-				border-radius: 5px 5px 0 0;
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				align-items: center;
-	
-				.add-button {
-					cursor: default;
-				}
-	
-				i {
-					color: white;
-					&:hover {
-						color: $accent-orange;
-						cursor: pointer;
-					}
-				}
-			}
-	
-			.connection-column-body {
-				height: calc(100% - 2rem);
-				width: 100%;
-				display: flex;
-				flex-direction: column;
-				justify-content: flex-start;
-				align-items: flex-start;
-				flex-wrap: nowrap;
-				overflow-x: hidden;
-				overflow-y: auto;
-				border: 1px solid lightgray;
-				border-radius: 0 0 5px 5px;
-				padding: 1rem;
-			}
-		}
-	}
+        .add-button {
+          cursor: default;
+        }
 
-	.user-connection-container {
-		width: 100%;
-		height: auto;
-		min-height: 3rem;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		border-bottom: 1px solid lightgray;
-		
-		.user-connection-actions {
-			width: auto;
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-			p {
-				font-size: .8rem;
-				margin-left: .5rem;
-				&:hover {
-					text-decoration: underline;
-					cursor: pointer;
-					color: $accent-purple;
-				}
-			}
+        i {
+          color: white;
+          &:hover {
+            color: $accent-orange;
+            cursor: pointer;
+          }
+        }
+      }
 
-			.accept-connection-button {
-				&:hover {
-					color: rgb(0, 94, 0);
-				}
-			}
-		}
-	}
+      .collaborators-column-body {
+        height: calc(100% - 2rem);
+        width: 100%;
+        border: 1px solid lightgray;
+        border-radius: 0 0 5px 5px;
+        padding: 1rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+      }
+    }
+  }
+
+  .connections-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem 1rem 0.5rem;
+    flex: 1;
+
+    .connection-column {
+      height: calc(33.3% - 0.5rem);
+      width: 100%;
+
+      .connection-column-header {
+        height: 2rem;
+        width: 100%;
+        padding: 0 0.75rem;
+        border-bottom: 1px solid gray;
+        background-color: $primary-blue;
+        color: white;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .add-button {
+          cursor: default;
+        }
+
+        i {
+          color: white;
+          &:hover {
+            color: $accent-orange;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .connection-column-body {
+        height: calc(100% - 2rem);
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border: 1px solid lightgray;
+        border-radius: 0 0 5px 5px;
+        padding: 1rem;
+      }
+    }
+  }
+
+  .user-connection-container {
+    width: 100%;
+    height: auto;
+    min-height: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid lightgray;
+
+    .user-connection-actions {
+      width: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      p {
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+        &:hover {
+          text-decoration: underline;
+          cursor: pointer;
+          color: $accent-purple;
+        }
+      }
+
+      .accept-connection-button {
+        &:hover {
+          color: rgb(0, 94, 0);
+        }
+      }
+    }
+  }
 }
 
 .add-project-collaborator-modal {
-	width: 500px;
-	height: 500px;
-	background-color: white;
-	border-radius: 7px 7px 5px 5px;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
+  width: 500px;
+  height: 500px;
+  background-color: white;
+  border-radius: 7px 7px 5px 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 
-	.add-project-collaborator-modal-header {
-		width: 100%;
-		height: 2rem;
-		background-color: $accent-purple;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0 1rem;
-		color: white;
-		border-radius: 5px 5px 0 0;
+  .add-project-collaborator-modal-header {
+    width: 100%;
+    height: 2rem;
+    background-color: $accent-purple;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    color: white;
+    border-radius: 5px 5px 0 0;
 
-		i:hover {
-			color: $accent-orange;
-		}
-	}
+    i:hover {
+      color: $accent-orange;
+    }
+  }
 
-	.add-project-collaborator-connections-container {
-		width: 100%;
-		height: calc(100% - 2rem);
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: flex-start;
-		padding: 1rem;
+  .add-project-collaborator-connections-container {
+    width: 100%;
+    height: calc(100% - 2rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 1rem;
 
-		p {
-			display: flex;
-			flex-direction: row;
-		}
+    p {
+      display: flex;
+      flex-direction: row;
+    }
 
-		.add-project-collaborator-connections {
-			height: 100%;
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: flex-start;
-			overflow-x: hidden;
-			overflow-y: auto;
-		}
+    .add-project-collaborator-connections {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
-		.add-available-connection {
-			width: 100%;
-			height: auto;
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-			padding-right: 1rem;
+    .add-available-connection {
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 1rem;
 
-			.adding-user-progress {
-				div {
-					color: $accent-purple;
-				}
-			}
-		}
-	}
+      .adding-user-progress {
+        div {
+          color: $accent-purple;
+        }
+      }
+    }
+  }
 }
 
 .add-connection-modal {
-	width: auto;
-   height: 12rem;
-   background-color: white;
-   color: black;
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-   align-items: center;
-   border-radius: 5px;
+  width: auto;
+  height: 12rem;
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
 }
 
 .no-connections-text {
-	color: gray;
+  color: gray;
 }

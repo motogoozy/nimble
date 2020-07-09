@@ -1,53 +1,53 @@
 // Global Variables
-$primary-dk-gray: #2D3142;
-$primary-blue: #4F5D75;
-$primary-lt-gray: #BFC0C0;
-$accent-purple: #995D81;
-$accent-orange: #EB8258;
+$primary-dk-gray: #2d3142;
+$primary-blue: #4f5d75;
+$primary-lt-gray: #bfc0c0;
+$accent-purple: #995d81;
+$accent-orange: #eb8258;
 $accent-purple-hover: #663f56;
 $sidebar-width: 6rem;
 $header-height: 3.25rem;
 
 // Global Classes
 .cursor-pointer {
-   &:hover {
-      cursor: pointer;
-   }
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .page-content {
-   height: 100%;
-   width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .modal-wrapper {
-   height: 100vh; 
-   width: 100vw;
-   background-color: #000000c4;
-   position: fixed;
-   top: 0;
-   left: 0;
-   z-index: 3;
-   display: flex;
-   flex-direction: column;
-   flex-wrap: wrap;
-   justify-content: center;
-   align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #000000c4;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 a {
-   text-decoration: none;
+  text-decoration: none;
 }
 
 .progress-container {
-   height: 100%;
-   width: 100%;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-   div {
-      color: $accent-purple;
-   }
+  div {
+    color: $accent-purple;
+  }
 }

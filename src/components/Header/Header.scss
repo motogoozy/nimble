@@ -1,147 +1,147 @@
 @import '../../styles.scss';
 
 .header {
-   width: 100%;
-   height: $header-height;
-   min-height: $header-height;
-   background-color: $primary-lt-gray;;
-   position: relative;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-   align-items: center;
-   z-index: 3;
+  width: 100%;
+  height: $header-height;
+  min-height: $header-height;
+  background-color: $primary-lt-gray;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3;
 
-   .header-left-container {
-      width: 33%;
+  .header-left-container {
+    width: 33%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem 0;
+
+    .header-select-container {
+      width: 15rem;
+      margin: 0 1rem;
+
+      .header-select-container > div {
+        &:focus {
+          outline: none;
+          border: 1px solid green;
+        }
+      }
+
+      // selector arrow
+      div > div > div.css-1hb7zxy-IndicatorsContainer:hover {
+        cursor: pointer;
+      }
+
+      // text box
+      div > div > div.css-1hwfws3:hover {
+        cursor: text;
+      }
+
+      div > div.css-26l3qy-menu > div > div {
+        background-color: white;
+        color: black;
+        text-align: left;
+        &:hover {
+          cursor: pointer;
+          // background-color: rgba(153, 93, 129, 0.6);
+          background-color: $accent-purple;
+          color: white;
+        }
+        &:focus {
+        }
+      }
+    }
+
+    .header-back-container {
+      width: 12rem;
+      margin: 0;
+
+      * {
+        color: $accent-purple;
+        font-weight: bold;
+      }
+
+      &:hover {
+        * {
+          color: $accent-purple-hover;
+        }
+      }
+    }
+  }
+
+  .header-right-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+
+    input {
+      -webkit-appearance: none;
+      width: 15rem;
       height: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      padding: .5rem 0;
+      padding: 0.5rem;
+      font-size: 16px;
+      display: inline-block;
+      border: 2px solid white;
+      border-radius: 4px;
+      color: black;
+      background-color: white;
+      transition: border 0.25s;
 
-      .header-select-container {
-         width: 15rem;
-         margin: 0 1rem;
-
-         .header-select-container > div {
-            &:focus {
-               outline: none;
-               border: 1px solid green;
-            }
-         }
-
-         // selector arrow
-         div > div > div.css-1hb7zxy-IndicatorsContainer:hover {
-            cursor: pointer;
-         }
-
-         // text box
-         div > div > div.css-1hwfws3:hover {
-            cursor: text;
-         }
-
-         div > div.css-26l3qy-menu > div > div {
-            background-color: white;
-            color: black;
-            text-align: left;
-            &:hover {
-               cursor: pointer;
-               // background-color: rgba(153, 93, 129, 0.6);
-               background-color: $accent-purple;
-               color: white;
-            }
-            &:focus {
-            }
-         }
+      &:hover {
+        // border: 1px solid $primary-accent;
       }
 
-      .header-back-container {
-         width: 12rem;
-         margin: 0;
-
-         * {
-               color: $accent-purple;
-               font-weight: bold;
-         }
-
-         &:hover {
-               * {
-                  color: $accent-purple-hover;
-               }
-         }
+      &:focus {
+        outline: none;
+        border: 2px solid $accent-purple;
+        transition: border 0.25s;
       }
-   }
+    }
 
-   .header-right-container {
-      height: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: .5rem 0;
+    div:nth-child(1) {
+      margin: 0 0.5rem;
+    }
 
-      input {
-         -webkit-appearance: none;
-         width: 15rem;
-         height: 100%;
-         padding: .5rem;
-         font-size: 16px;
-         display: inline-block;
-         border: 2px solid white;
-         border-radius: 4px;
-         color: black;
-         background-color: white;
-         transition: border .25s;
-
-         &:hover {
-            // border: 1px solid $primary-accent;
-         }
-
-         &:focus {
-            outline: none;
-            border: 2px solid $accent-purple;
-            transition: border .25s;
-         }
+    i {
+      margin: 0 0.5rem;
+      font-size: 1.5rem;
+      color: $accent-purple;
+      &:hover {
+        color: $accent-purple-hover;
       }
+    }
+  }
 
-      div:nth-child(1) {
-         margin: 0 .5rem;
-      }
-      
-      i {
-         margin: 0 .5rem;
-         font-size: 1.5rem;
-         color: $accent-purple;
-         &:hover {
-            color: $accent-purple-hover;
-         }
-      }
-   }
-
-   .badge-style {
-      background-color: crimson;
-      // box-shadow: 0 0 3px 1px rgb(112, 112, 112);
-   }
+  .badge-style {
+    background-color: crimson;
+    // box-shadow: 0 0 3px 1px rgb(112, 112, 112);
+  }
 }
 
 .header-link {
-   text-decoration: none;
-   color: black;
-   &:hover {
-      color: $accent-purple;
-   }
+  text-decoration: none;
+  color: black;
+  &:hover {
+    color: $accent-purple;
+  }
 }
 
 .add-project-modal {
-   width: auto;
-   height: 12rem;
-   background-color: white;
-   color: black;
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-   align-items: center;
-   border-radius: 5px;
+  width: auto;
+  height: 12rem;
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
 }
