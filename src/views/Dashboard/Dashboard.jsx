@@ -335,7 +335,7 @@ export default class Dashboard extends Component {
   deleteList = (databaseId, id) => {
     const { project, project_id, listOrder, lists, loggedInUser, projectPermissions } = this.state;
 
-    if (project.created_by !== loggedInUser.user_id || !projectPermissions.delete_lists) {
+    if (!projectPermissions.delete_lists && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',

@@ -60,35 +60,34 @@ export default class List extends Component {
   };
 
   handleAddTaskClick = () => {
+    const { project, loggedInUser, projectPermissions } = this.props;
+
     // Only allow add task if loggedInUser is project owner or has permission to add tasks
-    if (
-      this.props.project.created_by === this.props.loggedInUser.user_id ||
-      this.props.projectPermissions.add_tasks
-    ) {
-      this.setState({ displayAddTaskModal: true });
-    } else {
+    if (!projectPermissions.add_tasks && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',
         text: 'You do not have permission to add tasks for this project.',
       });
+      return;
     }
+
+    this.setState({ displayAddTaskModal: true });
   };
 
   handleEditListClick = () => {
+    const { projectPermissions, project, loggedInUser } = this.props;
     // Only allow edit list if loggedInUser is project owner or has permission to edit lists
-    if (
-      this.props.project.created_by === this.props.loggedInUser.user_id ||
-      this.props.projectPermissions.edit_lists
-    ) {
-      this.setState({ displayEditModal: true });
-    } else {
+    if (!projectPermissions.edit_lists && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',
         text: 'You do not have permission to edit lists for this project.',
       });
+      return;
     }
+
+    this.setState({ displayEditModal: true });
   };
 
   handleColorChange = event => {
@@ -238,11 +237,10 @@ export default class List extends Component {
   };
 
   deleteTask = task_id => {
+    const { projectPermissions, project, loggedInUser } = this.props;
+
     // Only allow task deletion if loggedInUser is project owner or has permission to add tasks
-    if (
-      this.props.project.created_by !== this.props.loggedInUser.user_id ||
-      !this.props.projectPermissions.delete_tasks
-    ) {
+    if (!projectPermissions.delete_tasks && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',

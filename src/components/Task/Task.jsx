@@ -41,19 +41,18 @@ export default class Task extends Component {
   };
 
   handleEditTaskClick = () => {
+    const { project, loggedInUser, projectPermissions } = this.props;
     // Only allow add task if loggedInUser is project owner or has permission to add tasks
-    if (
-      this.props.project.created_by === this.props.loggedInUser.user_id ||
-      this.props.projectPermissions.edit_tasks
-    ) {
-      this.setState({ displayEditModal: true });
-    } else {
+    if (!projectPermissions.edit_tasks && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',
         text: 'You do not have permission to edit tasks for this project.',
       });
+      return;
     }
+
+    this.setState({ displayEditModal: true });
   };
 
   handleCheckUser = event => {

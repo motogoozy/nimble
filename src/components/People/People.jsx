@@ -121,33 +121,33 @@ export default class People extends Component {
   };
 
   handleAddProjectUserClick = () => {
-    if (
-      this.props.loggedInUser.user_id === this.props.project.created_by ||
-      this.props.projectPermissions.add_collaborators
-    ) {
-      this.setState({ displayAddCollaboratorModal: true });
-    } else {
+    const { loggedInUser, project, projectPermissions } = this.props;
+
+    if (!projectPermissions.add_collaborators && loggedInUser.user_id !== project.created_by) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',
         text: 'You do not have permission to add collaborators to this project.',
       });
+      return;
     }
+
+    this.setState({ displayAddCollaboratorModal: true });
   };
 
   handleRemoveProjectUserClick = user => {
-    if (
-      this.props.loggedInUser.user_id === this.props.project.created_by ||
-      this.props.projectPermissions.add_collaborators
-    ) {
-      this.removeProjectUser(user.user_id);
-    } else {
+    const { loggedInUser, project, projectPermissions } = this.props;
+
+    if (!projectPermissions.add_collaborators && loggedInUser.user_id !== project.created_by) {
       Swal.fire({
         type: 'warning',
         title: 'Oops!',
         text: 'You do not have permission to remove collaborators from this project.',
       });
+      return;
     }
+
+    this.removeProjectUser(user.user_id);
   };
 
   addProjectUser = async userId => {
@@ -178,7 +178,7 @@ export default class People extends Component {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: "Yes, I'm sure!",
     }).then(async res => {
       if (res.value) {
         try {
@@ -296,7 +296,7 @@ export default class People extends Component {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: "Yes, I'm sure!",
     }).then(async res => {
       if (res.value) {
         try {
