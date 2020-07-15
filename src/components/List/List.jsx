@@ -404,11 +404,7 @@ export default class List extends Component {
 
     return (
       <div className='modal-wrapper' onClick={this.cancelAddTask}>
-        <div
-          className='add-task-modal'
-          style={{ padding: '1rem' }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div className='add-task-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
           <div className='add-task-modal-header'>
             <p>New Task:</p>
           </div>
@@ -481,10 +477,7 @@ export default class List extends Component {
           >
             <p style={{ fontSize: '1.2rem' }}>{title}</p>
           </div>
-          <div
-            className='edit-modal-body'
-            onClick={() => this.setState({ displayColorPicker: false })}
-          >
+          <div className='edit-modal-body' onClick={() => this.setState({ displayColorPicker: false })}>
             <div className='edit-modal-body-item'>
               <p style={{ fontWeight: '500' }}>Title</p>
               <TextField
@@ -523,10 +516,7 @@ export default class List extends Component {
             <div className='edit-modal-buttons'>
               <div className='edit-modal-delete-container'>
                 <Tooltip title={'Delete List'}>
-                  <IconButton
-                    aria-label='delete'
-                    onClick={() => this.props.deleteList(list.databaseId, list.id)}
-                  >
+                  <IconButton aria-label='delete' onClick={() => this.props.deleteList(list.databaseId, list.id)}>
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
@@ -566,12 +556,7 @@ export default class List extends Component {
           };
 
           return (
-            <div
-              className='list'
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              style={listStyle}
-            >
+            <div className='list' ref={provided.innerRef} {...provided.draggableProps} style={listStyle}>
               <div
                 className='list-header'
                 style={{
@@ -602,12 +587,7 @@ export default class List extends Component {
                   };
 
                   return (
-                    <div
-                      className='list-content'
-                      ref={provided.innerRef}
-                      style={style}
-                      {...provided.droppableProps}
-                    >
+                    <div className='list-content' ref={provided.innerRef} style={style} {...provided.droppableProps}>
                       {this.displayTasks()}
                       {provided.placeholder}
                     </div>
@@ -615,10 +595,7 @@ export default class List extends Component {
                 }}
               </Droppable>
               <div className='list-footer'>
-                <div
-                  className='list-add-button-container cursor-pointer'
-                  onClick={this.handleAddTaskClick}
-                >
+                <div className='list-add-button-container cursor-pointer' onClick={this.handleAddTaskClick}>
                   <i className='fas fa-plus'></i>
                   <p>ADD NEW TASK</p>
                 </div>

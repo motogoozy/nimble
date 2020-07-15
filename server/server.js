@@ -121,20 +121,14 @@ app.put('/api/task/:task_id', taskController.updateTask); // Update task
 app.delete('/api/task/:task_id', taskController.deleteTask); // Delete task
 app.delete('/api/tasks/list/:list_id', taskController.deleteTasksByListId);
 app.delete('/api/task_users/:tu_id', taskController.deleteTaskUser); // Remove user from task
-app.delete(
-  '/api/task_users/project/:project_id/user/:user_id',
-  taskController.deleteTaskUsersByProjectAndUser
-); // Remove user from all tasks in project
+app.delete('/api/task_users/project/:project_id/user/:user_id', taskController.deleteTaskUsersByProjectAndUser); // Remove user from all tasks in project
 app.delete('/api/task_users/task/:task_id', taskController.deleteTaskUsersByTask); // Delete all task_users by task_id
 
 // Connection
 app.get('/api/connection/user/:user_id', connectionController.getUserConnections); // Get all connections for user
 app.post('/api/connection/user/:user_id', connectionController.addUserConnection); // Add user connection
 app.put(`/api/connection/:connection_id`, connectionController.acceptUserConnection); // Accept user connection
-app.delete(
-  '/api/connection/:connection_id/user/:user_id',
-  connectionController.deleteUserConnection
-); // Remove, ignore, and cancel user connection,
+app.delete('/api/connection/:connection_id/user/:user_id', connectionController.deleteUserConnection); // Remove, ignore, and cancel user connection,
 
 // Auth
 app.get('/api/auth/user_session', authController.getUserSession); // Get user session (logged in user)

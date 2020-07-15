@@ -41,8 +41,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    background:
-      'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)',
+    background: 'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)',
   },
   paper: {
     marginTop: theme.spacing(8),
@@ -133,9 +132,7 @@ export default function RegisterPage(props) {
           <img src={NimbleLogo} alt='Nimble Logo' />
           <p>NIMBLE</p>
         </div>
-        <p style={{ color: 'white', fontSize: '1.5rem', marginTop: '1rem' }}>
-          A Simple Approach to Project Management
-        </p>
+        <p style={{ color: 'white', fontSize: '1.5rem', marginTop: '1rem' }}>A Simple Approach to Project Management</p>
       </div>
       <div className='register-page-right'>
         <Container component='main' maxWidth='xs'>
@@ -199,9 +196,7 @@ export default function RegisterPage(props) {
                     onChange={event => setPassword(event.target.value)}
                   />
                 </Grid>
-                {loginErrMsg && (
-                  <p style={{ color: 'crimson', marginLeft: '1rem' }}>{loginErrMsg}</p>
-                )}
+                {loginErrMsg && <p style={{ color: 'crimson', marginLeft: '1rem' }}>{loginErrMsg}</p>}
                 {/* <Grid item xs={12}>
                   <FormControlLabel
                     control={<Checkbox value="allowExtraEmails" color="primary" />}
@@ -209,13 +204,7 @@ export default function RegisterPage(props) {
                   />
                 </Grid> */}
               </Grid>
-              <Button
-                fullWidth
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                onClick={register}
-              >
+              <Button fullWidth variant='contained' color='primary' className={classes.submit} onClick={register}>
                 Sign Up
               </Button>
               <Grid container justify='flex-end'>

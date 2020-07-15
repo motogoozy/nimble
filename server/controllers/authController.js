@@ -11,9 +11,7 @@ module.exports = {
       const existingUser = await db.auth.find_user_by_email({ email });
 
       if (existingUser.length >= 1) {
-        let err = new Error(
-          'A user with this email already exists. Please enter a different email.'
-        );
+        let err = new Error('A user with this email already exists. Please enter a different email.');
         err.statusCode = 403;
         return next(err);
       }
@@ -148,8 +146,7 @@ module.exports = {
       const user = foundUser[0];
 
       if (user) {
-        let randomString =
-          Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        let randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         const salt = bcrypt.genSaltSync();
         const hash = bcrypt.hashSync(randomString, salt);
 

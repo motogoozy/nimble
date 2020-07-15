@@ -132,11 +132,7 @@ export default function ProjectSettings(props) {
                         className='cursor-pointer save-new-project-title fas fa-check'
                         onClick={async () => {
                           if (newProjectTitle !== projectTitle) {
-                            await props.updateProject(
-                              props.projectId,
-                              newProjectTitle,
-                              props.project.listOrder
-                            );
+                            await props.updateProject(props.projectId, newProjectTitle, props.project.listOrder);
                             props.getProjectDetails();
                           }
                           setEditProjectTitle(false);
@@ -158,10 +154,7 @@ export default function ProjectSettings(props) {
                   <div className='edit-project-title-container'>
                     <p>{projectTitle}</p>
                     <Tooltip title='Edit Title'>
-                      <i
-                        className='fas fa-pencil-alt cursor-pointer'
-                        onClick={handleEditTitleClick}
-                      ></i>
+                      <i className='fas fa-pencil-alt cursor-pointer' onClick={handleEditTitleClick}></i>
                     </Tooltip>
                   </div>
                 )}

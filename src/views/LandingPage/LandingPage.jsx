@@ -58,8 +58,8 @@ export default class LandingPage extends Component {
             </div>
             <div className='info-box-body'>
               <p>
-                Create & manage multiple projects, and assign tasks to people involved. Break large
-                tasks down into smaller checklists.
+                Create & manage multiple projects, and assign tasks to people involved. Break large tasks down into
+                smaller checklists.
               </p>
             </div>
           </div>
@@ -70,8 +70,8 @@ export default class LandingPage extends Component {
             </div>
             <div className='info-box-body'>
               <p>
-                Group tasks together with custom lists. Moving tasks is a breeze with intuitive
-                drag-and-drop functionality.
+                Group tasks together with custom lists. Moving tasks is a breeze with intuitive drag-and-drop
+                functionality.
               </p>
             </div>
           </div>
@@ -82,8 +82,8 @@ export default class LandingPage extends Component {
             </div>
             <div className='info-box-body'>
               <p>
-                See what others are working on at any time. The easy to use Dashboard provides a
-                high-level overview of the project.
+                See what others are working on at any time. The easy to use Dashboard provides a high-level overview of
+                the project.
               </p>
             </div>
           </div>

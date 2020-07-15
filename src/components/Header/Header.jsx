@@ -31,9 +31,7 @@ class Header extends Component {
       if (this.props.match.params.project_id) {
         // If logged in user isn't part of this project
         if (
-          !this.state.projects
-            .map(project => project.project_id)
-            .includes(parseInt(this.props.match.params.project_id))
+          !this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))
         ) {
           Swal.fire({
             type: 'warning',
@@ -67,9 +65,7 @@ class Header extends Component {
       // If logged in user isn't part of this project
       if (
         this.props.match.params.project_id &&
-        !this.state.projects
-          .map(project => project.project_id)
-          .includes(parseInt(this.props.match.params.project_id))
+        !this.state.projects.map(project => project.project_id).includes(parseInt(this.props.match.params.project_id))
       ) {
         Swal.fire({
           type: 'warning',
@@ -197,11 +193,7 @@ class Header extends Component {
   addProjectModal = () => {
     return (
       <div className='modal-wrapper' onClick={this.cancelAddProject}>
-        <div
-          className='add-project-modal'
-          style={{ padding: '1rem' }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div className='add-project-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
           <p style={{ fontSize: '1.2rem' }}>New Project:</p>
           <TextField
             id='standard-search'

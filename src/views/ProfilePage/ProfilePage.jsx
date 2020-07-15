@@ -194,10 +194,7 @@ export default function ProfilePage(props) {
       <i
         className='far fa-arrow-alt-circle-left cursor-pointer profile-back-button'
         onClick={() => {
-          if (
-            props.location.state?.prevPath &&
-            props.location.state.prevPath.includes('/dashboard/project/')
-          ) {
+          if (props.location.state?.prevPath && props.location.state.prevPath.includes('/dashboard/project/')) {
             props.history.goBack();
           } else {
             props.history.push('/dashboard');
@@ -221,10 +218,7 @@ export default function ProfilePage(props) {
             <div className='modal-wrapper' onClick={() => setDisplayColorPicker(false)}>
               <div className='profile-color-container' onClick={e => e.stopPropagation()}>
                 <p>Select New Color:</p>
-                <ColorPicker
-                  handleColorChange={e => handleColorChange(e)}
-                  closeColorPicker={closeColorPicker}
-                />
+                <ColorPicker handleColorChange={e => handleColorChange(e)} closeColorPicker={closeColorPicker} />
               </div>
             </div>
           )}
@@ -317,9 +311,7 @@ export default function ProfilePage(props) {
                                 color='primary'
                                 onClick={() => updateUserDetails()}
                                 disabled={
-                                  !newUserDetails.first_name ||
-                                  !newUserDetails.last_name ||
-                                  !newUserDetails.email
+                                  !newUserDetails.first_name || !newUserDetails.last_name || !newUserDetails.email
                                 }
                               >
                                 Save
@@ -328,12 +320,7 @@ export default function ProfilePage(props) {
                           </>
                         ) : (
                           <div className='profile-button'>
-                            <Button
-                              fullWidth
-                              variant='contained'
-                              color='primary'
-                              onClick={setEditUserDetails}
-                            >
+                            <Button fullWidth variant='contained' color='primary' onClick={setEditUserDetails}>
                               Edit
                             </Button>
                           </div>

@@ -52,9 +52,7 @@ function Sidebar(props) {
         <Tooltip title={'Only My Tasks'} enterDelay={300}>
           <div
             onClick={() => handleButtonClick('my-tasks')}
-            className={
-              selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'
-            }
+            className={selectedButton === 'my-tasks' ? 'sidebar-button active-button' : 'sidebar-button'}
           >
             <i className='far fa-user'></i>
             <p>MY TASKS</p>
@@ -63,9 +61,7 @@ function Sidebar(props) {
         <Tooltip title={'Unassigned Tasks'} enterDelay={300}>
           <div
             onClick={() => handleButtonClick('unassigned')}
-            className={
-              selectedButton === 'unassigned' ? 'sidebar-button active-button' : 'sidebar-button'
-            }
+            className={selectedButton === 'unassigned' ? 'sidebar-button active-button' : 'sidebar-button'}
           >
             <i className='far fa-question-circle'></i>
             <p>UNASSIGNED</p>
@@ -74,16 +70,10 @@ function Sidebar(props) {
         <Tooltip title={'Project Collaborators'} enterDelay={300}>
           <div
             onClick={() => handleButtonClick('people')}
-            className={
-              selectedButton === 'people' ? 'sidebar-button active-button' : 'sidebar-button'
-            }
+            className={selectedButton === 'people' ? 'sidebar-button active-button' : 'sidebar-button'}
           >
             {props.connectionRequests.length > 0 ? (
-              <Badge
-                color='secondary'
-                badgeContent={props.connectionRequests.length}
-                overlap='circle'
-              >
+              <Badge color='secondary' badgeContent={props.connectionRequests.length} overlap='circle'>
                 <i className='fas fa-users'></i>
               </Badge>
             ) : (
@@ -95,9 +85,7 @@ function Sidebar(props) {
         <Tooltip title={'Project Settings'} enterDelay={300}>
           <div
             onClick={() => handleButtonClick('settings')}
-            className={
-              selectedButton === 'settings' ? 'sidebar-button active-button' : 'sidebar-button'
-            }
+            className={selectedButton === 'settings' ? 'sidebar-button active-button' : 'sidebar-button'}
           >
             <i className='fas fa-sliders-h'></i>
             <p>SETTINGS</p>

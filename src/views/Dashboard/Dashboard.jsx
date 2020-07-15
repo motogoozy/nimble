@@ -445,10 +445,7 @@ export default class Dashboard extends Component {
 
   handleAddListClick = () => {
     // Only allow adding list if loggedInUser is project owner or has permission to add lists
-    if (
-      this.state.project.created_by === this.state.loggedInUser.user_id ||
-      this.state.projectPermissions.add_lists
-    ) {
+    if (this.state.project.created_by === this.state.loggedInUser.user_id || this.state.projectPermissions.add_lists) {
       this.setState({ displayAddListModal: true, displayColorPicker: true });
     } else {
       Swal.fire({
@@ -704,11 +701,7 @@ export default class Dashboard extends Component {
 
     return (
       <div className='modal-wrapper' onClick={this.cancelAddList}>
-        <div
-          className='add-list-modal'
-          style={{ padding: '1rem' }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div className='add-list-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
           <p style={{ fontSize: '1.2rem' }}>New List:</p>
           <div className='add-list-modal-body'>
             <div className='add-modal-body-item'>
@@ -809,11 +802,7 @@ export default class Dashboard extends Component {
                     <Droppable droppableId='all-lists' direction='horizontal' type='list'>
                       {provided => {
                         return (
-                          <div
-                            className='main-content'
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                          >
+                          <div className='main-content' {...provided.droppableProps} ref={provided.innerRef}>
                             <div className='list-container'>
                               {this.displayLists()}
                               {provided.placeholder}
@@ -885,17 +874,14 @@ export default class Dashboard extends Component {
             </>
           )}
 
-          {this.state.loggedInUser &&
-            !this.state.projectId &&
-            !this.state.displayPeople &&
-            !this.state.isLoading && (
-              <div className='no-project-prompt-container'>
-                <div className='bounce'>
-                  <i className='fas fa-chevron-up'></i>
-                  <p>Select or Add a Project to Begin</p>
-                </div>
+          {this.state.loggedInUser && !this.state.projectId && !this.state.displayPeople && !this.state.isLoading && (
+            <div className='no-project-prompt-container'>
+              <div className='bounce'>
+                <i className='fas fa-chevron-up'></i>
+                <p>Select or Add a Project to Begin</p>
               </div>
-            )}
+            </div>
+          )}
         </div>
         <IdleTimer
           ref={ref => {

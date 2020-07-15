@@ -72,10 +72,7 @@ module.exports = {
         connection_id,
       });
       if (foundConnection[0]) {
-        if (
-          foundConnection[0].send_id === parseInt(user_id) ||
-          foundConnection[0].receive_id === parseInt(user_id)
-        ) {
+        if (foundConnection[0].send_id === parseInt(user_id) || foundConnection[0].receive_id === parseInt(user_id)) {
           let deleted = await db.connection.delete_user_connection({
             connection_id,
           });

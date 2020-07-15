@@ -199,28 +199,16 @@ export default class People extends Component {
   };
 
   checkExistingConnection = () => {
-    const {
-      users,
-      currentConnections,
-      pendingConnections,
-      connectionRequests,
-      newUserEmail,
-    } = this.state;
+    const { users, currentConnections, pendingConnections, connectionRequests, newUserEmail } = this.state;
 
     for (let id in users) {
       let user = users[id];
       if (user.email.toLowerCase() === newUserEmail.toLowerCase()) {
-        if (
-          currentConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)
-        ) {
+        if (currentConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
           return 'You are already connected with this user.';
-        } else if (
-          pendingConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)
-        ) {
+        } else if (pendingConnections.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
           return 'You have already sent a connection request to this user.';
-        } else if (
-          connectionRequests.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)
-        ) {
+        } else if (connectionRequests.some(c => c.send_id === user.user_id || c.receive_id === user.user_id)) {
           return 'This user has already requested to connect with you. Check your connection requests.';
         }
       }
@@ -300,9 +288,7 @@ export default class People extends Component {
     }).then(async res => {
       if (res.value) {
         try {
-          await axios.delete(
-            `/connection/${connection.connection_id}/user/${loggedInUser.user_id}`
-          );
+          await axios.delete(`/connection/${connection.connection_id}/user/${loggedInUser.user_id}`);
           this.setState(
             {
               users: '',
@@ -416,10 +402,7 @@ export default class People extends Component {
 
     return connectionList.map(obj => {
       return (
-        <div
-          className='user-connection-container'
-          key={`current-connection-id: ${obj.connection.connection_id}`}
-        >
+        <div className='user-connection-container' key={`current-connection-id: ${obj.connection.connection_id}`}>
           <UserConnection user={obj.user} avatarColor={obj.avatarColor} />
           <div className='user-connection-actions'>
             <Tooltip title={'Remove User Connection'}>
@@ -463,10 +446,7 @@ export default class People extends Component {
 
     return connectionList.map(obj => {
       return (
-        <div
-          className='user-connection-container'
-          key={`request-connection-id: ${obj.connection.connection_id}`}
-        >
+        <div className='user-connection-container' key={`request-connection-id: ${obj.connection.connection_id}`}>
           <UserConnection user={obj.user} avatarColor={obj.avatarColor} />
           <div className='user-connection-actions'>
             <Tooltip title={'Accept Connection Request'}>
@@ -518,10 +498,7 @@ export default class People extends Component {
 
     return connectionList.map(obj => {
       return (
-        <div
-          className='user-connection-container'
-          key={`pending-connection-id: ${obj.connection.connection_id}`}
-        >
+        <div className='user-connection-container' key={`pending-connection-id: ${obj.connection.connection_id}`}>
           <UserConnection user={obj.user} avatarColor={obj.avatarColor} />
           <div className='user-connection-actions'>
             <Tooltip title={'Cancel Connection Request'}>
@@ -552,12 +529,7 @@ export default class People extends Component {
 
           return (
             <div className='add-available-connection' key={`available: ${user.user_id}`}>
-              <UserConnection
-                user={user}
-                actions={[]}
-                tooltipTitles={[]}
-                avatarColor={avatarColor}
-              />
+              <UserConnection user={user} actions={[]} tooltipTitles={[]} avatarColor={avatarColor} />
               {addingUser === user.user_id ? (
                 <div className='adding-user-progress'>
                   <CircularProgress size={25} />
@@ -602,10 +574,7 @@ export default class People extends Component {
     userList.sort((a, b) => (a.first_name > b.first_name ? 1 : -1));
 
     return (
-      <div
-        className='modal-wrapper'
-        onClick={() => this.setState({ displayAddCollaboratorModal: false })}
-      >
+      <div className='modal-wrapper' onClick={() => this.setState({ displayAddCollaboratorModal: false })}>
         <div className='add-project-collaborator-modal' onClick={e => e.stopPropagation()}>
           <div className='add-project-collaborator-modal-header'>
             <p>Add Person to Project</p>
@@ -616,9 +585,7 @@ export default class People extends Component {
           </div>
           <div className='add-project-collaborator-connections-container'>
             <p style={{ marginBottom: '1rem' }}>Available Connections:</p>
-            <div className='add-project-collaborator-connections'>
-              {displayAvailableConnections(userList)}
-            </div>
+            <div className='add-project-collaborator-connections'>{displayAvailableConnections(userList)}</div>
           </div>
         </div>
       </div>
@@ -629,11 +596,7 @@ export default class People extends Component {
     const { newUserEmail } = this.state;
     return (
       <div className='modal-wrapper' onClick={this.cancelAddUserConnection}>
-        <div
-          className='add-connection-modal'
-          style={{ padding: '1rem' }}
-          onClick={e => e.stopPropagation()}
-        >
+        <div className='add-connection-modal' style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
           <p style={{ fontSize: '1.2rem' }}>Add New Connection:</p>
           <TextField
             id='standard-search'

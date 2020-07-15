@@ -129,11 +129,7 @@ export default class Task extends Component {
             let idToRemove;
             for (let key in taskUsers) {
               let tu = taskUsers[key];
-              if (
-                tu.task_id === parseInt(id) &&
-                tu.user_id === userId &&
-                tu.project_id === projectId
-              ) {
+              if (tu.task_id === parseInt(id) && tu.user_id === userId && tu.project_id === projectId) {
                 idToRemove = tu.tu_id;
               }
             }
@@ -207,10 +203,7 @@ export default class Task extends Component {
       const user = projectUserMap[userId];
       const userColor = formatColor(user.color);
       let backgroundColor = userColor;
-      if (
-        (this.props.highlightTasksOfUser === 'none' && !this.props.search) ||
-        !this.props.highlight
-      ) {
+      if ((this.props.highlightTasksOfUser === 'none' && !this.props.search) || !this.props.highlight) {
         backgroundColor = 'gray';
       }
       styleObj[userId] = {
@@ -225,11 +218,7 @@ export default class Task extends Component {
       const user = projectUserMap[userId];
       const userInitials = getUserInitials(user);
 
-      if (
-        highlightTasksOfUser === 'all' ||
-        highlightTasksOfUser === 'none' ||
-        highlightTasksOfUser === userId
-      ) {
+      if (highlightTasksOfUser === 'all' || highlightTasksOfUser === 'none' || highlightTasksOfUser === userId) {
         return (
           <Tooltip key={userId} title={`${user.first_name} ${user.last_name}`}>
             <Avatar className={classes[userId]}>{userInitials}</Avatar>
@@ -238,10 +227,7 @@ export default class Task extends Component {
       } else return null;
     });
 
-    if (
-      remainingUsers.length > 0 &&
-      (highlightTasksOfUser === 'all' || highlightTasksOfUser === 'none')
-    ) {
+    if (remainingUsers.length > 0 && (highlightTasksOfUser === 'all' || highlightTasksOfUser === 'none')) {
       avatarList.push(
         <Tooltip key={'remaining-users-avatar'} title={`${remainingUsers.length} more...`}>
           <Avatar className={classes.default}>{`+${remainingUsers.length}`}</Avatar>
@@ -317,10 +303,7 @@ export default class Task extends Component {
             <div className='edit-modal-buttons'>
               <div className='edit-modal-delete-container'>
                 <Tooltip title={'Delete Task'}>
-                  <IconButton
-                    aria-label='delete'
-                    onClick={() => this.props.deleteTask(this.props.id)}
-                  >
+                  <IconButton aria-label='delete' onClick={() => this.props.deleteTask(this.props.id)}>
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>

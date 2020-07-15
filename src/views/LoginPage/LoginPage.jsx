@@ -41,8 +41,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    background:
-      'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)',
+    background: 'linear-gradient(146deg, rgba(45,49,66,1) 0%, rgba(153,93,129,1) 50%, rgba(235,130,88,1) 100%)',
     paddingBottom: '5rem',
   },
   paper: {
@@ -187,9 +186,7 @@ export default function LoginPage(props) {
           <img src={NimbleLogo} alt='Nimble Logo' />
           <p>NIMBLE</p>
         </div>
-        <p style={{ color: 'white', fontSize: '1.5rem', marginTop: '1rem' }}>
-          A Simple Approach to Project Management
-        </p>
+        <p style={{ color: 'white', fontSize: '1.5rem', marginTop: '1rem' }}>A Simple Approach to Project Management</p>
       </Grid>
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
@@ -235,13 +232,7 @@ export default function LoginPage(props) {
                 checked={rememberMe}
                 onChange={event => setRememberMe(event.target.checked)}
               />
-              <Button
-                fullWidth
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                onClick={login}
-              >
+              <Button fullWidth variant='contained' color='primary' className={classes.submit} onClick={login}>
                 Sign In
               </Button>
               <Grid container>
@@ -277,19 +268,10 @@ export default function LoginPage(props) {
                 // onKeyPress={onKeyPress}
               />
               {resetErrMsg && <p style={{ color: 'crimson' }}>{resetErrMsg}</p>}
-              <Button
-                fullWidth
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                onClick={resetPassword}
-              >
+              <Button fullWidth variant='contained' color='primary' className={classes.submit} onClick={resetPassword}>
                 Reset
               </Button>
-              <p
-                className='cursor-pointer cancel-reset-password-button'
-                onClick={cancelResetPassword}
-              >
+              <p className='cursor-pointer cancel-reset-password-button' onClick={cancelResetPassword}>
                 Cancel
               </p>
             </div>

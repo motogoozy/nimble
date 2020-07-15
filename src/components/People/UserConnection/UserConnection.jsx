@@ -18,8 +18,7 @@ export default function UserConnection(props) {
         </div>
         <div className='connection-name-email-container'>
           <p>
-            {user.first_name} {user.last_name}{' '}
-            <span>{props.isProjectOwner && ' (Project owner)'}</span>
+            {user.first_name} {user.last_name} <span>{props.isProjectOwner && ' (Project owner)'}</span>
           </p>
           <div
             className='user-connection-email'
