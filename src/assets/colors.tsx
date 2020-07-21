@@ -1,4 +1,4 @@
-export let lightColors = [
+export const lightColors: number[][] = [
   [255, 205, 210, 1],
   [248, 187, 208, 1],
   [225, 190, 231, 1],
@@ -25,7 +25,7 @@ export let lightColors = [
   [255, 213, 79, 1],
 ];
 
-export let avatarColors = [
+export const avatarColors: number[][] = [
   [183, 28, 28, 1],
   [136, 14, 79, 1],
   [74, 20, 140, 1],
