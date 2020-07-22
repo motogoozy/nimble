@@ -40,6 +40,11 @@
     "eject": "react-scripts eject",
     "prettier": "npx prettier --write ."
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -53,8 +58,8 @@
     ]
   },
   "devDependencies": {
-    "eslint-config-prettier": "^6.11.0",
     "nodemon": "^2.0.4",
-    "prettier": "2.0.5"
+    "prettier": "2.0.5",
+    "eslint-config-prettier": "^6.11.0"
   }
 }
