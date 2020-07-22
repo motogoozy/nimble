@@ -111,7 +111,7 @@ export default function LoginPage(props) {
           if (localStorage.getItem('nimblePasswordReset')) {
             props.history.push('/profile');
           } else {
-            props.history.push('/dashboard');
+            props.history.push('/');
           }
         });
       }
@@ -244,7 +244,7 @@ export default function LoginPage(props) {
                   </Grid>
                   <Grid item>
                     <Link href='#/register' variant='body2'>
-                      {"Don't have an account? Sign Up"}
+                      Don't have an account? Sign Up
                     </Link>
                   </Grid>
                 </div>

@@ -14,7 +14,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import IdleTimer from 'react-idle-timer';
 import PulseLoader from 'react-spinners/PulseLoader';
 import Swal from 'sweetalert2';
 
@@ -70,11 +69,11 @@ export default class Dashboard extends Component {
         showConfirmButton: false,
         timer: 1500,
       }).then(() => {
-        this.props.history.push('/');
+        this.props.history.push('/welcome');
       });
     } catch (err) {
       console.log(err.response.data);
-      this.props.history.push('/');
+      this.props.history.push('/welcome');
     }
   };
 
@@ -413,6 +412,19 @@ export default class Dashboard extends Component {
     return res;
   };
 
+  updateMostRecentProject = async projectId => {
+    const { loggedInUser } = this.state;
+    const body = {
+      projectId: projectId,
+    };
+
+    try {
+      await axios.put(`/user/${loggedInUser.user_id}/recent_project`, body);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
   handleSidebarSelection = selection => {
     if (selection === 'people') {
       this.setState({
@@ -711,7 +723,7 @@ export default class Dashboard extends Component {
                 id='standard-required'
                 onChange={e => this.handleInput('title', e.target.value)}
                 autoFocus
-                placeohlder='Title (50 chars max)'
+                placeholder='Title'
               />
             </div>
             <div>
@@ -780,13 +792,14 @@ export default class Dashboard extends Component {
         <div className='main-content-container'>
           {this.state.loggedInUser && (
             <Header
-              getCompleteProjectData={this.getCompleteProjectData}
               project={this.state.project}
               loggedInUser={this.state.loggedInUser}
+              isLoading={this.state.isLoading}
+              getCompleteProjectData={this.getCompleteProjectData}
+              updateMostRecentProject={this.updateMostRecentProject}
               logout={this.logout}
               handleSearch={this.handleSearch}
               search={this.state.search}
-              isLoading={this.state.isLoading}
             />
           )}
 
@@ -883,13 +896,6 @@ export default class Dashboard extends Component {
             </div>
           )}
         </div>
-        <IdleTimer
-          ref={ref => {
-            this.idleTimer = ref;
-          }}
-          onIdle={this.logout}
-          timeout={1000 * 60 * 30} // Logout after 30 min of inactivity
-        />
       </div>
     );
   }

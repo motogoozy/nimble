@@ -49,6 +49,13 @@ class Header extends Component {
         }
       } else if (this.state.projects.length === 1) {
         this.handleSelection(this.state.projects[0]);
+      } else if (this.props.loggedInUser.most_recent_project) {
+        const project = this.state.projects.filter(
+          project => project.project_id === this.props.loggedInUser.most_recent_project
+        )[0];
+        if (project) {
+          this.handleSelection(project);
+        }
       }
 
       this.setState({ currentPage: window.location.hash });
@@ -182,9 +189,11 @@ class Header extends Component {
   };
 
   handleSelection = project => {
-    this.props.history.push(`/dashboard/project/${project.project_id}`);
+    this.props.history.push(`/project/${project.project_id}`);
     this.props.getCompleteProjectData(project.project_id);
+    this.props.updateMostRecentProject(project.project_id);
     this.projectSelectRef.select.state.isFocused = false;
+
     this.setState({
       selectedProject: project,
     });

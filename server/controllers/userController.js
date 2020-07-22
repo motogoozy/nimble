@@ -40,4 +40,18 @@ module.exports = {
       next(err);
     }
   },
+  updateMostRecentProject: async (req, res, next) => {
+    const { user_id } = req.params;
+    const { projectId } = req.body;
+    const db = req.app.get('db');
+
+    try {
+      let updatedUser = await db.user.update_most_recent_project({ user_id, projectId });
+      req.session.loggedInUser.most_recent_project = updatedUser[0].most_recent_project;
+      res.status(200).send(updatedUser[0]);
+    } catch (err) {
+      err.clientMessage = 'Unable to update most recent project';
+      next(err);
+    }
+  },
 };

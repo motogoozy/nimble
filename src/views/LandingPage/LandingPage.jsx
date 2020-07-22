@@ -58,8 +58,8 @@ export default class LandingPage extends Component {
             </div>
             <div className='info-box-body'>
               <p>
-                Create & manage multiple projects, and assign tasks to people involved. Break large tasks down into
-                smaller checklists.
+                Organize projects by breaking them down into custom lists & tasks, and manage them by assigning tasks to
+                collaborators.
               </p>
             </div>
           </div>
