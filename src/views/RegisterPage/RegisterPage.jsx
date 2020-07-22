@@ -21,7 +21,7 @@ function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
-      <Link color='inherit' href='#'>
+      <Link color='inherit' href='#/welcome'>
         Nimble
       </Link>{' '}
       {new Date().getFullYear()}
@@ -126,7 +126,7 @@ export default function RegisterPage(props) {
     <div className='register-page-main'>
       <div className='register-page-left'>
         <div className='register-left-grid-container'>
-          <Link href='#'>
+          <Link href='#/welcome'>
             <i className='far fa-arrow-alt-circle-left cursor-pointer'></i>
           </Link>
           <img src={NimbleLogo} alt='Nimble Logo' />
