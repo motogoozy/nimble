@@ -28,7 +28,6 @@ module.exports = {
       });
       const newUser = createdUser[0];
       req.session.loggedInUser = newUser;
-      req.session.cookie.maxAge = 1000 * 60 * 30;
       res.status(200).send(newUser);
 
       // Logging traffic
@@ -69,9 +68,9 @@ module.exports = {
           last_name: user.last_name,
           email: user.email,
           color: user.color,
+          most_recent_project: user.most_recent_project || null,
         };
         req.session.loggedInUser = userObj;
-        req.session.cookie.maxAge = 1000 * 60 * 30;
         res.status(200).send(userObj);
 
         // Logging traffic
