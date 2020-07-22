@@ -8,11 +8,11 @@ import RegisterPage from './views/RegisterPage/RegisterPage';
 
 export default (
   <Switch>
-    <Route component={LandingPage} exact path='/' />
-    <Route component={Dashboard} exact path='/dashboard' />
-    <Route component={Dashboard} exact path='/dashboard/project/:project_id' />
-    <Route component={ProfilePage} path='/profile' />
+    <Route component={Dashboard} exact path='/' />
+    <Route component={Dashboard} exact path='/project/:project_id' />
+    <Route component={LandingPage} exact path='/welcome' />
     <Route component={LoginPage} path='/login' />
     <Route component={RegisterPage} path='/register' />
+    <Route component={ProfilePage} path='/profile' />
   </Switch>
 );

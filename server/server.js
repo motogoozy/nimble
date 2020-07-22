@@ -25,6 +25,8 @@ app.use(
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 30 }, // 30 days
+    rolling: true,
   })
 );
 app.use((req, res, next) => {
@@ -103,6 +105,7 @@ app.get('/api/user/:user_id', userController.getUserById); // Get user by id
 app.get('/api/find-user', userController.getUserByEmail); // Get user by email
 app.get('/api/user/:user_id/projects', projectController.getProjectsByUserId); // Get all user's projects
 app.put('/api/user/:user_id', userController.updateUserDetails); // Edit User
+app.put('/api/user/:user_id/recent_project', userController.updateMostRecentProject); // Update most recently viewed project
 
 // List
 app.get('/api/project/:project_id/lists', listController.getLists); // Get all project lists

@@ -98,7 +98,7 @@ export default function RegisterPage(props) {
           showConfirmButton: false,
           timer: 1500,
         }).then(() => {
-          props.history.push('/dashboard');
+          props.history.push('/');
         });
       }
     } catch (err) {

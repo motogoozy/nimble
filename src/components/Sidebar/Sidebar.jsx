@@ -22,7 +22,7 @@ function Sidebar(props) {
     } else if (selected === 'settings') {
       props.handleSidebarSelection('settings');
     } else if (selected === 'nimble') {
-      props.history.push('/dashboard');
+      props.history.push('/');
       window.location.reload();
     }
     setSelectedButton(selected);
@@ -30,7 +30,7 @@ function Sidebar(props) {
 
   return (
     <div className='sidebar'>
-      <Link to='/dashboard' onClick={() => handleButtonClick('nimble')}>
+      <Link to='/' onClick={() => handleButtonClick('nimble')}>
         <div className='sidebar-logo-container logo-text'>
           <img src={NimbleLogo} alt='Nimble Logo' />
           <p>NIMBLE</p>
@@ -38,7 +38,7 @@ function Sidebar(props) {
       </Link>
       <div className='sidebar-buttons-container'>
         <Link
-          to={props.projectId ? `/dashboard/project/${props.projectId}` : '/dashboard'}
+          to={props.projectId ? `/project/${props.projectId}` : '/'}
           onClick={() => handleButtonClick('overview')}
           className={selectedButton === 'overview' ? 'link active-button' : 'link'}
         >

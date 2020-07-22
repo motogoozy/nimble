@@ -6,7 +6,8 @@ CREATE TABLE users (
 	last_name character varying(50) NOT NULL,
 	email character varying(50) NOT NULL,
 	hash character varying(256) NOT NULL,
-	color integer[]
+	color integer[],
+	most_recent_project integer REFERENCES project(project_id)
 );
 
 CREATE TABLE project (

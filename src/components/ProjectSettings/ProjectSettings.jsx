@@ -79,7 +79,7 @@ export default function ProjectSettings(props) {
           timer: 1000,
         })
           .then(() => {
-            window.location.hash = '/dashboard';
+            window.location.hash = '/';
             window.location.reload();
           })
           .catch(err => {

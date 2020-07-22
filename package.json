@@ -1,6 +1,6 @@
 {
   "name": "nimble",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "license": "UNLICENSED",
   "proxy": "http://localhost:4000",
@@ -40,6 +40,11 @@
     "eject": "react-scripts eject",
     "prettier": "npx prettier --write ."
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -53,8 +58,8 @@
     ]
   },
   "devDependencies": {
-    "eslint-config-prettier": "^6.11.0",
     "nodemon": "^2.0.4",
-    "prettier": "2.0.5"
+    "prettier": "2.0.5",
+    "eslint-config-prettier": "^6.11.0"
   }
 }

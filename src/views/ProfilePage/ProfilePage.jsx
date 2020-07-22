@@ -194,10 +194,10 @@ export default function ProfilePage(props) {
       <i
         className='far fa-arrow-alt-circle-left cursor-pointer profile-back-button'
         onClick={() => {
-          if (props.location.state?.prevPath && props.location.state.prevPath.includes('/dashboard/project/')) {
+          if (props.location.state?.prevPath && props.location.state.prevPath.includes('/project/')) {
             props.history.goBack();
           } else {
-            props.history.push('/dashboard');
+            props.history.push('/');
           }
         }}
       ></i>
