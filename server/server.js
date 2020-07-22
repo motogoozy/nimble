@@ -38,7 +38,7 @@ app.use((req, res, next) => {
     req.url !== '/api/auth/reset_password' &&
     !req.session.loggedInUser
   ) {
-    res.status(401).send('Please log in.');
+    res.status(499).send('Please log in.');
   } else {
     next();
   }

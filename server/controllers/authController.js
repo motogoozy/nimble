@@ -52,7 +52,7 @@ module.exports = {
 
       if (!user) {
         let err = new Error('Incorrect username or password. Please try again.');
-        err.statusCode = 404;
+        err.statusCode = 401;
         return next(err);
       }
 

@@ -14,9 +14,9 @@ export default function App() {
       return response;
     },
     err => {
-      if (err.response && !err.config.skipErrorHandler) {
-        if (err.response.status === 401) {
-          window.location.hash = '/login';
+      if (err.response) {
+        if (err.response.status === 499) {
+          window.location.hash = '/welcome';
         }
         if (err.response.status === 500) {
           Swal.fire({
