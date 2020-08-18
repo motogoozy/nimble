@@ -800,6 +800,8 @@ export default class Dashboard extends Component {
               logout={this.logout}
               handleSearch={this.handleSearch}
               search={this.state.search}
+              displayPeople={this.state.displayPeople}
+              displaySettings={this.state.displaySettings}
             />
           )}
 

@@ -280,13 +280,15 @@ class Header extends Component {
           )}
         </div>
         <div className='header-right-container'>
-          <input
-            type='search'
-            placeholder='Search name or task'
-            value={this.props.search}
-            onChange={e => this.props.handleSearch(e.target.value)}
-            disabled={this.props.isLoading}
-          />
+          {!this.props.displayPeople && !this.props.displaySettings && (
+            <input
+              type='search'
+              placeholder='Search name or task'
+              value={this.props.search}
+              onChange={e => this.props.handleSearch(e.target.value)}
+              disabled={this.props.isLoading}
+            />
+          )}
           <div className='header-avatar-container cursor-pointer'>
             <Button
               aria-controls='simple-menu'

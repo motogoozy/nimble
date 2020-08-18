@@ -78,7 +78,7 @@
     height: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding: 0.5rem 0;
 
@@ -103,19 +103,6 @@
         outline: none;
         border: 2px solid $accent-purple;
         transition: border 0.25s;
-      }
-    }
-
-    div:nth-child(1) {
-      margin: 0 0.5rem;
-    }
-
-    i {
-      margin: 0 0.5rem;
-      font-size: 1.5rem;
-      color: $accent-purple;
-      &:hover {
-        color: $accent-purple-hover;
       }
     }
   }
