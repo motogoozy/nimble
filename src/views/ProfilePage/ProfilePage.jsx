@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './ProfilePage.scss';
 import Avatar from '../../components/Avatar/Avatar';
 import { formatColor, getUserInitials } from '../../utils';
 import ColorPicker from '../../components/ColorPicker/ColorPicker';
+import { GlobalContext } from '../../GlobalContext';
 
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -38,8 +39,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ProfilePage(props) {
-  const [userDetails, setUserDetails] = useState();
-  const [newUserDetails, setNewUserDetails] = useState();
+  const [userDetails, setUserDetails] = useState(null);
+  const [newUserDetails, setNewUserDetails] = useState(null);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -48,18 +49,15 @@ export default function ProfilePage(props) {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [passwordErrMsg, setPasswordErrMsg] = useState('');
 
+  const { loggedInUser } = useContext(GlobalContext);
+
   useEffect(() => {
-    axios
-      .get('/auth/user_session')
-      .then(res => {
-        setUserDetails(res.data);
-        setNewUserDetails(res.data);
-        if (localStorage.getItem('nimblePasswordReset')) {
-          setEditPassword(true);
-        }
-      })
-      .catch(err => console.log(err.response.data));
-  }, []);
+    setUserDetails(loggedInUser);
+    setNewUserDetails(loggedInUser);
+    if (localStorage.getItem('nimblePasswordReset')) {
+      setEditPassword(true);
+    }
+  }, [loggedInUser]);
 
   const updateUserDetails = async newColor => {
     const { user_id } = userDetails;

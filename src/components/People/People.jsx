@@ -3,6 +3,7 @@ import './People.scss';
 import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import UserConnection from './UserConnection/UserConnection';
 import { formatColor } from '../../utils';
+import { GlobalContext } from '../../GlobalContext';
 
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
@@ -12,7 +13,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Swal from 'sweetalert2';
 
-export default class People extends Component {
+class People extends Component {
   state = {
     currentConnections: '',
     connectionRequests: '',
@@ -47,7 +48,7 @@ export default class People extends Component {
   };
 
   getUserConnections = async () => {
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
 
     const res = await axios.get(`/connection/user/${loggedInUser.user_id}`);
     let current = [],
@@ -96,7 +97,7 @@ export default class People extends Component {
 
   getUserDetails = async list => {
     if (!list) return;
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
     let userMap = {};
 
     let promises = list.map(connection => {
@@ -121,7 +122,8 @@ export default class People extends Component {
   };
 
   handleAddProjectUserClick = () => {
-    const { loggedInUser, project, projectPermissions } = this.props;
+    const { project, projectPermissions } = this.props;
+    const { loggedInUser } = this.context;
 
     if (!projectPermissions.add_collaborators && loggedInUser.user_id !== project.created_by) {
       Swal.fire({
@@ -136,7 +138,8 @@ export default class People extends Component {
   };
 
   handleRemoveProjectUserClick = user => {
-    const { loggedInUser, project, projectPermissions } = this.props;
+    const { project, projectPermissions } = this.props;
+    const { loggedInUser } = this.context;
 
     if (!projectPermissions.add_collaborators && loggedInUser.user_id !== project.created_by) {
       Swal.fire({
@@ -219,7 +222,7 @@ export default class People extends Component {
 
   addUserConnection = async () => {
     const { newUserEmail } = this.state;
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
     const body = {
       email: newUserEmail.toLowerCase(),
     };
@@ -275,7 +278,7 @@ export default class People extends Component {
   };
 
   removeUserConnection = connection => {
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
 
     Swal.fire({
       type: 'warning',
@@ -309,7 +312,8 @@ export default class People extends Component {
   };
 
   acceptUserConnection = async connectionId => {
-    const { loggedInUser, projectId } = this.props;
+    const { projectId } = this.props;
+    const { loggedInUser } = this.context;
     const body = {
       user_id: loggedInUser.user_id,
     };
@@ -335,7 +339,8 @@ export default class People extends Component {
   };
 
   displayProjectUsers = () => {
-    const { loggedInUser, projectUsers } = this.props;
+    const { projectUsers } = this.props;
+    const { loggedInUser } = this.context;
 
     if (projectUsers.length === 0) {
       return (
@@ -372,7 +377,7 @@ export default class People extends Component {
 
   displayCurrentConnections = () => {
     const { users, currentConnections } = this.state;
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
 
     if (currentConnections.length === 0) {
       return (
@@ -416,7 +421,7 @@ export default class People extends Component {
 
   displayConnectionRequests = () => {
     const { users, connectionRequests } = this.state;
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
 
     if (connectionRequests.length === 0) {
       return (
@@ -468,7 +473,7 @@ export default class People extends Component {
 
   displayPendingConnections = () => {
     const { users, pendingConnections } = this.state;
-    const { loggedInUser } = this.props;
+    const { loggedInUser } = this.context;
 
     if (pendingConnections.length === 0) {
       return (
@@ -512,7 +517,8 @@ export default class People extends Component {
 
   addCollaboratorModal = () => {
     const { currentConnections, users, addingUser } = this.state;
-    const { loggedInUser, projectUsers } = this.props;
+    const { projectUsers } = this.props;
+    const { loggedInUser } = this.context;
 
     const displayAvailableConnections = list => {
       if (list.length === 0) {
@@ -718,3 +724,6 @@ export default class People extends Component {
     );
   }
 }
+
+People.contextType = GlobalContext;
+export default People;

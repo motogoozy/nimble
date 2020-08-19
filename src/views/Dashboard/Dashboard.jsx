@@ -8,6 +8,7 @@ import ProjectSettings from '../../components/ProjectSettings/ProjectSettings';
 import AddButton from '../../components/AddButton/AddButton';
 import ColorPicker from '../../components/ColorPicker/ColorPicker';
 import { formatColor } from '../../utils';
+import { GlobalContext } from '../../GlobalContext';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -17,7 +18,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import PulseLoader from 'react-spinners/PulseLoader';
 import Swal from 'sweetalert2';
 
-export default class Dashboard extends Component {
+class Dashboard extends Component {
   state = {
     connectionRequests: [],
     displayAddButton: false,
@@ -29,7 +30,6 @@ export default class Dashboard extends Component {
     isLoading: false,
     lists: '',
     listOrder: [], // array of strings of list_id's
-    loggedInUser: '',
     newColorCode: [96, 125, 139, 1],
     project: {},
     projectId: null,
@@ -44,7 +44,7 @@ export default class Dashboard extends Component {
   componentDidMount = async () => {
     try {
       await this.getLoggedInUser();
-      await this.getConnectionRequests().catch(err => console.log(err.response.data));
+      await this.getConnectionRequests().catch(err => console.log(err));
     } catch (err) {
       console.log(err.response.data);
     }
@@ -52,13 +52,13 @@ export default class Dashboard extends Component {
 
   getLoggedInUser = async () => {
     const res = await axios.get('/auth/user_session');
-    this.setState({ loggedInUser: res.data });
+    this.context.setLoggedInUser(res.data);
 
     return res.data;
   };
 
   logout = async () => {
-    const { loggedInUser } = this.state;
+    const { loggedInUser } = this.context;
     try {
       let res = await axios.get('/auth/logout');
       Swal.fire({
@@ -70,10 +70,12 @@ export default class Dashboard extends Component {
         timer: 1500,
       }).then(() => {
         this.props.history.push('/welcome');
+        this.context.setLoggedInUser(null);
       });
     } catch (err) {
       console.log(err.response.data);
       this.props.history.push('/welcome');
+      this.context.setLoggedInUser(null);
     }
   };
 
@@ -247,7 +249,7 @@ export default class Dashboard extends Component {
   };
 
   getConnectionRequests = async () => {
-    const { loggedInUser } = this.state;
+    const { loggedInUser } = this.context;
 
     const res = await axios.get(`/connection/user/${loggedInUser.user_id}`);
     let requests = [];
@@ -332,7 +334,8 @@ export default class Dashboard extends Component {
   };
 
   deleteList = (databaseId, id) => {
-    const { project, project_id, listOrder, lists, loggedInUser, projectPermissions } = this.state;
+    const { project, project_id, listOrder, lists, projectPermissions } = this.state;
+    const { loggedInUser } = this.context;
 
     if (!projectPermissions.delete_lists && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
@@ -413,7 +416,7 @@ export default class Dashboard extends Component {
   };
 
   updateMostRecentProject = async projectId => {
-    const { loggedInUser } = this.state;
+    const { loggedInUser } = this.context;
     const body = {
       projectId: projectId,
     };
@@ -457,7 +460,10 @@ export default class Dashboard extends Component {
 
   handleAddListClick = () => {
     // Only allow adding list if loggedInUser is project owner or has permission to add lists
-    if (this.state.project.created_by === this.state.loggedInUser.user_id || this.state.projectPermissions.add_lists) {
+    if (
+      this.state.project.created_by === this.context.loggedInUser.user_id ||
+      this.state.projectPermissions.add_lists
+    ) {
       this.setState({ displayAddListModal: true, displayColorPicker: true });
     } else {
       Swal.fire({
@@ -513,7 +519,7 @@ export default class Dashboard extends Component {
       // If dragged item is a list
       // Only allow loggedInUser to move lists if they are the project owner or have permission to edit the project
       if (
-        this.state.project.created_by !== this.state.loggedInUser.user_id &&
+        this.state.project.created_by !== this.context.loggedInUser.user_id &&
         !this.state.projectPermissions.edit_project
       ) {
         Swal.fire({
@@ -550,7 +556,7 @@ export default class Dashboard extends Component {
       // If dragged item is a task
       // Only allow loggedInUser to move tasks if they are the project owner or have permissions to edit lists
       if (
-        this.state.project.created_by !== this.state.loggedInUser.user_id &&
+        this.state.project.created_by !== this.context.loggedInUser.user_id &&
         !this.state.projectPermissions.edit_lists
       ) {
         Swal.fire({
@@ -667,16 +673,8 @@ export default class Dashboard extends Component {
   convertTaskIdsToStrings = intArr => intArr.map(int => int.toString());
 
   displayLists = () => {
-    const {
-      tasks,
-      lists,
-      listOrder,
-      projectId,
-      projectUsers,
-      loggedInUser,
-      taskUsers,
-      highlightTasksOfUser,
-    } = this.state;
+    const { tasks, lists, listOrder, projectId, projectUsers, taskUsers, highlightTasksOfUser } = this.state;
+
     let listArr = listOrder.map((listId, index) => {
       const list = lists[listId];
       const taskArr = list.taskIds.map(taskId => tasks[taskId]);
@@ -693,7 +691,6 @@ export default class Dashboard extends Component {
           projectPermissions={this.state.projectPermissions}
           updateList={this.updateList}
           deleteList={this.deleteList}
-          loggedInUser={loggedInUser}
           taskUsers={taskUsers}
           getAllTasks={this.getAllTasks}
           getTaskUsers={this.getTaskUsers}
@@ -704,6 +701,7 @@ export default class Dashboard extends Component {
         />
       );
     });
+
     return listArr;
   };
 
@@ -781,19 +779,18 @@ export default class Dashboard extends Component {
   render() {
     return (
       <div className='dashboard'>
-        {this.state.loggedInUser && (
+        {this.context.loggedInUser && (
           <Sidebar
             projectId={this.state.projectId}
-            loggedInUser={this.state.loggedInUser}
             handleSidebarSelection={this.handleSidebarSelection}
             connectionRequests={this.state.connectionRequests}
           />
         )}
         <div className='main-content-container'>
-          {this.state.loggedInUser && (
+          {this.context.loggedInUser && (
             <Header
               project={this.state.project}
-              loggedInUser={this.state.loggedInUser}
+              loggedInUser={this.context.loggedInUser}
               isLoading={this.state.isLoading}
               getCompleteProjectData={this.getCompleteProjectData}
               updateMostRecentProject={this.updateMostRecentProject}
@@ -859,7 +856,6 @@ export default class Dashboard extends Component {
           {this.state.displayPeople && (
             <>
               <People
-                loggedInUser={this.state.loggedInUser}
                 project={this.state.project}
                 projectId={this.state.projectId}
                 projectUsers={this.state.projectUsers}
@@ -878,7 +874,6 @@ export default class Dashboard extends Component {
           {this.state.displaySettings && this.state.projectId && (
             <>
               <ProjectSettings
-                loggedInUser={this.state.loggedInUser}
                 projectId={this.state.projectId}
                 project={this.state.project}
                 getProjectDetails={this.getProjectDetails}
@@ -889,7 +884,7 @@ export default class Dashboard extends Component {
             </>
           )}
 
-          {this.state.loggedInUser && !this.state.projectId && !this.state.displayPeople && !this.state.isLoading && (
+          {this.context.loggedInUser && !this.state.projectId && !this.state.displayPeople && !this.state.isLoading && (
             <div className='no-project-prompt-container'>
               <div className='bounce'>
                 <i className='fas fa-chevron-up'></i>
@@ -902,3 +897,6 @@ export default class Dashboard extends Component {
     );
   }
 }
+
+Dashboard.contextType = GlobalContext;
+export default Dashboard;

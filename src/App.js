@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles.scss';
+import { GlobalContext } from './GlobalContext';
 import Routes from './routes';
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default function App() {
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  const globalState = {
+    loggedInUser,
+    setLoggedInUser,
+  };
+
   let baseUrl = '/api';
   axios.defaults.baseURL = baseUrl;
   axios.interceptors.response.use(
@@ -30,5 +38,9 @@ export default function App() {
     }
   );
 
-  return <div className='App'>{Routes}</div>;
+  return (
+    <div className='App'>
+      <GlobalContext.Provider value={globalState}>{Routes}</GlobalContext.Provider>
+    </div>
+  );
 }

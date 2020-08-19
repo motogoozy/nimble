@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Task.scss';
 import { formatColor, getUserInitials } from '../../utils';
+import { GlobalContext } from '../../GlobalContext';
 
 import axios from 'axios';
 import { Draggable } from 'react-beautiful-dnd';
@@ -15,7 +16,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Swal from 'sweetalert2';
 
-export default class Task extends Component {
+class Task extends Component {
   state = {
     title: '',
     newTitle: '',
@@ -41,7 +42,8 @@ export default class Task extends Component {
   };
 
   handleEditTaskClick = () => {
-    const { project, loggedInUser, projectPermissions } = this.props;
+    const { project, projectPermissions } = this.props;
+    const { loggedInUser } = this.context;
     // Only allow add task if loggedInUser is project owner or has permission to add tasks
     if (!projectPermissions.edit_tasks && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
@@ -167,7 +169,8 @@ export default class Task extends Component {
   };
 
   displayTaskUserAvatars = () => {
-    const { projectUsers, highlightTasksOfUser, loggedInUser } = this.props;
+    const { projectUsers, highlightTasksOfUser } = this.props;
+    const { loggedInUser } = this.context;
     const projectUserMap = {};
     projectUsers.forEach(projectUser => {
       projectUserMap[projectUser.user_id] = projectUser;
@@ -380,3 +383,6 @@ export default class Task extends Component {
     );
   }
 }
+
+Task.contextType = GlobalContext;
+export default Task;

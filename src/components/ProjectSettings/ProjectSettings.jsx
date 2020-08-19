@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './ProjectSettings.scss';
+import { GlobalContext } from '../../GlobalContext';
 
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -27,6 +28,8 @@ export default function ProjectSettings(props) {
     remove_collaborators: false,
   });
 
+  const { loggedInUser } = useContext(GlobalContext);
+
   useEffect(() => {
     setProjectTitle(props.project.title);
     setNewProjectTitle(props.project.title);
@@ -49,7 +52,7 @@ export default function ProjectSettings(props) {
   };
 
   const handleEditTitleClick = () => {
-    if (props.loggedInUser.user_id === props.project.created_by || permissions.edit_project) {
+    if (loggedInUser.user_id === props.project.created_by || permissions.edit_project) {
       setEditProjectTitle(true);
     } else {
       Swal.fire({
@@ -168,7 +171,7 @@ export default function ProjectSettings(props) {
                 <p>Permissions</p>
               </div>
 
-              {props.loggedInUser.user_id === props.project.created_by ? (
+              {loggedInUser.user_id === props.project.created_by ? (
                 <>
                   <p
                     style={{
@@ -295,7 +298,7 @@ export default function ProjectSettings(props) {
           </div>
 
           <div className='project-settings-footer'>
-            {props.loggedInUser.user_id === props.project.created_by && (
+            {loggedInUser.user_id === props.project.created_by && (
               <Tooltip title={'Delete List'}>
                 <div className='delete-project-container cursor-pointer' onClick={archiveProject}>
                   <IconButton aria-label='delete'>

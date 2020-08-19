@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './Sidebar.scss';
 import NimbleLogo from '../../assets/nimble-logo.png';
+import { GlobalContext } from '../../GlobalContext';
 
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -9,8 +10,9 @@ import Badge from '@material-ui/core/Badge';
 function Sidebar(props) {
   const [selectedButton, setSelectedButton] = useState('overview');
 
+  const { loggedInUser } = useContext(GlobalContext);
+
   const handleButtonClick = async selected => {
-    const { loggedInUser } = props;
     if (selected === 'overview') {
       props.handleSidebarSelection('all');
     } else if (selected === 'my-tasks') {

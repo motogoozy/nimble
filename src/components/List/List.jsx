@@ -4,6 +4,7 @@ import Task from '../Task/Task';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import { lightColors } from '../../assets/colors';
 import { formatColor } from '../../utils';
+import { GlobalContext } from '../../GlobalContext';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -15,7 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 
-export default class List extends Component {
+class List extends Component {
   state = {
     archived: false,
     displayAddTaskModal: false,
@@ -32,6 +33,7 @@ export default class List extends Component {
 
   componentDidMount = () => {
     const { list } = this.props;
+    
     this.setState({
       title: list.title,
       newListTitle: list.title,
@@ -60,7 +62,8 @@ export default class List extends Component {
   };
 
   handleAddTaskClick = () => {
-    const { project, loggedInUser, projectPermissions } = this.props;
+    const { project, projectPermissions } = this.props;
+    const { loggedInUser } = this.context;
 
     // Only allow add task if loggedInUser is project owner or has permission to add tasks
     if (!projectPermissions.add_tasks && project.created_by !== loggedInUser.user_id) {
@@ -76,7 +79,8 @@ export default class List extends Component {
   };
 
   handleEditListClick = () => {
-    const { projectPermissions, project, loggedInUser } = this.props;
+    const { projectPermissions, project } = this.props;
+    const { loggedInUser } = this.context;
     // Only allow edit list if loggedInUser is project owner or has permission to edit lists
     if (!projectPermissions.edit_lists && project.created_by !== loggedInUser.user_id) {
       Swal.fire({
@@ -171,7 +175,8 @@ export default class List extends Component {
 
   addTask = async () => {
     const { newTaskTitle, newTaskNotes, newAssignedUsers } = this.state;
-    const { loggedInUser, list, projectId, updateList, getLists } = this.props;
+    const { list, projectId, updateList, getLists } = this.props;
+    const { loggedInUser } = this.context;
     const taskBody = {
       title: newTaskTitle,
       created_by: loggedInUser.user_id,
@@ -237,7 +242,8 @@ export default class List extends Component {
   };
 
   deleteTask = task_id => {
-    const { projectPermissions, project, loggedInUser } = this.props;
+    const { projectPermissions, project } = this.props;
+    const { loggedInUser } = this.context;
 
     // Only allow task deletion if loggedInUser is project owner or has permission to add tasks
     if (!projectPermissions.delete_tasks && project.created_by !== loggedInUser.user_id) {
@@ -371,7 +377,6 @@ export default class List extends Component {
           projectId={projectId}
           projectUsers={projectUsers}
           taskUsers={taskUsers}
-          loggedInUser={this.props.loggedInUser}
           search={search}
           highlight={highlight}
           projectPermissions={this.props.projectPermissions}
@@ -607,3 +612,6 @@ export default class List extends Component {
     );
   }
 }
+
+List.contextType = GlobalContext;
+export default List;
