@@ -27,10 +27,13 @@ export default function App() {
           window.location.hash = '/welcome';
         }
         if (err.response.status === 500) {
+          if (err.response.data) {
+            console.log(err.response.data);
+          }
           Swal.fire({
             type: 'error',
             title: 'Something went wrong...',
-            text: `${err.response.data} (Internal Server Error)`,
+            text: 'Internal Server Error',
           });
         }
       }
