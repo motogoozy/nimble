@@ -44,21 +44,6 @@ app.use((req, res, next) => {
   }
 });
 
-// DATABASE CONNECTION / START SERVER
-massive(DATABASE_URL)
-  .then(db => {
-    app.set('db', db);
-    console.log('Connected to database');
-    app.listen(port, () => {
-      console.log(`Listening on port: ${port}`);
-      logger.log({
-        level: 'activity',
-        message: 'Server Restarted',
-      });
-    });
-  })
-  .catch(err => console.log(`Error connecting to database: ${err}`));
-
 // LOGGER
 const logger = winston.createLogger({
   format: format.combine(
@@ -155,6 +140,11 @@ app.post('/api/auth/register', authController.register, (req, res, next) => {
 app.put('/api/auth/change_password/:user_id', authController.updateUserPassword); // Change user's password
 app.put('/api/auth/reset_password', authController.resetUserPassword); // Reset user password
 
+// Return main app file for SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
+
 // Error Handler
 app.use((err, req, res, next) => {
   if (!err) {
@@ -177,7 +167,17 @@ app.use((err, req, res, next) => {
   }
 });
 
-// Return main app file for SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
-});
+// DATABASE CONNECTION / START SERVER
+massive(DATABASE_URL)
+  .then(db => {
+    app.set('db', db);
+    console.log('Connected to database');
+    app.listen(port, () => {
+      console.log(`Listening on port: ${port}`);
+      logger.log({
+        level: 'activity',
+        message: 'Server Restarted',
+      });
+    });
+  })
+  .catch(err => console.log(`Error connecting to database: ${err}`));
