@@ -5,6 +5,7 @@ import Dashboard from './views/Dashboard/Dashboard';
 import ProfilePage from './views/ProfilePage/ProfilePage';
 import LoginPage from './views/LoginPage/LoginPage';
 import RegisterPage from './views/RegisterPage/RegisterPage';
+import NotFound from './views/NotFound/NotFound';
 
 export default (
   <Switch>
@@ -14,5 +15,7 @@ export default (
     <Route component={LoginPage} path='/login' />
     <Route component={RegisterPage} path='/register' />
     <Route component={ProfilePage} path='/profile' />
+
+    <Route component={NotFound} path='*' />
   </Switch>
 );
