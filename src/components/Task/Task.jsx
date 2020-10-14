@@ -276,7 +276,7 @@ class Task extends Component {
               color: headerTextColor,
             }}
           >
-            <p style={{ fontSize: '1.2rem' }}>{formattedTitle}</p>
+            <p>{formattedTitle}</p>
           </div>
           <div className='edit-task-modal-body'>
             <div className='edit-task-title'>
@@ -332,7 +332,7 @@ class Task extends Component {
 
   render() {
     const { title } = this.state;
-    const formattedTitle = title.length > 57 ? `${title.slice(0, 57)}...` : title;
+    const formattedTitle = title.length > 52 ? `${title.slice(0, 52)}...` : title;
     const { id, index, colorCode, highlight } = this.props;
 
     return (
@@ -359,17 +359,21 @@ class Task extends Component {
                 ref={provided.innerRef}
               >
                 <div className='task-header'>
-                  <p>{formattedTitle}</p>
-                  <Tooltip title={'Edit Task'}>
-                    <i
-                      className={
-                        highlight
-                          ? 'fas fa-pencil-alt cursor-pointer'
-                          : 'fas fa-pencil-alt cursor-pointer unselected-task'
-                      }
-                      onClick={this.handleEditTaskClick}
-                    ></i>
-                  </Tooltip>
+                  <div className='task-title'>
+                    <p>{formattedTitle}</p>
+                  </div>
+                  <div className='task-edit-container'>
+                    <Tooltip title={'Edit Task'}>
+                      <i
+                        className={
+                          highlight
+                            ? 'fas fa-pencil-alt cursor-pointer'
+                            : 'fas fa-pencil-alt cursor-pointer unselected-task'
+                        }
+                        onClick={this.handleEditTaskClick}
+                      ></i>
+                    </Tooltip>
+                  </div>
                 </div>
                 <div className='assigned-user-avatars' onClick={this.handleEditTaskClick}>
                   {this.displayTaskUserAvatars()}

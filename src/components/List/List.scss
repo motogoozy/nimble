@@ -24,6 +24,11 @@
     align-items: center;
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     color: white;
+    overflow: hidden;
+
+    p {
+      overflow: hidden;
+    }
   }
 
   .list-content {

@@ -17,13 +17,31 @@
 
   .task-header {
     width: 100%;
-    height: 2.5rem;
-    max-height: 2.5rem;
+    height: auto;
+    max-height: 2.25rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     text-align: left;
+    overflow: hidden;
+    word-wrap: break-word;
+    // word-break: break-all;
+
+    .task-title {
+      height: 100%;
+      width: 90%;
+      overflow: hidden;
+    }
+
+    .task-edit-container {
+      height: 100%;
+      width: 10%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-end;
+    }
 
     p {
       margin-bottom: 0.5rem;
@@ -73,6 +91,7 @@
   .edit-task-modal-header {
     width: 100%;
     height: 2.5rem;
+    overflow: hidden;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -80,6 +99,12 @@
     padding: 0 1rem;
     border-radius: 5px 5px 0px 0px;
     text-align: left;
+
+    p {
+      width: 100%;
+      overflow: hidden;
+      font-size: 1.2rem;
+    }
   }
 
   .edit-task-modal-body {
