@@ -8,7 +8,7 @@ import ProjectSettings from '../../components/ProjectSettings/ProjectSettings';
 import AddButton from '../../components/AddButton/AddButton';
 import ColorPicker from '../../components/ColorPicker/ColorPicker';
 import { formatColor } from '../../utils';
-import { GlobalContext } from '../../GlobalContext';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -46,7 +46,7 @@ class Dashboard extends Component {
       await this.getLoggedInUser();
       await this.getConnectionRequests().catch(err => console.log(err));
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -73,7 +73,7 @@ class Dashboard extends Component {
         this.context.setLoggedInUser(null);
       });
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
       this.props.history.push('/welcome');
       this.context.setLoggedInUser(null);
     }
@@ -103,8 +103,7 @@ class Dashboard extends Component {
           await this.getProjectDetails();
           await this.getProjectPermissions();
         } catch (err) {
-          // console.log(JSON.parse(err))
-          console.log(err.response.data);
+          console.log(err.response?.data ? err.response.data : err);
         } finally {
           this.setState({ isLoading: false });
         }
@@ -311,7 +310,7 @@ class Dashboard extends Component {
         }
       );
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -379,7 +378,7 @@ class Dashboard extends Component {
             }
           );
         } catch (err) {
-          console.log(err.response.data);
+          console.log(err.response?.data ? err.response.data : err);
         }
       }
     });
@@ -424,7 +423,7 @@ class Dashboard extends Component {
     try {
       await axios.put(`/user/${loggedInUser.user_id}/recent_project`, body);
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -546,7 +545,7 @@ class Dashboard extends Component {
         try {
           await this.updateProject();
         } catch (err) {
-          console.log(err.response.data);
+          console.log(err.response?.data ? err.response.data : err);
           this.setState(oldState);
         }
       });
@@ -604,7 +603,7 @@ class Dashboard extends Component {
           try {
             await this.updateList(listId, newListBody);
           } catch (err) {
-            console.log(err.response.data);
+            console.log(err.response?.data ? err.response.data : err);
             this.setState(oldState);
           }
         });
@@ -660,7 +659,7 @@ class Dashboard extends Component {
             await this.updateList(startListId, newStartBody); // Updating old list
             await this.updateList(finishListId, newFinishBody); // Updating new List
           } catch (err) {
-            console.log(err.response.data);
+            console.log(err.response?.data ? err.response.data : err);
             this.setState(oldState);
           }
         });

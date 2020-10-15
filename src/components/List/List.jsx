@@ -4,7 +4,7 @@ import Task from '../Task/Task';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import { lightColors } from '../../assets/colors';
 import { formatColor } from '../../utils';
-import { GlobalContext } from '../../GlobalContext';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -33,7 +33,7 @@ class List extends Component {
 
   componentDidMount = () => {
     const { list } = this.props;
-    
+
     this.setState({
       title: list.title,
       newListTitle: list.title,
@@ -169,7 +169,7 @@ class List extends Component {
         displayColorPicker: false,
       });
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -228,7 +228,7 @@ class List extends Component {
         newTaskNotes: '',
       });
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -285,7 +285,7 @@ class List extends Component {
           await this.props.getTaskUsers();
           this.props.getLists();
         } catch (err) {
-          console.log(err.response.data);
+          console.log(err.response?.data ? err.response.data : err);
         }
       }
     });

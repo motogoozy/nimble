@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Task.scss';
 import { formatColor, getUserInitials } from '../../utils';
-import { GlobalContext } from '../../GlobalContext';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import { Draggable } from 'react-beautiful-dnd';
@@ -143,7 +143,7 @@ class Task extends Component {
           await this.props.getTaskUsers();
           await this.props.getAllTasks();
         } catch (err) {
-          console.log(err.response.data);
+          console.log(err.response?.data ? err.response.data : err);
         }
       }
 
@@ -155,7 +155,7 @@ class Task extends Component {
         newTitle: edited.data.title,
       });
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 

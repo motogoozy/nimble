@@ -102,7 +102,12 @@ export default function RegisterPage(props) {
         });
       }
     } catch (err) {
-      setLoginErrMsg(err.response.data);
+      if (err.response?.data) {
+        console.log(err.response.data);
+        setLoginErrMsg(err.response.data);
+      } else {
+        console.log('Error registering user');
+      }
     }
   };
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.scss';
 import './styles.scss';
-import { GlobalContext } from './GlobalContext';
+import GlobalContext from './GlobalContext';
 import Routes from './routes';
 
 import axios from 'axios';

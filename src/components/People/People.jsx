@@ -3,7 +3,7 @@ import './People.scss';
 import SmallAddButton from '../SmallAddButton/SmallAddButton';
 import UserConnection from './UserConnection/UserConnection';
 import { formatColor } from '../../utils';
-import { GlobalContext } from '../../GlobalContext';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import PulseLoader from 'react-spinners/PulseLoader';
@@ -31,7 +31,7 @@ class People extends Component {
       await this.getUserConnections();
       await this.getUserConnectionDetails();
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -42,7 +42,7 @@ class People extends Component {
         await this.getUserConnections();
         await this.getUserConnectionDetails();
       } catch (err) {
-        console.log(err.response.data);
+        console.log(err.response?.data ? err.response.data : err);
       }
     }
   };
@@ -91,7 +91,7 @@ class People extends Component {
 
       this.setState({ users: allUsers });
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -164,9 +164,7 @@ class People extends Component {
         await this.props.getProjectUsers();
         this.setState({ addingUser: '' });
       } catch (err) {
-        if (err.response.data) {
-          console.log(err.response.data);
-        }
+        console.log(err.response?.data ? err.response.data : err);
       }
     });
   };
@@ -193,9 +191,7 @@ class People extends Component {
           await this.getUserConnections();
           await this.getUserConnectionDetails();
         } catch (err) {
-          if (err.response.data) {
-            console.log(err.response.data);
-          }
+          console.log(err.response?.data ? err.response.data : err);
         }
       }
     });
@@ -261,11 +257,11 @@ class People extends Component {
         }
       );
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
       Swal.fire({
         type: 'warning',
         title: 'Not Found.',
-        text: err.response.data,
+        text: err.response?.data ? err.response.data : 'User not found',
       });
     }
   };
@@ -303,9 +299,7 @@ class People extends Component {
             }
           );
         } catch (err) {
-          if (err.response.data) {
-            console.log(err.response.data);
-          }
+          console.log(err.response?.data ? err.response.data : err);
         }
       }
     });
@@ -334,7 +328,7 @@ class People extends Component {
         }
       );
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 

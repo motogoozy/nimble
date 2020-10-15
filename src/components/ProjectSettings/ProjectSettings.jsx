@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './ProjectSettings.scss';
-import { GlobalContext } from '../../GlobalContext';
+import GlobalContext from '../../GlobalContext';
 
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -47,7 +47,7 @@ export default function ProjectSettings(props) {
       let res = await axios.put(`/project/${props.project.project_id}/permissions`, body);
       setPermissions(res.data);
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 

@@ -3,7 +3,7 @@ import './ProfilePage.scss';
 import Avatar from '../../components/Avatar/Avatar';
 import { formatColor, getUserInitials } from '../../utils';
 import ColorPicker from '../../components/ColorPicker/ColorPicker';
-import { GlobalContext } from '../../GlobalContext';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -147,8 +147,13 @@ export default function ProfilePage(props) {
         }
       });
     } catch (err) {
-      console.log(err.response.data);
-      setPasswordErrMsg(err.response.data);
+      if (err.response?.data) {
+        console.log(err.response.data);
+        setPasswordErrMsg(err.response.data);
+      } else {
+        console.log(err);
+        setPasswordErrMsg('Error updating password');
+      }
     }
   };
 

@@ -60,7 +60,7 @@ class Header extends Component {
 
       this.setState({ currentPage: window.location.hash });
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 
@@ -94,7 +94,7 @@ class Header extends Component {
       try {
         await this.getUserProjects();
       } catch (err) {
-        console.log(err.response.data);
+        console.log(err.response?.data ? err.response.data : err);
       }
     }
     if (prevProps.project.title !== this.props.project.title) {
@@ -105,7 +105,7 @@ class Header extends Component {
         )[0];
         this.setState({ selectedProject: project });
       } catch (err) {
-        console.log(err.response.data);
+        console.log(err.response?.data ? err.response.data : err);
       }
     }
   };
@@ -165,7 +165,7 @@ class Header extends Component {
       this.handleSelection(res.data);
       return res.data;
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response?.data ? err.response.data : err);
     }
   };
 

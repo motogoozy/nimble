@@ -116,8 +116,13 @@ export default function LoginPage(props) {
         });
       }
     } catch (err) {
-      console.log(err.response.data);
-      setLoginErrMsg(err.response.data);
+      if (err.response?.data) {
+        console.log(err.response.data);
+        setLoginErrMsg(err.response.data);
+      } else {
+        console.log(err);
+        setLoginErrMsg('Error logging in');
+      }
     }
   };
 
@@ -147,8 +152,13 @@ export default function LoginPage(props) {
         }
       });
     } catch (err) {
-      console.log(err.response.data);
-      setResetErrMsg(err.response.data);
+      if (err.response?.data) {
+        console.log(err.response.data);
+        setResetErrMsg(err.response.data);
+      } else {
+        console.log(err);
+        setResetErrMsg('Error resetting password');
+      }
     }
   };
 
