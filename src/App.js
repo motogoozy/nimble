@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles.scss';
 import GlobalContext from './GlobalContext';
@@ -6,14 +6,11 @@ import Routes from './routes';
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import PulseLoader from 'react-spinners/PulseLoader';
 
 export default function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
-
-  const globalState = {
-    loggedInUser,
-    setLoggedInUser,
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   let baseUrl = '/api';
   axios.defaults.baseURL = baseUrl;
@@ -41,9 +38,31 @@ export default function App() {
     }
   );
 
+  const getUserSession = () => axios.get('/auth/user_session');
+
+  useEffect(() => {
+    getUserSession()
+      .then(res => {
+        setLoggedInUser(res.data);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const globalState = {
+    loggedInUser,
+    setLoggedInUser,
+  };
+
   return (
     <div className='App'>
-      <GlobalContext.Provider value={globalState}>{Routes}</GlobalContext.Provider>
+      {isLoading ? (
+        <div className='progress-container'>
+          <PulseLoader size={12} color={'#995D81'} />
+        </div>
+      ) : (
+        <GlobalContext.Provider value={globalState}>{Routes}</GlobalContext.Provider>
+      )}
     </div>
   );
 }

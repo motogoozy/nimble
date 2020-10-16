@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './LoginPage.scss';
 import NimbleLogo from '../../assets/nimble-logo.png';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import Avatar from '@material-ui/core/Avatar';
@@ -71,6 +72,7 @@ export default function LoginPage(props) {
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [loginErrMsg, setLoginErrMsg] = useState('');
   const [resetErrMsg, setResetErrMsg] = useState('');
+  const { setLoggedInUser } = useContext(GlobalContext);
 
   // Getting user's email from localStorage
   useEffect(() => {
@@ -108,6 +110,7 @@ export default function LoginPage(props) {
           showConfirmButton: false,
           timer: 1000,
         }).then(() => {
+          setLoggedInUser(res.data);
           if (localStorage.getItem('nimblePasswordReset')) {
             props.history.push('/profile');
           } else {

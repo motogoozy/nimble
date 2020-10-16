@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './RegisterPage.scss';
 import NimbleLogo from '../../assets/nimble-logo.png';
 import { avatarColors } from '../../assets/colors';
+import GlobalContext from '../../GlobalContext';
 
 import axios from 'axios';
 import Avatar from '@material-ui/core/Avatar';
@@ -68,6 +69,7 @@ export default function RegisterPage(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginErrMsg, setLoginErrMsg] = useState('');
+  const { setLoggedInUser } = useContext(GlobalContext);
 
   const register = async () => {
     if (!firstName || !lastName || !email || !password) {
@@ -98,6 +100,7 @@ export default function RegisterPage(props) {
           showConfirmButton: false,
           timer: 1500,
         }).then(() => {
+          setLoggedInUser(res.data);
           props.history.push('/');
         });
       }

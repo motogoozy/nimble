@@ -43,18 +43,10 @@ class Dashboard extends Component {
 
   componentDidMount = async () => {
     try {
-      await this.getLoggedInUser();
-      await this.getConnectionRequests().catch(err => console.log(err));
+      await this.getConnectionRequests();
     } catch (err) {
       console.log(err.response?.data ? err.response.data : err);
     }
-  };
-
-  getLoggedInUser = async () => {
-    const res = await axios.get('/auth/user_session');
-    this.context.setLoggedInUser(res.data);
-
-    return res.data;
   };
 
   logout = async () => {

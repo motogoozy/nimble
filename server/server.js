@@ -31,13 +31,15 @@ app.use(
 );
 app.use((req, res, next) => {
   // authentication before every request
-  if (
-    req.url !== '/api/auth/login' &&
-    req.url !== '/api/auth/register' &&
-    req.url !== '/api/auth/logout' &&
-    req.url !== '/api/auth/reset_password' &&
-    !req.session.loggedInUser
-  ) {
+  const allowedUrls = [
+    '/api/auth/user_session',
+    '/api/auth/register',
+    '/api/auth/login',
+    '/api/auth/logout',
+    '/api/auth/reset_password',
+  ];
+
+  if (!req.session.loggedInUser && !allowedUrls.includes(req.url)) {
     res.status(499).send('Please log in.');
   } else {
     next();
