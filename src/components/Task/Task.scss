@@ -78,8 +78,10 @@
 }
 
 .edit-task-modal {
-  width: 40vw;
   height: 90vh;
+  width: 40vw;
+  min-width: 35rem;
+  max-width: 40rem;
   background-color: white;
   border-radius: 6px 6px 5px 5px;
   display: flex;
