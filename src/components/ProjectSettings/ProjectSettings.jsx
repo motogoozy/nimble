@@ -86,7 +86,7 @@ export default function ProjectSettings(props) {
             window.location.reload();
           })
           .catch(err => {
-            console.log(err);
+            console.log(err.response?.data ? err.response.data : err);
           });
       }
     });

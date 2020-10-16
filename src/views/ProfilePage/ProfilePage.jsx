@@ -101,7 +101,7 @@ export default function ProfilePage(props) {
       setUserDetails(res.data);
       setNewUserDetails(res.data);
     } catch (err) {
-      console.log(err);
+      console.log(err.response?.data ? err.response.data : err);
     } finally {
       setEditUserDetails(false);
     }

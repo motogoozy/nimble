@@ -45,7 +45,7 @@ export default function App() {
       .then(res => {
         setLoggedInUser(res.data);
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.response?.data ? err.response.data : err))
       .finally(() => setIsLoading(false));
   }, []);
 

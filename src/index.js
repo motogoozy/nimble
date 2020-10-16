@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import 'normalize.css';
 import { HashRouter } from 'react-router-dom';
 
 ReactDOM.render(
-  <HashRouter>
-    <App />
-  </HashRouter>,
+  <ErrorBoundary>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </ErrorBoundary>,
   document.getElementById('root')
 );
 
