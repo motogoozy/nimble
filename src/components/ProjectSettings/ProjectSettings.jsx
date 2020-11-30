@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './ProjectSettings.scss';
 import GlobalContext from '../../GlobalContext';
+import useProjectTitle from '../../hooks/useProjectTitle';
+import useProjectPermissions from '../../hooks/useProjectPermissions';
 
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -13,31 +15,10 @@ import PulseLoader from 'react-spinners/PulseLoader';
 import Swal from 'sweetalert2';
 
 export default function ProjectSettings(props) {
-  const [projectTitle, setProjectTitle] = useState();
-  const [newProjectTitle, setNewProjectTitle] = useState();
+  const { projectTitle, newProjectTitle, setNewProjectTitle } = useProjectTitle(props.project.title);
   const [editProjectTitle, setEditProjectTitle] = useState(false);
-  const [permissions, setPermissions] = useState({
-    add_tasks: false,
-    edit_tasks: false,
-    delete_tasks: false,
-    add_lists: false,
-    edit_lists: false,
-    delete_lists: false,
-    edit_project: false,
-    add_collaborators: false,
-    remove_collaborators: false,
-  });
-
+  const [permissions, setPermissions] = useProjectPermissions(props.projectPermissions);
   const { loggedInUser } = useContext(GlobalContext);
-
-  useEffect(() => {
-    setProjectTitle(props.project.title);
-    setNewProjectTitle(props.project.title);
-  }, [props.project.title]);
-
-  useEffect(() => {
-    setPermissions(props.projectPermissions);
-  }, [props.projectPermissions]);
 
   const handleToggleSwitch = async (key, event) => {
     const body = {
