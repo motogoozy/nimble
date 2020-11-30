@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import './ProjectSettings.scss';
 import GlobalContext from '../../GlobalContext';
 import useProjectTitle from '../../hooks/useProjectTitle';
